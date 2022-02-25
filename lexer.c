@@ -75,6 +75,8 @@ char *strip(char *str)
     return str;
 }
 
+
+
 void removeComments(char* testcaseFile, char* cleanFile){
     printf("%s\n",testcaseFile);
     FILE *inp = fopen(testcaseFile,"r");
@@ -231,7 +233,7 @@ tokenInfo getNextToken(twinBuffer B){
                 else if(c == 'a' || (c >= 'e' && c <= 'z'))//
                     state=31;
                 else if(c==EOF)
-                    state=40;
+                    state=100;
                 else {
                     state=-1;
                     err=0;
@@ -830,6 +832,11 @@ tokenInfo getNextToken(twinBuffer B){
                 }
                     
                 break;
+            }
+
+            case 100:{                    
+                t.tid=SENTINEL;
+                return t;
             }
 
 
