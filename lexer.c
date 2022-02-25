@@ -61,6 +61,11 @@ int charCount;
 bool readBuff1, readBuff2;
 //true means that the buffer has to be
 
+bool read1, read2; // Flag to indicate which buffer to read
+
+int lexemeSize;
+FILE *fptr;
+
 //helper functions
 
 //strip white space from beginning of string
@@ -154,9 +159,10 @@ tokenInfo getNextToken(twinBuffer B){
     int state=0;
 	int err=-1; //error state
 	int idLen=0; //to count identifier lengths
-	char c;
-	char *lexeme;
-	tokenInfo t;
+
+	char c; // Pointer to move across input
+	char *lexeme; //Collected by getLexeme(B) while reading input
+	tokenInfo t; // The thing we put lexeme into
     
 	t.numVal=NULL;
 	t.lexeme="";
@@ -166,7 +172,7 @@ tokenInfo getNextToken(twinBuffer B){
 
             case 0: // Start State is 0
             {
-                c=getNextChar();
+                c=getNextChar(B);
                 // fprintf(stderr, "%c",c );
                 if(c=='\n') {
                     ++line;
@@ -362,7 +368,7 @@ tokenInfo getNextToken(twinBuffer B){
             
             case 45:
             {                
-                if((c=getNextChar()) == '=') {
+                if((c=getNextChar(B)) == '=') {
                     t.tid = TK_NE;
                     t.lineNo = line;
                     t.lexeme=getLexeme(B);
@@ -378,7 +384,7 @@ tokenInfo getNextToken(twinBuffer B){
 
             case 19:
             {
-			if((c=getNextChar()) == '=') {
+			if((c=getNextChar(B)) == '=') {
 				t.tid=TK_EQ;
 				t.lineNo=line;
 				t.lexeme=getLexeme(B);
@@ -394,7 +400,7 @@ tokenInfo getNextToken(twinBuffer B){
 
             case 36:{
                 
-			if((c=getNextChar()) == '&')
+			if((c=getNextChar(B)) == '&')
 				state=37;
 			else {
 				state=-1;
@@ -404,7 +410,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
 		    case 37:{
-                if((c=getNextChar())=='&') {
+                if((c=getNextChar(B))=='&') {
 				t.tid=TK_AND;
 				t.lineNo=line;
 				t.lexeme=getLexeme(B);
@@ -421,7 +427,7 @@ tokenInfo getNextToken(twinBuffer B){
 
             case 39:{
                 
-			if((c=getNextChar()) == '&')
+			if((c=getNextChar(B)) == '&')
 				state=40;
 			else {
 				state=-1;
@@ -431,7 +437,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
 		    case 40:{
-                if((c=getNextChar())=='&') {
+                if((c=getNextChar(B))=='&') {
 				t.tid=TK_OR;
 				t.lineNo=line;
 				t.lexeme=getLexeme(B);
@@ -447,7 +453,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 1:{
-                c=getNextChar();
+                c=getNextChar(B);
                 if(c=='=') {
                     t.tid=TK_LE;
                     t.lineNo=line;
@@ -472,7 +478,7 @@ tokenInfo getNextToken(twinBuffer B){
 
             case 2:{
                 
-			if((c=getNextChar())=='-')
+			if((c=getNextChar(B))=='-')
 				state=3;
 			else {
 				state=-1;
@@ -483,7 +489,7 @@ tokenInfo getNextToken(twinBuffer B){
 
             case 3:{
                 
-			if((c=getNextChar())=='-'){
+			if((c=getNextChar(B))=='-'){
 				t.tid=TK_ASSIGNOP;
 				t.lineNo=line;
 				t.lexeme=getLexeme(B);
@@ -499,7 +505,7 @@ tokenInfo getNextToken(twinBuffer B){
 
             case 42:{
                 
-			c=getNextChar();
+			c=getNextChar(B);
 			if(c=='=') {
 				t.tid=TK_GE;
 				t.lineNo=line;
@@ -519,7 +525,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 22:{
-                c=getNextChar();
+                c=getNextChar(B);
                 if( (c >=	'a' && c <= 'z') || (c >=	'A' && c <= 'Z') )
                     state=23;
                 else {
@@ -530,7 +536,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 23:{
-                c=getNextChar();
+                c=getNextChar(B);
                 if(c >= '0' && c <= '9'){
                     state = 25;
                 }
@@ -551,7 +557,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 			
 			case 25:{
-                c=getNextChar();
+                c=getNextChar(B);
                 if(c >= '0' && c <= '9'){
                     state = 25;
                 }
@@ -570,7 +576,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 26:{
-                 c=getNextChar();
+                 c=getNextChar(B);
                 if(c >=	'a' && c <= 'z')
                     state=27;
                 else {
@@ -580,7 +586,7 @@ tokenInfo getNextToken(twinBuffer B){
                 break;
             }
             case 27:{
-                 c=getNextChar();
+                 c=getNextChar(B);
                 if(c >=	'a' && c <= 'z')
                     state=27;
                 else {
@@ -598,7 +604,7 @@ tokenInfo getNextToken(twinBuffer B){
             // NUMBERS
 
             case 6:{
-                c = getNextChar();
+                c = getNextChar(B);
                 if(c >= '0' && c <= '9'){
                     state = 6;
                 }
@@ -609,7 +615,7 @@ tokenInfo getNextToken(twinBuffer B){
                     t.tid=TK_NUM;
                     t.lineNo=line;
                     retract(1);
-                    lexeme=getLexeme();
+                    lexeme=getLexeme(B);
                     t.lexeme=lexeme;
                     t.numVal=malloc(sizeof(int));
                     int *temp_ptr;
@@ -623,7 +629,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 7:{
-                c = getNextChar();
+                c = getNextChar(B);
                 if(c >= '0' && c <= '9'){
                     state = 8;
                 }
@@ -636,7 +642,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 8:{
-                c = getNextChar();
+                c = getNextChar(B);
                 if(c >= '0' && c <= '9'){
                     state = 9;
                 }
@@ -649,14 +655,14 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 9:{
-                c = getNextChar();
+                c = getNextChar(B);
                 if (c == 'E'){
                     state = 11;
                 }
                 else {
                     t.tid=TK_RNUM;
                     t.lineNo=line;
-                    lexeme=getLexeme();
+                    lexeme=getLexeme(B);
                     t.lexeme=lexeme;
                     t.numVal=malloc(sizeof(double));
                     double *temp_ptr;
@@ -671,7 +677,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 11:{
-                c = getNextChar();
+                c = getNextChar(B);
                 if (c == '+' || c== '-'){
                     state = 12;
                 }
@@ -687,7 +693,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 12:{
-                c = getNextChar();
+                c = getNextChar(B);
                 if(c >= '0' && c <= '9'){
                     
                     state = 13;
@@ -700,12 +706,12 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 13:{
-                c = getNextChar();
+                c = getNextChar(B);
                 if(c >= '0' && c <= '9'){
                     state = 14;
                     t.tid=TK_RNUM;
                     t.lineNo=line;
-                    lexeme=getLexeme();
+                    lexeme=getLexeme(B);
                     t.lexeme=lexeme;
                     t.numVal=malloc(sizeof(double));
                     double *temp_ptr;
@@ -725,7 +731,7 @@ tokenInfo getNextToken(twinBuffer B){
             // IDENTIFIERS
 
             case 30:{
-                c=getNextChar();
+                c=getNextChar(B);
                 idLen=2;
                 if(c >= '2' && c <= '7'){
                     state=33;
@@ -734,7 +740,7 @@ tokenInfo getNextToken(twinBuffer B){
                     state = 31;
                 else{
                     retract(1);
-                    lexeme=getLexeme();
+                    lexeme=getLexeme(B);
                     t.lexeme=lexeme;
                     t.tid=TK_FIELDID;
                     t.lineNo=line;
@@ -748,13 +754,13 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 31:{
-                c=getNextChar();
+                c=getNextChar(B);
                 idLen=2;
 			if(c >= 'a' && c <= 'z')
                 state = 31;
 			else{
                 retract(1);
-                lexeme=getLexeme();
+                lexeme=getLexeme(B);
                 t.lexeme=lexeme;
                 t.tid=TK_FIELDID;
                 t.lineNo=line;
@@ -774,7 +780,7 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 33:{
-                c=getNextChar();
+                c=getNextChar(B);
                 idLen=2;
                 if(c >= '2' && c <= '7'){
                     state=34;
@@ -783,7 +789,7 @@ tokenInfo getNextToken(twinBuffer B){
                     state = 33;
                 else{
                     retract(1);
-                    lexeme=getLexeme();
+                    lexeme=getLexeme(B);
                     t.lexeme=lexeme;
                     t.tid=TK_ID;
                     t.lineNo=line;
@@ -802,14 +808,14 @@ tokenInfo getNextToken(twinBuffer B){
             }
 
             case 34:{
-                c=getNextChar();
+                c=getNextChar(B);
                 idLen=2;
                 if(c >= '2' && c <= '7'){
                     state=34;
                 }
                 else{
                     retract(1);
-                    lexeme=getLexeme();
+                    lexeme=getLexeme(B);
                     t.lexeme=lexeme;
                     t.tid=TK_ID;
                     t.lineNo=line;
