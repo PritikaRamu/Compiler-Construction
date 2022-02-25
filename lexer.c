@@ -170,7 +170,7 @@ tokenInfo getNextToken(twinBuffer B){
     while(state >=0){
         switch(state){
 
-            case 0: // Start State
+            case 0: // Start State is 0
             {
                 c=getNextChar(B);
                 // fprintf(stderr, "%c",c );
