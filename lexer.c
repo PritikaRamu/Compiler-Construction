@@ -306,7 +306,7 @@ tokenInfo getNextToken(twinBuffer B){
             
             case 54:
             {
-			t.tid=TK_OPEN;
+			t.tid=TK_OP;
 			t.lineNo=line;
 			t.lexeme=getLexeme(B);
 			reset();
@@ -315,7 +315,7 @@ tokenInfo getNextToken(twinBuffer B){
             
             case 55:
             {
-			t.tid=TK_CLOSE;
+			t.tid=TK_CL;
 			t.lineNo=line;
 			t.lexeme=getLexeme(B);
 			reset();

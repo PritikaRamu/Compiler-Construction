@@ -123,7 +123,7 @@ FILE* getStream(FILE *fp) {
 		//printf("check %c check",*forward);
 	}
 	
-	if(forward == buffers.buff1 + BUFFER_SIZE - 1)	{
+	else if(forward == buffers.buff1 + BUFFER_SIZE - 1)	{
 		//forward is at the end of buffer1
 		if(readBuff2) 
 		{
