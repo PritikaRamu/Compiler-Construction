@@ -265,11 +265,12 @@ tokenInfo getNextToken(){
 	t.lexeme="";
 
     while(state >=0){
+	    
         switch(state){
-
+	    //c=getNextChar(fp);
             case 0: // Start State is 0
             {
-                c=getNextChar(fp);
+                c = getNextChar(fp);
                 // fprintf(stderr, "%c",c );
                 if(c=='\n') {
                     ++line;
@@ -465,7 +466,7 @@ tokenInfo getNextToken(){
             
             case 45:
             {                
-                if((c=getNextChar(fp)) == '=') {
+                if(c == '=') {
                     t.tid = TK_NE;
                     t.lineNo = line;
                     t.lexeme=getLexeme();
@@ -481,7 +482,7 @@ tokenInfo getNextToken(){
 
             case 19:
             {
-			if((c=getNextChar(fp)) == '=') {
+			if(c == '=') {
 				t.tid=TK_EQ;
 				t.lineNo=line;
 				t.lexeme=getLexeme();
@@ -497,7 +498,7 @@ tokenInfo getNextToken(){
 
             case 36:{
                 
-			if((c=getNextChar(fp)) == '&')
+			if(c == '&')
 				state=37;
 			else {
 				state=-1;
@@ -507,7 +508,7 @@ tokenInfo getNextToken(){
             }
 
 		    case 37:{
-                if((c=getNextChar(fp))=='&') {
+                if(c =='&') {
 				t.tid=TK_AND;
 				t.lineNo=line;
 				t.lexeme=getLexeme();
@@ -524,7 +525,7 @@ tokenInfo getNextToken(){
 
             case 39:{
                 
-			if((c=getNextChar(fp)) == '&')
+			if(c== '&')
 				state=40;
 			else {
 				state=-1;
@@ -534,7 +535,8 @@ tokenInfo getNextToken(){
             }
 
 		    case 40:{
-                if((c=getNextChar(fp))=='&') {
+                if(c =='&') {
+				
 				t.tid=TK_OR;
 				t.lineNo=line;
 				t.lexeme=getLexeme();
@@ -550,7 +552,7 @@ tokenInfo getNextToken(){
             }
 
             case 1:{
-                c=getNextChar(fp);
+                
                 if(c=='=') {
                     t.tid=TK_LE;
                     t.lineNo=line;
@@ -575,7 +577,7 @@ tokenInfo getNextToken(){
 
             case 2:{
                 
-			if((c=getNextChar(fp))=='-')
+			if(c=='-')
 				state=3;
 			else {
 				state=-1;
@@ -586,7 +588,7 @@ tokenInfo getNextToken(){
 
             case 3:{
                 
-			if((c=getNextChar(fp))=='-'){
+			if(c=='-'){
 				t.tid=TK_ASSIGNOP;
 				t.lineNo=line;
 				t.lexeme=getLexeme();
@@ -602,7 +604,7 @@ tokenInfo getNextToken(){
 
             case 42:{
                 
-			c=getNextChar(fp);
+			
 			if(c=='=') {
 				t.tid=TK_GE;
 				t.lineNo=line;
@@ -622,7 +624,7 @@ tokenInfo getNextToken(){
             }
 
             case 22:{
-                c=getNextChar(fp);
+                
                 if( (c >=	'a' && c <= 'z') || (c >=	'A' && c <= 'Z') )
                     state=23;
                 else {
@@ -633,7 +635,7 @@ tokenInfo getNextToken(){
             }
 
             case 23:{
-                c=getNextChar(fp);
+                
                 if(c >= '0' && c <= '9'){
                     state = 25;
                 }
@@ -654,7 +656,7 @@ tokenInfo getNextToken(){
             }
 			
 			case 25:{
-                c=getNextChar(fp);
+             
                 if(c >= '0' && c <= '9'){
                     state = 25;
                 }
@@ -673,7 +675,7 @@ tokenInfo getNextToken(){
             }
 
             case 26:{
-                 c=getNextChar(fp);
+                
                 if(c >=	'a' && c <= 'z')
                     state=27;
                 else {
@@ -683,7 +685,7 @@ tokenInfo getNextToken(){
                 break;
             }
             case 27:{
-                 c=getNextChar(fp);
+                 
                 if(c >=	'a' && c <= 'z')
                     state=27;
                 else {
@@ -701,7 +703,7 @@ tokenInfo getNextToken(){
             // NUMBERS
 
             case 6:{
-                c = getNextChar(fp);
+             
                 if(c >= '0' && c <= '9'){
                     state = 6;
                 }
@@ -726,7 +728,7 @@ tokenInfo getNextToken(){
             }
 
             case 7:{
-                c = getNextChar(fp);
+              //  c = getNextChar(fp);
                 if(c >= '0' && c <= '9'){
                     state = 8;
                 }
@@ -739,7 +741,7 @@ tokenInfo getNextToken(){
             }
 
             case 8:{
-                c = getNextChar(fp);
+            //    c = getNextChar(fp);
                 if(c >= '0' && c <= '9'){
                     state = 9;
                 }
@@ -752,7 +754,7 @@ tokenInfo getNextToken(){
             }
 
             case 9:{
-                c = getNextChar(fp);
+               // c = getNextChar(fp);
                 if (c == 'E'){
                     state = 11;
                 }
@@ -774,7 +776,7 @@ tokenInfo getNextToken(){
             }
 
             case 11:{
-                c = getNextChar(fp);
+              //  c = getNextChar(fp);
                 if (c == '+' || c== '-'){
                     state = 12;
                 }
@@ -790,7 +792,7 @@ tokenInfo getNextToken(){
             }
 
             case 12:{
-                c = getNextChar(fp);
+             //   c = getNextChar(fp);
                 if(c >= '0' && c <= '9'){
                     
                     state = 13;
@@ -803,7 +805,7 @@ tokenInfo getNextToken(){
             }
 
             case 13:{
-                c = getNextChar(fp);
+            //    c = getNextChar(fp);
                 if(c >= '0' && c <= '9'){
                     state = 14;
                     t.tid=TK_RNUM;
@@ -828,7 +830,7 @@ tokenInfo getNextToken(){
             // IDENTIFIERS
 
             case 30:{
-                c=getNextChar(fp);
+            //    c=getNextChar(fp);
                 idLen=2;
                 if(c >= '2' && c <= '7'){
                     state=33;
@@ -851,7 +853,7 @@ tokenInfo getNextToken(){
             }
 
             case 31:{
-                c=getNextChar(fp);
+         //       c=getNextChar(fp);
                 idLen=2;
 			if(c >= 'a' && c <= 'z')
                 state = 31;
@@ -877,7 +879,7 @@ tokenInfo getNextToken(){
             }
 
             case 33:{
-                c=getNextChar(fp);
+              ///  c=getNextChar(fp);
                 idLen=2;
                 if(c >= '2' && c <= '7'){
                     state=34;
@@ -905,7 +907,7 @@ tokenInfo getNextToken(){
             }
 
             case 34:{
-                c=getNextChar(fp);
+            //    c=getNextChar(fp);
                 idLen=2;
                 if(c >= '2' && c <= '7'){
                     state=34;
@@ -939,13 +941,127 @@ tokenInfo getNextToken(){
     
 }
 
+void printToken(int token) {
+	gterm base=eps;
+	token -= base;
+	switch(token)
+	{
+		case 1: printf("TK_ASSIGNOP ");
+				break;
+		case 2: printf("TK_COMMENT ");
+				break;
+		case 3: printf("TK_FIELDID ");
+				break;
+		case 4: printf("TK_ID ");
+				break;
+		case 5: printf("TK_NUM ");
+				break;
+		case 6: printf("TK_RNUM ");
+				break;
+		case 7: printf("TK_FUNID ");
+				break;
+		case 8: printf("TK_RECORDID ");
+				break;
+		case 9: printf("TK_WITH ");
+				break;
+		case 10: printf("TK_PARAMETERS ");
+				break;
+		case 11: printf("TK_END ");
+				break;
+		case 12: printf("TK_WHILE ");
+				break;
+		case 13: printf("TK_TYPE ");
+				break;
+		case 14: printf("TK_MAIN ");
+				break;
+		case 15: printf("TK_GLOBAL ");
+				break;
+		case 16: printf("TK_PARAMETER ");
+				break;
+		case 17: printf("TK_LIST ");
+				break;
+		case 18: printf("TK_SQL ");
+				break;
+		case 19: printf("TK_SQR ");
+				break;
+		case 20: printf("TK_INPUT ");
+				break;
+		case 21: printf("TK_OUTPUT ");
+				break;
+		case 22: printf("TK_INT ");
+				break;
+		case 23: printf("TK_REAL ");
+				break;
+		case 24: printf("TK_COMMA ");
+				break;
+		case 25: printf("TK_SEM ");
+				break;
+		case 26: printf("TK_COLON ");
+				break;
+		case 27: printf("TK_DOT ");
+				break;
+		case 28: printf("TK_ENDWHILE ");
+				break;
+		case 29: printf("TK_OPEN ");
+				break;
+		case 30: printf("TK_CLOSE ");
+				break;
+		case 31: printf("TK_IF ");
+				break;
+		case 32: printf("TK_THEN ");
+				break;
+		case 33: printf("TK_ENDIF ");
+				break;
+		case 34: printf("TK_READ ");
+				break;
+		case 35: printf("TK_WRITE ");
+				break;
+		case 36: printf("TK_RETURN ");
+				break;
+		case 37: printf("TK_PLUS ");
+				break;
+		case 38: printf("TK_MINUS ");
+				break;
+		case 39: printf("TK_MUL ");
+				break;
+		case 40: printf("TK_DIV ");
+				break;
+		case 41: printf("TK_CALL ");
+				break;
+		case 42: printf("TK_RECORD ");
+				break;
+		case 43: printf("TK_ENDRECORD ");
+				break;
+		case 44: printf("TK_ELSE ");
+				break;
+		case 45: printf("TK_AND ");
+				break;
+		case 46: printf("TK_OR ");
+				break;
+		case 47: printf("TK_NOT ");
+				break;
+		case 48: printf("TK_LT ");
+				break;
+		case 49: printf("TK_LE ");
+				break;
+		case 50: printf("TK_EQ ");
+				break;
+		case 51: printf("TK_GT ");
+				break;
+		case 52: printf("TK_GE ");
+				break;
+		case 53: printf("TK_NE ");
+				break;
+	}
+}
+
 
 
 
 int main()
 {
 
-	fp = startLexer("sampleText.txt");
+	fp = startLexer("testErrors.txt");
 
 	/*
 	printf("\nSIZE OF TWIN BUFFER %lu %lu %lu \n",sizeof(buffers), sizeof(buffers.buff1), sizeof(buffers.buff2));
@@ -974,7 +1090,10 @@ int main()
 	for(int i = 0; i < 10; i++)
 	{	
 	tokenInfo pleasework = getNextToken();
-	printf("%s\n",pleasework.lexeme);
+	
+	printf(" %s %d",pleasework.lexeme, pleasework.lineNo);
+	printToken(pleasework.tid);
+	printf("\n");
 	}
 	/*
 	printf("\nFirst call to getStream function\n");	
@@ -1005,6 +1124,12 @@ int main()
 
 	return 0;
 }
+
+
+
+
+
+
 
 
 
