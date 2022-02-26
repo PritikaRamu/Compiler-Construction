@@ -23,7 +23,7 @@ bool exists(struct table *list, char* key)
 	return false;
 }
 
-void insertID(char* key, char* value)
+void insertID(char* key, gterm value)
 {	
 	int index = hashcode(key);  
  	struct table *list = (struct table*) symbolTable[index].head;
@@ -53,7 +53,7 @@ void insertID(char* key, char* value)
 	}
 }
 
-char* getToken(char* key){
+gterm getToken(char* key){
 	int index = hashcode(key);
 	struct table *list = symbolTable[index].head;
 	while(list){
@@ -62,7 +62,7 @@ char* getToken(char* key){
 		}
 		list = list->next;
 	}
-	return NULL;
+	return -1;
 }
 //initialize and populate table with keywords
 void initTable()
@@ -86,7 +86,7 @@ void display()
         else{
 			printf("%d: ", i);
 			while(temp != NULL){
-				printf("key= %s  value= %s\t", temp->key, temp->token);
+				printf("key= %s  value= %d\t", temp->key, temp->token);
 				temp = temp->next;
 			}
 			printf("\n");
@@ -96,7 +96,6 @@ void display()
 
 void main(){
 	initTable();
-	insertID("preetika","bruh");
-	//display();
-	printf("%s",getToken("preetika"));
+	display();
+	printf("%d",getToken("preetika"));
 }
