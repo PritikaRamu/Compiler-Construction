@@ -7,8 +7,8 @@ gterm top(Stack* head) {
         return -1;
     }
     else {
-        gterm data = head->next->data;
-        return data;
+        gterm symbol = head->next->data->symbol;
+        return symbol;
     }
 }
 
@@ -29,9 +29,10 @@ void pop(Stack* head) {
     }
 }
 
-void push(Stack* head, gterm data) {
+void push(Stack* head, gterm symbol) {
     Stack* newNode = (Stack*)malloc(sizeof(Stack));
-    newNode->data = data;
+    newNode->data->symbol = symbol;
+    newNode->data->isTerminal = isTerm(symbol);
     newNode->next = head->next;
     head->next = newNode;
 }
@@ -40,7 +41,7 @@ void printStack(Stack* head) {
     Stack* temp = (Stack*)malloc(sizeof(Stack));
     temp->next = head->next;
     while(temp->next) {
-        printf("%d\n", temp->next->data);
+        printf("%d\n", temp->next->data->symbol);
         temp->next = temp->next->next;
     }
     printf("End of stack\n");

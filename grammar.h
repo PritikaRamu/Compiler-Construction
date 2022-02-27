@@ -9,11 +9,13 @@ typedef struct node {
 } g_Node;
 
 typedef struct cell{
-	gterm symbol;
-	struct node* head;
+ 	gterm symbol;
+ 	struct node* head;
 } g_cell;
 
 typedef g_cell Grammar[200];
+
+bool isTerm(gterm symbol);
 
 void printRule(g_cell lhs);
 

@@ -1,7 +1,11 @@
+#ifndef _PARSEDEF_
+#define _PARSEDEF_
+
 #include <stdio.h>
 #include "grammar.h"
+#include "narytree.h"
 
-typedef struct treeNodeInfo{
+/*typedef struct treeNodeInfo{
 	int term_or_nonterm;
 	// Symbol_node_type type;
 } TreeNodeInfo;
@@ -25,18 +29,19 @@ typedef struct treeNode{
 	struct astNode* inh_addr;
 	
 	int rule_no;
-} TreeNode; 
+} TreeNode;
 
 typedef struct tree{
 	TreeNode* root;
-} parseTree;
+} parseTree;*/
 
-typedef g_cell[49][53] parseTable;
+//typedef g_Node table[49][53];
+typedef g_Node **table;
 
 
 typedef struct firstAndFollowSet{
-	bool[100][52] first; // 100 is no. of rules
-	bool[100][52] follow;
+	bool first[100][52]; // 100 is no. of rules
+	bool follow[100][52];
 } FirstAndFollow;
 
 void ComputeFirstAndFollowSets ();
@@ -54,6 +59,8 @@ void initGrammar(){
 
 }
 
-void initFF{
-	FFSet = ComputeFirstAndFollowSets(G);
+void initFF(){
+	ComputeFirstAndFollowSets(G);
 }
+
+#endif

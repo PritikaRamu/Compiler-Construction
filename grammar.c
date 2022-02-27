@@ -25,6 +25,15 @@ g_Node* insertNode(g_Node* head, int i){
 	return temp;
 }
 
+bool isTerm(gterm symbol) {
+	if(symbol >= program && symbol <= eps) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
 // int main(){
 // 	gterm trial = 68;
 

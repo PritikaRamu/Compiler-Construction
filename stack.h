@@ -3,9 +3,10 @@
 
 #include <stdlib.h>
 #include "lexer.h"
+#include "parser.h"
 
 typedef struct stack {
-    gterm data;
+    g_Node* data;
     struct stack* next;
 } Stack;
 
