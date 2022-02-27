@@ -38,5 +38,7 @@ tokenInfo getNextToken(twinBuffer B);
 
 void removeComments(char* testcaseFile, char* cleanFile);
 
+void printToken(int token);
+
 void reset();
 
