@@ -48,7 +48,7 @@ void ComputeFirstAndFollowSets ();
 
 table createParseTable(table T);
 
-void parseInputSourceCode(char *testcaseFile);
+parseTree parseInputSourceCode(char *testcaseFile, table T);
 
 void printParseTree(parseTree PT, char *outfile);
 

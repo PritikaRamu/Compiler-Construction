@@ -10,6 +10,7 @@ struct tree {
     TreeNode* data;
     struct tree* firstChild;
     struct tree* nextSibling;
+    struct tree* parent;
 };
 
 typedef struct tree* parseTree;
