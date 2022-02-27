@@ -10,7 +10,7 @@ typedef struct node {
 
 typedef struct cell{
 	gterm symbol;
-	g_Node* head;
+	struct node* head;
 } g_cell;
 
 typedef g_cell Grammar[200];
