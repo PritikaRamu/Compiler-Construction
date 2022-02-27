@@ -13,6 +13,7 @@ typedef struct cell{
 	g_Node* head;
 } g_cell;
 
-typedef g_cell[200] Grammar;
+typedef g_cell Grammar[200];
 
-void 
+void printRule(g_cell lhs);
+
