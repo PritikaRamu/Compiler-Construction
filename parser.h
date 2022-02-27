@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "lexer.h"
+#include "grammar.h"
 
 typedef struct treeNodeInfo{
 	int term_or_nonterm;
@@ -23,6 +23,7 @@ typedef struct treeNode{
 
 	struct astNode* addr;
 	struct astNode* inh_addr;
+	
 	int rule_no;
 } TreeNode; 
 
@@ -30,23 +31,29 @@ typedef struct tree{
 	TreeNode* root;
 } parseTree;
 
-typedef struct parseTable {
-
-} table;
+typedef g_cell[49][53] parseTable;
 
 
 typedef struct firstAndFollowSet{
-
+	bool[100][52] first; // 100 is no. of rules
+	bool[100][52] follow;
 } FirstAndFollow;
 
-typedef struct Gram{
+void ComputeFirstAndFollowSets ();
 
-} grammar;
+table createParseTable(table T);
 
-FirstAndFollow ComputeFirstAndFollowSets (grammar G);
-
-table createParseTable(FirstAndFollow F, table T);
-
-void parseInputSourceCode(char *testcaseFile, table T);
+void parseInputSourceCode(char *testcaseFile);
 
 void printParseTree(parseTree PT, char *outfile);
+
+Grammar G;
+FirstAndFollow FFSet;
+
+void initGrammar(){
+
+}
+
+void initFF{
+	FFSet = ComputeFirstAndFollowSets(G);
+}

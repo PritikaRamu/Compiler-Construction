@@ -25,14 +25,14 @@ g_Node* insertNode(g_Node* head, int i){
 	return temp;
 }
 
-int main(){
-	gterm trial = 68;
+// int main(){
+// 	gterm trial = 68;
 
-	Grammar G;
-	G[0].symbol = 54;
-	G[0].head = insertNode(G[0].head, 68);
-	G[0].head = insertNode(G[0].head, 89);
+// 	Grammar G;
+// 	G[0].symbol = 54;
+// 	G[0].head = insertNode(G[0].head, 68);
+// 	G[0].head = insertNode(G[0].head, 89);
 
-	printRule(G[0]);
-}
+// 	printRule(G[0]);
+// }
 
