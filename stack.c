@@ -31,7 +31,10 @@ void pop(Stack* head) {
 
 void push(Stack* head, gterm symbol) {
     Stack* newNode = (Stack*)malloc(sizeof(Stack));
+    g_Node* stackData = (g_Node*)malloc(sizeof(g_Node));
+    newNode->data = stackData;
     newNode->data->symbol = symbol;
+    newNode->data->next = NULL;
     newNode->data->isTerminal = isTerm(symbol);
     newNode->next = head->next;
     head->next = newNode;

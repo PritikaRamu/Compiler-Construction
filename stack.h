@@ -2,8 +2,7 @@
 #define _STACKDEF
 
 #include <stdlib.h>
-#include "lexer.h"
-#include "parser.h"
+#include "grammar.h"
 
 typedef struct stack {
     g_Node* data;

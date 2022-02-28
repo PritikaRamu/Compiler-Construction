@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include "lexer.h"
+#include "gterm.h"
 
 typedef struct node {
 	gterm symbol;
@@ -15,6 +15,9 @@ typedef struct cell{
  	gterm symbol;
  	struct node* head;
 } g_cell;
+
+typedef g_cell Grammar[200];
+Grammar G;
 
 bool isTerm(gterm symbol);
 

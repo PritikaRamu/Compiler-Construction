@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include "grammar.h"
 #include "narytree.h"
+#include "stack.h"
+#include "lexer.h"
 
 /*typedef struct treeNodeInfo{
 	int term_or_nonterm;
@@ -44,15 +46,22 @@ typedef struct firstAndFollowSet{
 	bool follow[100][52];
 } FirstAndFollow;
 
+//remove and add appropriate header file
+typedef struct token {
+	gterm tid; 
+	char* lexeme;
+	void* numVal; //Int, Float values for numbers
+	int lineNo;
+} tokenInfo;
+
 void ComputeFirstAndFollowSets ();
 
 table createParseTable(table T);
 
-parseTree parseInputSourceCode(char *testcaseFile, table T);
+parseTree parseInputSourceCode(char* testcaseFile, table T);
 
 void printParseTree(parseTree PT, char *outfile);
 
-Grammar G;
 FirstAndFollow FFSet;
 
 void initGrammar();

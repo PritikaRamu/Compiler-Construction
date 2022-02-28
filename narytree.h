@@ -2,16 +2,17 @@
 #define _NARYTREE_
 
 #include <stdlib.h>
-#include <stdbool.h>
 #include "grammar.h"
 
-typedef struct treeNode {
-    gterm symbol;
-    bool isTerminal;
-} TreeNode;
+// typedef struct treeNode {
+//     gterm symbol;
+//     bool isTerminal;
+// } TreeNode;
 
 struct tree {
-    TreeNode* data;
+    //TreeNode* data;
+    gterm symbol;
+    bool isTerminal;
     struct tree* firstChild;
     struct tree* nextSibling;
     struct tree* parent;
