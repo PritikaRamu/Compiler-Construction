@@ -1,3 +1,6 @@
+#ifndef _LEXERDEF_
+#define _LEXERDEF_
+
 #include <stdio.h>
 #define BUFFER_SIZE (1 << 12)
 
@@ -42,3 +45,4 @@ void printToken(int token);
 
 void reset();
 
+#endif

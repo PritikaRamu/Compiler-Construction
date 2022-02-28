@@ -1,5 +1,9 @@
+#ifndef _NARYTREE_
+#define _NARYTREE_
+
 #include <stdlib.h>
-#include "lexer.h"
+#include <stdbool.h>
+#include "grammar.h"
 
 typedef struct treeNode {
     gterm symbol;
@@ -14,3 +18,5 @@ struct tree {
 };
 
 typedef struct tree* parseTree;
+
+#endif

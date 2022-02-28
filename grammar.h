@@ -1,3 +1,6 @@
+#ifndef _GRAMMARDEF_
+#define _GRAMMARDEF_
+
 #include <stdio.h>
 #include <stdbool.h>
 #include "lexer.h"
@@ -13,9 +16,11 @@ typedef struct cell{
  	struct node* head;
 } g_cell;
 
-typedef g_cell Grammar[200];
-
 bool isTerm(gterm symbol);
 
 void printRule(g_cell lhs);
 
+
+typedef g_cell Grammar[200];
+
+#endif 

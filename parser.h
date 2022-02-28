@@ -55,12 +55,11 @@ void printParseTree(parseTree PT, char *outfile);
 Grammar G;
 FirstAndFollow FFSet;
 
-void initGrammar(){
+void initGrammar();
 
-}
-
+/*
 void initFF(){
 	ComputeFirstAndFollowSets(G);
-}
+}*/
 
 #endif

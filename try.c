@@ -1234,57 +1234,57 @@ void printToken(int token) {
 
 	
 		
-// 	for(int i = 0; i < 40; i++)
-// 		{
-// 		char c = getNextChar(fp);
-// 		printf("%c %d\n",c,c);
-// 		}
+// // 	for(int i = 0; i < 40; i++)
+// // 		{
+// // 		char c = getNextChar(fp);
+// // 		printf("%c %d\n",c,c);
+// // 		}
 	
-// 	printf("Retraction\n");
-// 	retract(4);
+// // 	printf("Retraction\n");
+// // 	retract(4);
 	
-// 	for(int i = 0; i < 20; i++)
-// 		{
-// 		char c = getNextChar(fp);
-// 		printf("%c %d\n",c, c);
-// 		}
-// 	*/
-// 	for(int i = 0; i < 15; i++)
-// 	{	
-// 	tokenInfo pleasework = getNextToken();
+// // 	for(int i = 0; i < 20; i++)
+// // 		{
+// // 		char c = getNextChar(fp);
+// // 		printf("%c %d\n",c, c);
+// // 		}
+// // 	*/
+// // 	for(int i = 0; i < 15; i++)
+// // 	{	
+// // 	tokenInfo pleasework = getNextToken();
 	
-// 	printf(" %s %d",pleasework.lexeme, pleasework.lineNo);
-// 	printToken(pleasework.tid);
-// 	printf("\n");
-// 	}
-// 	/*
-// 	printf("\nFirst call to getStream function\n");	
+// // 	printf(" %s %d",pleasework.lexeme, pleasework.lineNo);
+// // 	printToken(pleasework.tid);
+// // 	printf("\n");
+// // 	}
+// // 	/*
+// // 	printf("\nFirst call to getStream function\n");	
 
  	
 		
-// 	printf("\nContents of buffer 1\n");		
+// // 	printf("\nContents of buffer 1\n");		
 
-// 	printf("\n%s", buffers.buff1);
+// // 	printf("\n%s", buffers.buff1);
 
-// 	printf("\nContents of buffer 2\n");
+// // 	printf("\nContents of buffer 2\n");
 
-// 	printf("\n%s", buffers.buff2);
+// // 	printf("\n%s", buffers.buff2);
 
-// 	printf("\nSecond call to getStream function\n");	
+// // 	printf("\nSecond call to getStream function\n");	
 
-//  	fp = getStream(fp);
+// //  	fp = getStream(fp);
 		
-// 	printf("\nContents of buffer 1\n");		
+// // 	printf("\nContents of buffer 1\n");		
 
-// 	printf("\n%s", buffers.buff1);
+// // 	printf("\n%s", buffers.buff1);
 
-// 	printf("\nContents of buffer 2\n");
+// // 	printf("\nContents of buffer 2\n");
 
-// 	printf("\n%s", buffers.buff2);
-// 	*/
+// // 	printf("\n%s", buffers.buff2);
+// // 	*/
 	
 
-// 	return 0;
+// // 	return 0;
 // }
 
 
