@@ -75,6 +75,8 @@ void printToken(int token) {
 	//token -= base;
 	switch(token)
 	{
+		case 51: printf("<eps> ");
+				break;
 		case 52: printf("TK_ASSIGNOP ");
 				break;
 		case 53: printf("TK_COMMENT ");
@@ -293,8 +295,7 @@ void printNonTerminal(int token) {
 				break;
 		case 50: printf("<more_ids> ");
 				break;
-		case 51: printf("<eps> ");
-				break;
+		
 	}
 }
 
