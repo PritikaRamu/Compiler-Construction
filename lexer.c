@@ -1217,6 +1217,118 @@ void printToken(int token) {
 	}
 }
 
+void printNonTerminal(int token) {
+	//gterm base=eps-1;
+	//token -= base;
+	switch(token)
+	{
+		case 0: printf("<program> ");
+				break;
+		case 1: printf("<mainFunction> ");
+				break;
+		case 2: printf("<otherFunctions> ");
+				break;
+		case 3: printf("<function> ");
+				break;
+		case 4: printf("<input_par> ");
+				break;
+		case 5: printf("<output_par> ");
+				break;
+		case 6: printf("<parameter_list> ");
+				break;
+		case 7: printf("<dataType> ");
+				break;
+		case 8: printf("<primitiveDatatype> ");
+				break;
+		case 9: printf("<constructedDatatype> ");
+				break;
+		case 10: printf("<remaining_list> ");
+				break;
+		case 11: printf("<stmts> ");
+				break;
+		case 12: printf("<typeDefinitions> ");
+				break;
+		case 13: printf("<typeDefinition> ");
+				break;
+		case 14: printf("<fieldDefinitions> ");
+				break;
+		case 15: printf("<fieldDefinition> ");
+				break;
+		case 16: printf("<moreFields> ");
+				break;
+		case 17: printf("<declarations> ");
+				break;
+		case 18: printf("<declaration> ");
+				break;
+		case 19: printf("<global_or_not> ");
+				break;
+		case 20: printf("<otherStmts> ");
+				break;
+		case 21: printf("<stmt> ");
+				break;
+		case 22: printf("<assignmentStmt> ");
+				break;
+		case 23: printf("<singleOrRecId> ");
+				break;
+		case 24: printf("<new_24> ");
+				break;
+		case 25: printf("<funCallStmt> ");
+				break;
+		case 26: printf("<outputParameters> ");
+				break;
+		case 27: printf("<inputParameters> ");
+				break;
+		case 28: printf("<iterativeStmt> ");
+				break;
+		case 29: printf("<conditionalStmt> ");
+				break;
+		case 30: printf("<elsePart> ");
+				break;
+		case 31: printf("<ioStmt> ");
+				break;
+		case 32: printf("<allVar> ");
+				break;
+		case 33: printf("<allVarTemp> ");
+				break;
+		case 34: printf("<arithmeticExpression> ");
+				break;
+		case 35: printf("<expPrime> ");
+				break;
+		case 36: printf("<term> ");
+				break;
+		case 37: printf("<termPrime> ");
+				break;
+		case 38: printf("<factor> ");
+				break;
+		case 39: printf("<highPrecedenceOperators> ");
+				break;
+		case 40: printf("<lowPrecedenceOperators> ");
+				break;
+		case 41: printf("<all> ");
+				break;
+		case 42: printf("<temp> ");
+				break;
+		case 43: printf("<booleanExpression> ");
+				break;
+		case 44: printf("<var> ");
+				break;
+		case 45: printf("<logicalOp> ");
+				break;
+		case 46: printf("<relationalOp> ");
+				break;
+		case 47: printf("<returnStmt> ");
+				break;
+		case 48: printf("<optionalReturn> ");
+				break;
+		case 49: printf("<idList> ");
+				break;
+		case 50: printf("<more_ids> ");
+				break;
+		case 51: printf("<eps> ");
+				break;
+	}
+}
+
 
 
 

@@ -11,7 +11,7 @@
 typedef struct node {
 	gterm symbol;
 	bool isTerminal;
-	struct node* next;
+	g_Node* next;
 } g_Node;
 
 typedef struct cell{
