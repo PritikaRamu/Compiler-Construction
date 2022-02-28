@@ -1,33 +1,9 @@
-#define NON_TERMINALS 49
-#define TERMINALS 52
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "gterm.h"
+#include "newRules.h"
 
-typedef struct rhs{ 
-	g_Term symbol;
-	//bool isTerminal;
-	struct RHS* next;
-} g_RHS;
-
-bool isTerminal[TERMINALS + NON_TERMINALS];
-
-typedef struct lhs{
- 	g_Term symbol;
- 	g_RHS** head;
-} g_LHS;
-
-typedef struct ruleHead{
-	
-	g_RHS* listHead; 	//pointer to the linked list
-	struct ruleHead* next; 	//pointer to next rule
-
-}ruleHead;
-
-typedef g_LHS Grammar[NON_TERMINALS];
-g_RHS* insertIntoRule(g_RHS* head, g_Term s){
+g_RHS* insertIntoRule(g_RHS* head, g_Term s, bool isTerm){
 	//we insert the symbols to get the RHS for the rules
 
 	//insertion has to be done in reverse order
@@ -38,6 +14,7 @@ g_RHS* insertIntoRule(g_RHS* head, g_Term s){
 	g_RHS* temp = (g_RHS *)malloc(sizeof(g_RHS));
 	temp->symbol = s;
 	temp->next = NULL;
+    temp->isTerminal = isTerm;
 	if(head==NULL)
 		return temp;
 
@@ -45,20 +22,23 @@ g_RHS* insertIntoRule(g_RHS* head, g_Term s){
 	return temp;
 }
 
-void printRule(g_RHS* head){
+void printRule(g_RHS* head){ // Print 1 single rule
 
 	g_RHS* temp = head;
 	while(temp!=NULL)
 	{
-		printf("%d ", temp->symbol);
+		// printf("%d ", temp->symbol);
+        if(temp->isTerminal)
+            printToken(temp->symbol);
+        else
+            printNonTerminal(temp->symbol);
 		temp = temp->next;
 	} 
 	printf("\n");
 
 }
 
-ruleHead* insertRuleList(ruleHead* head, g_RHS* rule)
-{
+ruleHead* insertRuleList(ruleHead* head, g_RHS* rule){
 
 	ruleHead* temp = (ruleHead *)malloc(sizeof(ruleHead));
 	temp->listHead = rule;
@@ -66,15 +46,27 @@ ruleHead* insertRuleList(ruleHead* head, g_RHS* rule)
 	return temp;
 }
 
-
-void printRules(ruleHead* head){
+void printRules(ruleHead* head){ // Print All Rules for a NT
 	
 	ruleHead* temp = head;
+    int i = 1;
 	while(temp!=NULL)
 	{
+        printf("    Printing rule %d\n",i);
+        printf("    -> ");
 		printRule(temp->listHead);
 		temp = temp->next;
+        i++;
 	}
+
+}
+
+void printGrammar(Grammar G, int len){
+
+    for(int i=0;i<len;i++){
+        printf("Printing Non-Terminal %d: ",i); printNonTerminal(i); printf("\n");
+		printRules(G[i]);
+    }
 
 }
 
@@ -308,27 +300,39 @@ void printNonTerminal(int token) {
 
 int main(){
    
-
-    printf("Hi\n");
-
-
     Grammar G;
 
+    G[program] = NULL;
+	g_RHS* Rule1 = NULL;
+	Rule1 = insertIntoRule(Rule1,2, false);
+	Rule1 = insertIntoRule(Rule1,1, false);
+
+	G[program] = insertRuleList(G[program], Rule1);
+
+    G[mainFunction] = NULL;
+	g_RHS* Rule2 = NULL;
+	Rule2 = insertIntoRule(Rule2,64, true);
+	Rule2 = insertIntoRule(Rule2,11, false);
+	Rule2 = insertIntoRule(Rule2,61, true);
+
+	G[mainFunction] = insertRuleList(G[mainFunction], Rule2);
     
-    g_RHS* myRule1 = NULL;
-	myRule1 = insertIntoRule(myRule1, TK_OP);
-	myRule1 = insertIntoRule(myRule1,TK_CL);
+    printGrammar(G, 2);
 
-    g_RHS* myRule2 = NULL;
-	myRule2 = insertIntoRule(myRule2, TK_SEM);
-	myRule2 = insertIntoRule(myRule2,TK_MUL);
+    // printRules(G[program]);
+    // printRules(G[mainFunction]);
 
-	printRule(myRule1);
-    printRule(myRule2);
+    //<mainFunction>===> TK_MAIN <stmts> TK_END
 
-    printToken(56);
-    printf(" -> ");
-    printNonTerminal(2);
-    printToken(76);
-    printf("\n");
+    // g_RHS* myRule2 = NULL;
+	// myRule2 = insertIntoRule(myRule2, 8, false);
+	// myRule2 = insertIntoRule(myRule2,100, true );
+	// myRule1 = insertIntoRule(myRule1,21, false);
+	// myRule1 = insertIntoRule(myRule1,54, true);
+
+	// ruleHead* pleasework = NULL;
+    // pleasework = insertRuleList(pleasework, myRule1);
+    // pleasework = insertRuleList(pleasework, myRule2);
+
+    
 }
