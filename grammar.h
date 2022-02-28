@@ -9,20 +9,20 @@
 #include "gterm.h"
 
 typedef struct node {
-	gterm symbol;
+	g_Term symbol;
 	bool isTerminal;
-	struct node* next;
+	g_Node* next;
 } g_Node;
 
 typedef struct cell{
- 	gterm symbol;
+ 	g_Term symbol;
  	struct node* head;
 } g_cell;
 
 typedef g_cell Grammar[200];
 Grammar G;
 
-bool isTerm(gterm symbol);
+bool isTerm(g_Term symbol);
 
 void printRule(g_cell lhs);
 
