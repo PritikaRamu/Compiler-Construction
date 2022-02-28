@@ -1,6 +1,9 @@
 #ifndef _GRAMMARDEF_
 #define _GRAMMARDEF_
 
+#define NON_TERMINALS 49
+#define TERMINALS 52
+
 #include <stdio.h>
 #include <stdbool.h>
 #include "lexer.h"
