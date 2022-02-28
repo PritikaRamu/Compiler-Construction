@@ -84,10 +84,10 @@ void removeComments(char* testcaseFile, char* cleanFile){
         printf("Error opening testcaseFile\n");
         return;
     }
-
+    
     char *line = NULL;
     size_t len = 0;
-    ssize_t sizeRead;
+    size_t sizeRead;
 
     sizeRead = getline(&line, &len, inp);
 
