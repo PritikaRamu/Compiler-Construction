@@ -36,7 +36,7 @@ bool Follow[NON_TERMINALS][TERMINALS+2] = {false};
 g_RHS* insertIntoRule(g_RHS* head, g_Term s, bool isTerm);
 ruleHead* insertRuleList(ruleHead* head, g_RHS* rule);
 void printGrammar(Grammar G, int len);
-void printRules(ruleHead* head);
+void printRules(Grammar G, int i, bool needArrow);
 void printRule(g_RHS* head);
 void printToken(int token);
 void printNonTerminal(int token);

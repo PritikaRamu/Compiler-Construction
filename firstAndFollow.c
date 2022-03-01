@@ -13,7 +13,7 @@ void populateFirst(char* textfile){
 
     char *line = NULL;
     size_t len = 0;
-    ssize_t sizeRead;
+    size_t sizeRead;
 
     sizeRead = getline(&line, &len, fp);
     //printf("%d\n", sizeRead);
@@ -36,6 +36,15 @@ void populateFirst(char* textfile){
     fclose(fp);
 }
 
+
+
+ruleHead* insertRuleList(ruleHead* head, g_RHS* rule){
+
+	ruleHead* temp = (ruleHead *)malloc(sizeof(ruleHead));
+	temp->listHead = rule;
+	temp->next = head;
+	return temp;
+}
 g_RHS* insertIntoRule(g_RHS* head, g_Term s, bool isTerm){
 	//we insert the symbols to get the RHS for the rules
 
@@ -60,7 +69,7 @@ void printRule(g_RHS* head){ // Print 1 single rule
 	g_RHS* temp = head;
 	while(temp!=NULL)
 	{
-		// printf("%d ", temp->symbol);
+		// printf("A%d ", temp->symbol); // For number printing
         if(temp->isTerminal)
             printToken(temp->symbol);
         else
@@ -71,25 +80,19 @@ void printRule(g_RHS* head){ // Print 1 single rule
 
 }
 
-ruleHead* insertRuleList(ruleHead* head, g_RHS* rule){
-
-	ruleHead* temp = (ruleHead *)malloc(sizeof(ruleHead));
-	temp->listHead = rule;
-	temp->next = head;
-	return temp;
-}
-
-void printRules(ruleHead* head){ // Print All Rules for a NT
+void printRules(Grammar G, int i, bool needArrow){ // Print All Rules for a NT
 	
-	ruleHead* temp = head;
-    int i = 1;
+	ruleHead* temp = G[i];
 	while(temp!=NULL)
 	{
-        // printf("    Printing rule %d\n",i);
-        printf("    -> ");
+        printNonTerminal(i);
+        // printf("A%d ", i); // For number printing
+        if(needArrow){
+            printf(" -> ");
+        }
 		printRule(temp->listHead);
 		temp = temp->next;
-        i++;
+
 	}
 
 }
@@ -97,10 +100,8 @@ void printRules(ruleHead* head){ // Print All Rules for a NT
 void printGrammar(Grammar G, int len){
 
     for(int i=0;i<len;i++){
-        // printf("Printing Non-Terminal %d: ",i); 
-		printNonTerminal(i);
 		printf("\n");
-		printRules(G[i]);
+		printRules(G, i, true);
     }
 
 }
@@ -345,11 +346,10 @@ void printNonTerminal(int token) {
 	}
 }
 
-FILE* fptr; 
 Grammar G;
 
 void initGrammar(){
-	    G[0] = NULL;
+	G[0] = NULL;
     g_RHS* Rule141765 = NULL;
     Rule141765 = insertIntoRule(Rule141765,1, false);
     Rule141765 = insertIntoRule(Rule141765,2, false);
@@ -914,7 +914,11 @@ int main(){
 	initGrammar();
 
 
-    printGrammar(G, 50);
+    printGrammar(G, 200);
+
+    // printRules(G, 39, true);
+    
+
     // populateFirst("firstSet.txt");
     // for(int i = 0; i<NON_TERMINALS + TERMINALS + 1; i++){
     //     for(int j =0; j<TERMINALS + 1; j++){
