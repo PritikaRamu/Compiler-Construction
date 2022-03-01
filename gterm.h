@@ -1,4 +1,3 @@
-// #include "lexer.h"
 typedef enum {
 	program, mainFunction, otherFunctions, function, input_par, output_par,
 	parameter_list, dataType, primitiveDatatype, constructedDatatype,
