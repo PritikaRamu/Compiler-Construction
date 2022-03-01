@@ -23,7 +23,7 @@ bool exists(struct table *list, char* key)
 	return false;
 }
 
-void insertID(char* key, gterm value)
+void insertID(char* key, g_Term value)
 {	
 	int index = hashcode(key);  
  	struct table *list = (struct table*) symbolTable[index].head;
@@ -53,7 +53,7 @@ void insertID(char* key, gterm value)
 	}
 }
 
-gterm getToken(char* key){
+g_Term getToken(char* key){
 	int index = hashcode(key);
 	struct table *list = symbolTable[index].head;
 	while(list){
