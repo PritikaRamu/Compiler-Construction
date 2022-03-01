@@ -30,10 +30,10 @@ FILE *startLexer(char *inputFile)
 		return NULL;
 	}
 
-	else
-	{
-		printf("\n Successfully opened the code file\n");
-	}
+	// else
+	// {
+	// 	printf("\n Successfully opened the code file\n");
+	// }
 
 	int size1 = fread(buffers.buff1, sizeof(char), BUFFER_SIZE, fp);
 	buffers.buff1[size1] = EOF;
@@ -836,7 +836,7 @@ tokenInfo getNextToken()
 			else
 			{
 				state = -1;
-				err = 7;
+				err = 8;
 			}
 			break;
 		}
@@ -896,7 +896,7 @@ tokenInfo getNextToken()
 			else
 			{
 				state = -1;
-				err = 7;
+				err = 12;
 			}
 			break;
 		}
@@ -920,7 +920,7 @@ tokenInfo getNextToken()
 			else
 			{
 				state = -1;
-				err = 7;
+				err = 13;
 			}
 			break;
 		}
@@ -1089,105 +1089,132 @@ tokenInfo getNextToken()
 		}
 	}
 
+	//printf("Line no. %d : Error: Custom message <%s>");
+
 	if (err != -1)
 	{
-		fprintf(stdout, "\nLine:%d: LEXICAL_ERROR", line);
+		//fprintf(stdout, "\nLine:%d: LEXICAL_ERROR", line);
+		
 		lexeme = getLexeme();
-		fprintf(stdout, " in lexeme: %s\n", lexeme);
-		free(lexeme);
-		fprintf(stdout, "\tLexer state: %d\n", err);
+		//fprintf(stdout, " in lexeme: %s\n", lexeme);
+		//free(lexeme);
+		//fprintf(stdout, "\tLexer state: %d\n", err);
+		if(err!=0)
+		{
+			lexeme[strlen(lexeme)-1] = '\0';
+			//lexeme[strlen(lexeme)-2] = '\0';
+		}
+
 		switch (err)
 		{
-		case 0:
-			fprintf(stdout, "\tUnrecognised character: %c\n", c);
-			break;
+	    case 0:
+		 	printf("Line no. %d : Error: Unknown Symbol <%s>\n", line, lexeme);
+		// 	//fprintf(stdout, "\tUnrecognised character: %c\n", c);
+		 	break;
+	    
 		case 36:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected '&'\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected '&'\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected '&'\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected '&'\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 37:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected '&'\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected '&'\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected '&'\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected '&'\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 39:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected '@'\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected '@'\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected '@'\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected '@'\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 40:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected '@'\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected '@'\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected '@'\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected '@'\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 19:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected '='\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected '='\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected '='\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected '='\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 2:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected '-'\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected '-'\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected '-'\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected '-'\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 3:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected '-'\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected '-'\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected '-'\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected '-'\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 26:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected lower case alphabet [a-z]\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected lower case alphabet [a-z]\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected lower case alphabet [a-z]\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected lower case alphabet [a-z]\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 22:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected lower case alphabet [a-z]\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected lower case alphabet [a-z]\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected lower case alphabet [a-z]\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected lower case alphabet [a-z]\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 7:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected digit [0-9]\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected digit [0-9]\n", c);
+		case 8:
+		case 12:
+		case 13:
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected digit [0-9]\n");
+			// else
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected digit [0-9]\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 33:
-			fprintf(stdout, "\tVariable identifier length exceeds the limit of 20 characters\n");
+			printf("Line no. %d : Variable identifier is longer than the prescribed length of 20 characters\n");
 			retract(1);
 			break;
 		case 11:
-			if (c == EOF)
-				fprintf(stdout, "\tUnexpected character: EOF, expected digit [0-9] or '+' or '-'\n");
-			else
-				fprintf(stdout, "\tUnexpected character: '%c', expected digit [0-9] or '+' or '-'\n", c);
+			// if (c == EOF)
+			// 	fprintf(stdout, "\tUnexpected character: EOF, expected digit [0-9] or '+' or '-'\n");
+			// elseprintf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
+			// 	fprintf(stdout, "\tUnexpected character: '%c', expected digit [0-9] or '+' or '-'\n", c);
+			printf("Line no. %d : Error: Unknown pattern <%s>\n", line, lexeme);
 			retract(1);
 			break;
 		case 23:
-			fprintf(stdout, "\tFunction identifier length exceeds the limit of 30 characters\n");
+			//fprintf(stdout, "\tFunction identifier length exceeds the limit of 30 characters\n");
+			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n");
 			retract(1);
 			break;
 		case 25:
-			fprintf(stdout, "\tVariable identifier length exceeds the limit of 20 characters\n");
+			//fprintf(stdout, "\tVariable identifier length exceeds the limit of 20 characters\n");
+			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n");
 			retract(1);
 			break;
 		}
@@ -1232,9 +1259,12 @@ int main()
 		tokenInfo pleasework = getNextToken();
 		if (pleasework.tid == SENTINEL)
 			break;
-		printf("lexeme is %s and line no. is %d\t", pleasework.lexeme, pleasework.lineNo);
+		if(pleasework.tid!=LEX_ERROR && pleasework.tid!=TK_COMMENT)
+		{
+		printf("Line no. %d\t\tLexeme %s\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
 		printToken(pleasework.tid);
 		printf("\n");
+		}
 	}
 	// 	/*
 	// 	printf("\nFirst call to getStream function\n");
