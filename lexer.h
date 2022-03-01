@@ -25,7 +25,7 @@
 
 
 typedef struct token {
-	gterm tid; 
+	g_Term tid; 
 	char* lexeme;
 	void* numVal; //Int, Float values for numbers
 	int lineNo;
@@ -38,7 +38,7 @@ typedef struct twin {
 
 FILE* getStream(FILE* fp);
 
-tokenInfo getNextToken(twinBuffer B);
+tokenInfo getNextToken();
 
 void removeComments(char* testcaseFile, char* cleanFile);
 

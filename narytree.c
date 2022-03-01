@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "narytree.h"
 
-parseTree initTree(gterm symbol) {
+parseTree initTree(g_Term symbol) {
     // TreeNode* node = (TreeNode*)malloc(sizeof(TreeNode));
     // node->symbol = symbol;
     // node->isTerminal = isTerm(symbol);
