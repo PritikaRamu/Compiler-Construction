@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include "newRules.h"
 
+Grammar G;
+
 void populateFirst(char* textfile){
     FILE* fp = fopen(textfile,"r");
 
@@ -33,18 +35,38 @@ void populateFirst(char* textfile){
         linecount++;
     }
     //printf("\n");
+
+    printf("Population of First Set Successful\n");
     fclose(fp);
 }
 
-
+void printFirst(){
+    for(int i = 0; i < NON_TERMINALS + TERMINALS + 1; i++){
+        printf("First Set of Symbol %d is = {", i);
+        for(int j =0; j<TERMINALS + 1; j++){
+            if(First[i][j]){
+                // printf("%d\t",j+51);
+                
+                printToken(j+51);
+                printf(",");
+               
+            }
+            
+        }
+        printf("}\n");
+        // printf("\n");
+    }
+}
 
 ruleHead* insertRuleList(ruleHead* head, g_RHS* rule){
+
 
 	ruleHead* temp = (ruleHead *)malloc(sizeof(ruleHead));
 	temp->listHead = rule;
 	temp->next = head;
 	return temp;
 }
+
 g_RHS* insertIntoRule(g_RHS* head, g_Term s, bool isTerm){
 	//we insert the symbols to get the RHS for the rules
 
@@ -100,7 +122,7 @@ void printRules(Grammar G, int i, bool needArrow){ // Print All Rules for a NT
 void printGrammar(Grammar G, int len){
 
     for(int i=0;i<len;i++){
-		printf("\n");
+		// printf("\n");
 		printRules(G, i, true);
     }
 
@@ -345,8 +367,6 @@ void printNonTerminal(int token) {
 		
 	}
 }
-
-Grammar G;
 
 void initGrammar(){
 	G[0] = NULL;
@@ -908,26 +928,14 @@ void initGrammar(){
 
 int main(){
    
-    
-
-	// Insert into grammar in reverse order
+    // Insert all Grammar Rules
 	initGrammar();
 
 
-    printGrammar(G, 200);
+    // printGrammar(G, 200);
+  
+    populateFirst("First.txt");
 
-    // printRules(G, 39, true);
     
-
-    // populateFirst("firstSet.txt");
-    // for(int i = 0; i<NON_TERMINALS + TERMINALS + 1; i++){
-    //     for(int j =0; j<TERMINALS + 1; j++){
-    //         if(First[i][j]){
-    //             printf("%d\t",j+51);
-    //         }
-            
-    //     }
-    //     printf("\n");
-    // }
    
 }
