@@ -26,7 +26,7 @@ g_Node* insertNode(g_Node* head, int i){
 }
 
 bool isTerm(g_Term symbol) {
-	if(symbol >= program && symbol <= eps) {
+	if((symbol >= program && symbol <= eps)||symbol == definetypestmt || symbol == A) {
 		return false;
 	}
 	else {
@@ -37,12 +37,9 @@ bool isTerm(g_Term symbol) {
 /*
 int main(){
 	gterm trial = 68;
-
 	Grammar G;
 	G[0].symbol = 54;
 	G[0].head = insertNode(G[0].head, 68);
 	G[0].head = insertNode(G[0].head, 89);
-
 	printRule(G[0]);
 }*/
-
