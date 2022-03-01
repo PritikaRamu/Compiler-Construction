@@ -1,0 +1,110 @@
+<program> 
+    -> <otherFunctions> <mainFunction> 
+<mainFunction>
+    -> TK_MAIN <stmts> TK_END
+<otherFunctions>
+    -> <eps>
+    -> <function> <otherFunctions>
+<function>
+    -> TK_FUNID <input_par> <output_par> TK_SEM <stmts> TK_END
+<input_par>
+    -> TK_INPUT TK_PARAMETER TK_LIST TK_SQL <parameter_list> TK_SQR
+<output_par>
+    -> <eps>
+    -> TK_OUTPUT TK_PARAMETER TK_LIST TK_SQL <parameter_list> TK_SQR
+<parameter_list>
+    -> <dataType> TK_ID <remaining_list>
+<dataType>
+    -> <constructedDatatype>
+    -> <primitiveDatatype>
+<primitiveDatatype>
+    -> TK_REAL
+    -> TK_INT
+<constructedDatatype>
+    -> TK_RUID
+    -> TK_UNION TK_RUID
+    -> TK_RECORD TK_RUID
+<remaining_list>
+    -> <eps>
+    -> TK_COMMA <parameter_list>
+<stmts>
+    -> <typeDefinitions> <declarations> <otherStmts> <returnStmt>
+<typeDefinitions>
+    -> <eps>
+    -> <actualOrRedefined> <typeDefinitions>
+<typeDefinition>
+    -> TK_UNION TK_RUID<fieldDefinitions> TK_ENDUNION
+    -> TK_RECORD TK_RUID<fieldDefinitions> TK_ENDRECORD
+<fieldDefinitions>
+    -> <fieldDefinition> <fieldDefinition> <moreFields>
+<fieldDefinition>
+    -> TK_TYPE <fieldtype> TK_COLON TK_FIELDID TK_SEM
+<moreFields>
+    -> <eps>
+    -> <fieldDefinition> <moreFields>
+<declarations>
+    -> <eps>
+    -> <declaration> <declarations>
+<declaration>
+    -> TK_TYPE <dataType> TK_COLON TK_ID <global_or_not> TK_SEM
+<global_or_not>
+    -> <eps>
+    -> TK_COLON TK_GLOBAL
+<otherStmts>
+    -> <eps>
+    -> <stmt> <otherStmts>
+<stmt>
+    -> <funCallStmt>
+    -> <ioStmt>
+    -> <conditionalStmt>
+    -> <iterativeStmt>
+    -> <assignmentStmt>
+<assignmentStmt>
+    -> <singleOrRecId> TK_ASSIGNOP <arithmeticExpression> TK_SEM
+<singleOrRecId>
+    -> TK_ID <option_single_constructed>
+<actualOrRedefined>
+    -> <definetypestmt>
+    -> <typeDefinition>
+<funCallStmt>
+    -> <outputParameters> TK_CALL TK_FUNID TK_WITH TK_PARAMETERS <inputParameters> TK_SEM
+<outputParameters>
+    -> <eps>
+    -> TK_SQL <idList> TK_SQR TK_ASSIGNOP
+<inputParameters>
+    -> TK_SQL <idList> TK_SQR
+<iterativeStmt>
+    -> TK_WHILE TK_OP <booleanExpression> TK_CL <stmt> <otherStmts> TK_ENDWHILE
+<conditionalStmt>
+    -> TK_IF TK_OP <booleanExpression> TK_CL TK_THEN <stmt> <otherStmts> <elsePart>
+<elsePart>
+    -> TK_ENDIF
+    -> TK_ELSE <stmt> <otherStmts> TK_ENDIF
+<ioStmt>
+    -> TK_WRITE TK_OP <var> TK_CL TK_SEM
+    -> TK_READ TK_OP <var> TK_CL TK_SEM
+<fieldtype>
+    -> TK_RUID
+    -> <primitiveDatatype>
+<option_single_constructed>
+    -> <oneExpansion> <moreExpansions>
+<arithmeticExpression>
+    -> <term> <expPrime>
+<expPrime>
+    -> <eps>
+    -> <lowPrecedenceOperators> <term> <expPrime>
+<term>
+    -> <factor> <termPrime>
+<termPrime>
+    -> <eps>
+    -> <highPrecedenceOperators> <factor> <termPrime>
+<factor>
+    -> <var>
+    -> TK_LT
+<returnStmt>
+    -> TK_RETURN <optionalReturn> TK_SEM
+<optionalReturn>
+    -> <eps>
+    -> TK_SQL <idList> TK_SQR
+<idList>
+    -> TK_ID <more_ids>
