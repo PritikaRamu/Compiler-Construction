@@ -6,12 +6,12 @@
 //will compute first set for alpha in production A->alpha
 //will return a boolean array 
 
-
-void computeParseTable(){
+void segFaultsSuck(){
 	for(int i = 0; i < NON_TERMINALS; i++) // Goes over all NTs
-	{
+	{	
+		printf("%d\t",i);
 		ruleHead* iterator = G[i];
-		while(!iterator){ // Goes Over Alternate Prodcutions of an NT
+		while(iterator!=NULL){ // Goes Over Alternate Prodcutions of an NT
 			fillParseTable(iterator->listHead, i);
 			iterator = iterator->next;
 		}
@@ -40,9 +40,20 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 	
 }
 
-// void printParseTableRow(){
-	
-// }
+void printParseTableRow(g_Term NT){
+	//printNonTerminal(NT);
+	printf("The Parse Table entries are: ");
+	for(int i=0;i<TERMINALS;i++){
+		if(parseTable[NT][i]){
+			printf("[ Terminal: ");
+			printToken(i+51);
+			printf(", Rule: ");
+			printRule(parseTable[NT][i]);
+			printf("], ");
+		}
+	}
+
+}
 
 // Works
 bool checkEpsiloninRHSFirst(g_Term NT){
@@ -117,25 +128,33 @@ int main(){
 	populateFirstFollow("First.txt",true);
     populateFirstFollow("Follow.txt",false);
 
-	int i = 25;
-	ruleHead* list = G[i];
-	while(list!=NULL){
+	// int i = 25;
+	// ruleHead* list = G[i];
+	// while(list!=NULL){
 
-		// if(checkEpsiloninRHSFirst(list->listHead->symbol)){
-		// 	printf("This rule contains epsilon\n");
-		// }
+	// 	// if(checkEpsiloninRHSFirst(list->listHead->symbol)){
+	// 	// 	printf("This rule contains epsilon\n");
+	// 	// }
 
-		// else{
-		// 	printf("This rule does NOT contain epsilon\n");
+	// 	// else{
+	// 	// 	printf("This rule does NOT contain epsilon\n");
 			
-		// }
+	// 	// }
 
-		bool* first = computeFirst(list->listHead);
-		printf("The first of RHS is:\n");
-		printFirstArray(first, TERMINALS);
+	// 	bool* first = computeFirst(list->listHead);
+	// 	printf("The first of RHS is:\n");
+	// 	printFirstArray(first, TERMINALS);
 
 
-		// printRule(list->listHead);
-		list = list->next;
-	}
+	// 	// printRule(list->listHead);
+	// 	list = list->next;
+	// }
+
+	// computeParseTable();
+	segFaultsSuck();
+	printParseTableRow(mainFunction);
+
+
+
+
 }
