@@ -5,14 +5,14 @@
 
 //will compute first set for alpha in production A->alpha
 //will return a boolean array 
-Grammar G;
+
 
 void computeParseTable()
 {
 	for(int i = 0; i < NON_TERMINALS; i++) 
 	{
 		ruleHead* iterator = G[i];
-		while(!iterator){
+		while(!iterator){ // Goes Over Alternate Prodcutions
 			fillParseTable(iterator->listHead, i);
 			iterator = iterator->next;
 		}
@@ -23,7 +23,7 @@ void computeParseTable()
 void fillParseTable( g_RHS* rule, g_Term lhs)
 {
 	//Case 1
-	bool* first_array = computeFirst(rule);
+	bool* first_array = computeFirst(rule); // A->BCdE First[]
 	for(int i=0;i<TERMINALS;i++){
 		if(first_array[i]){
 			parseTable[lhs][i] = rule;
@@ -54,26 +54,40 @@ void fillParseTable( g_RHS* rule, g_Term lhs)
 
 bool* computeFirst(g_RHS* head){
 	
-	int size = sizeof(bool)*(TERMINALS + 1);
-    bool* first_array = (bool*)malloc(size);
+	g_RHS* iter = head; 
+	bool* first = (bool*)malloc(sizeof(bool)*TERMINALS);
+	memset(first,false,sizeof(bool)*TERMINALS);
 
-	memset(first_array, false, size);
-
-	g_RHS* iter = head;
-	while(iter!=NULL){
-		if(iter->isTerminal){
-			first_array[iter->symbol] = true;
-			return first_array;
-		}
-
-		else{
-			First[iter->symbol][eps] = false; // Epsilon Tricky Cases 
-			first_array = set_union(first_array, First[iter->symbol], TERMINALS+1);
-		}
-
-		iter = iter->next;
+	// Case 1 
+	if(head->isTerminal){
+		first[head->symbol-51] = true;
+		return first;
 	}
 
+	// Case 2
+	while(iter!=NULL){ // Iterating over the NTs of an RHS
+	// A->BCDF
+	// B-> eps | gHHJJ
+	// C->d
+		
+		first = set_union(first, First[head->symbol],TERMINALS);
+		first[0] = false;
+		
+		if(!checkEpsiloninFirst(head->symbol)){
+			return first;
+		}
+		iter = iter->next;
+
+	}
+
+	first[0] = true;
+	return first;
+
+}
+
+
+bool checkEpsiloninFirst(g_Term NT){
+	return First[NT][51];
 }
 
 bool* set_union(bool* A, bool*B, int len){
@@ -92,5 +106,10 @@ bool* set_union(bool* A, bool*B, int len){
 
 
 int main(){
+	
+	initGrammar(G);
+	populateFirstFollow("First.txt",true);
+    populateFirstFollow("Follow.txt",false);
+
 
 }

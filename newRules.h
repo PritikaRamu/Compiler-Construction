@@ -20,6 +20,7 @@ typedef struct ruleHead{
 }ruleHead;
 
 typedef ruleHead* Grammar[NON_TERMINALS];
+Grammar G;
 //
 
 // PARSE TABLE DATA STRUCTURES
@@ -40,8 +41,13 @@ void printRules(Grammar G, int i, bool needArrow);
 void printRule(g_RHS* head);
 void printToken(int token);
 void printNonTerminal(int token);
+void initGrammar();
 
 // PARSE TABLE Functions
+void populateFirstFollow(char* textfile, bool first);
+void printFirst();
+void printFollow();
+
 
 bool* set_union(bool* A, bool*B, int len);
 
