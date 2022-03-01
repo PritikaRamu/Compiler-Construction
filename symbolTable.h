@@ -35,7 +35,7 @@ int noEle = 0;
 
 typedef struct keyword {
 	char key[20];
-	gterm value;
+	g_Term value;
 }keyword;
 
 keyword keywords[] = {
@@ -69,15 +69,15 @@ keyword keywords[] = {
 };
 
 struct table {
-   gterm token;   
+   g_Term token;   
    char* key;
    struct table* next;
 } tableEntry;
 
 int hash(char* key);
 
-gterm getToken(char* key);
+g_Term getToken(char* key);
 
-void insertID(char* key, gterm token);
+void insertID(char* key, g_Term token);
 
 void initTable();
