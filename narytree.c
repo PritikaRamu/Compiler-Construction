@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include "narytree.h"
 
-parseTree initTree(g_Term symbol) {
+parseTree initTree(g_Term symbol, int lineNo) {
     // TreeNode* node = (TreeNode*)malloc(sizeof(TreeNode));
     // node->symbol = symbol;
     // node->isTerminal = isTerm(symbol);
     parseTree ptree = (parseTree)malloc(sizeof(struct tree));
     ptree->symbol = symbol;
     ptree->isTerminal = isTerm(symbol);
+    ptree->lineNo = lineNo;
     ptree->firstChild = NULL;
     ptree->nextSibling = NULL;
     ptree->parent = NULL;
@@ -46,7 +47,7 @@ void addChildren(g_cell* lhs, parseTree ptree){
 }
 
 int main() {
-    parseTree ptree = initTree(program);
+    parseTree ptree = initTree(program, 1);
     g_cell* LHS = (g_cell*)malloc(sizeof(g_cell));
     LHS->symbol = program;
     g_Node* rhs1 = (g_Node*)malloc(sizeof(g_Node));

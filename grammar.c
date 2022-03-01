@@ -25,7 +25,7 @@ g_Node* insertNode(g_Node* head, int i){
 	return temp;
 }
 
-bool isTerm(gterm symbol) {
+bool isTerm(g_Term symbol) {
 	if(symbol >= program && symbol <= eps) {
 		return false;
 	}

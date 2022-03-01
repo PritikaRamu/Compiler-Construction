@@ -11,8 +11,9 @@
 
 struct tree {
     //TreeNode* data;
-    gterm symbol;
+    g_Term symbol;
     bool isTerminal;
+    int lineNo;
     struct tree* firstChild;
     struct tree* nextSibling;
     struct tree* parent;
