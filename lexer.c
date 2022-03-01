@@ -701,7 +701,7 @@ tokenInfo getNextToken()
 						{
 							t.tid = token;
 						}
-					
+					// t.tid = TK_FUNID;
 					reset();
 					return t;
 				}
@@ -740,7 +740,7 @@ tokenInfo getNextToken()
 						{
 							t.tid = token;
 						}
-					
+					// t.tid = TK_FUNID;
 					reset();
 					return t;
 				}
@@ -952,6 +952,7 @@ tokenInfo getNextToken()
 					{
 						t.tid = token;
 					}
+				// t.tid = TK_FIELDID;
 				reset();
 				return t;
 			}
@@ -980,6 +981,7 @@ tokenInfo getNextToken()
 					{
 						t.tid = token;
 					}
+				// t.tid = TK_FIELDID;
 				reset();
 				return t;
 			}
@@ -1069,7 +1071,7 @@ tokenInfo getNextToken()
 						{
 							t.tid = token;
 						}
-						
+					// t.tid = TK_ID;	
 					t.lineNo = line;
 					reset();
 					return t;
@@ -1199,7 +1201,7 @@ int main()
 {
 
 
-	fp = startLexer("testcase.txt");
+	fp = startLexer("t1.txt");
 	initTable();
 	/*
 	printf("\nSIZE OF TWIN BUFFER %lu %lu %lu \n",sizeof(buffers), sizeof(buffers.buff1), sizeof(buffers.buff2));
