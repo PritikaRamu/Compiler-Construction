@@ -56,14 +56,14 @@ parseTree addChildren(g_Term nonterm, g_Term term, Stack* stack, parseTree ptree
 parseTree parseInputSourceCode(char* testcaseFile, table T) {
 
 
-    FILE* fp = startLexer(testcaseFile);
+    fp = startLexer(testcaseFile);
 
     //init stack, push $, push start symbol
     Stack* stack = initStack();
     push(stack, $);
     push(stack,program);
     
-    parseTree ptree = initTree(program);
+    parseTree ptree = initTree(program, 1);
 
     parseTree curr = ptree;
 
@@ -84,6 +84,7 @@ parseTree parseInputSourceCode(char* testcaseFile, table T) {
             if(topStack==eps){
                 topStack = top(stack);
                 pop(stack);
+                curr->lineNo = look.lineNo;
                 if(curr->nextSibling){
                     curr= curr->nextSibling;
                 }
@@ -113,7 +114,7 @@ parseTree parseInputSourceCode(char* testcaseFile, table T) {
                     topStack = top(stack);
                     pop(stack);
                     //if topStack is $ then it is an error, will be handled later in code
-                    
+                    curr->lineNo = look.lineNo;
                     
                     //update curr to sibling if it has one else to nearest uncle
                     if(curr->nextSibling){
@@ -149,6 +150,7 @@ parseTree parseInputSourceCode(char* testcaseFile, table T) {
             else {
                 topStack = top(stack);
                 pop(stack);
+                curr->lineNo = look.lineNo;
 
                 if(curr->nextSibling) {
                     curr = curr->nextSibling;
@@ -213,14 +215,22 @@ parseTree parseInputSourceCode(char* testcaseFile, table T) {
             curr = addChildren(topStack, look.tid, stack, curr);
         }
     }
-
-
-
-
-    
     return NULL;
 }
 
+void inorderNary(parseTree curr, int* numNodes) {
+    if(!curr) return;
+
+    parseTree temp = (parseTree)malloc(sizeof(struct tree));
+    
+    if(curr->firstChild) {
+        inorderNary(curr->firstChild, numNodes);
+        *numNodes = *numNodes + 1;
+    }
+    else {
+        *numNodes = *numNodes + 1;
+    }
+}
 
 void ComputeFirstAndFollowSets (Grammar G){
 
