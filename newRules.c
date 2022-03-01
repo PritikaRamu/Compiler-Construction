@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include "newRules.h"
 
-Grammar G;
 
 void populateFirstFollow(char* textfile, bool first){
     FILE* fp = fopen(textfile,"r");
@@ -30,7 +29,12 @@ void populateFirstFollow(char* textfile, bool first){
         tok = strtok(NULL," ");
         while(tok){
             //printf("%d ",atoi(tok)-51);
-            First[row][atoi(tok)-51]=true;
+            if(first){
+                First[row][atoi(tok)-51]=true;
+            }
+            else{
+                Follow[row][atoi(tok)-51]=true;
+            }
             tok = strtok(NULL," ");
         }
         sizeRead = getline(&line, &len, fp);
@@ -51,6 +55,24 @@ void printFirst(){
         printf("First Set of Symbol %d is = {", i);
         for(int j =0; j<TERMINALS; j++){
             if(First[i][j]){
+                // printf("%d\t",j+51);
+                
+                printToken(j+51);
+                printf(",");
+               
+            }
+            
+        }
+        printf("}\n");
+        // printf("\n");
+    }
+}
+
+void printFollow(){
+    for(int i = 0; i < NON_TERMINALS + TERMINALS; i++){
+        printf("Follow Set of Symbol %d is = {", i);
+        for(int j =0; j<TERMINALS; j++){
+            if(Follow[i][j]){
                 // printf("%d\t",j+51);
                 
                 printToken(j+51);
@@ -245,6 +267,8 @@ void printToken(int token) {
 		case 103: printf("TK_GE ");
 				break;
 		case 104: printf("TK_NE ");
+				break;
+        case 105: printf("SENTINEL ");
 				break;
 		case 107: printf("TK_RUID");
 				break;
@@ -939,16 +963,17 @@ int main(){
 	initGrammar();
 
 
-    // printGrammar(G, 200);
+    printGrammar(G, 200);
   
     //populateFirstFollow("First.txt",true);
     //printFirst();
 
-    populateFirstFollow("Follow.txt",false);
-    //printFollow();
+    // populateFirstFollow("Follow.txt",false);
+    // printFollow();
+
     // for(int i = 0; i < NON_TERMINALS; i++){
     //     for(int j =0; j<TERMINALS; j++){
-    //         if(First[i][j]){
+    //         if(Follow[i][j]){
     //             printf("%d\t",j+51);
     //         }
     //     }
