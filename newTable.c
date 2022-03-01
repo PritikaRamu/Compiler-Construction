@@ -7,12 +7,11 @@
 //will return a boolean array 
 
 
-void computeParseTable()
-{
-	for(int i = 0; i < NON_TERMINALS; i++) 
+void computeParseTable(){
+	for(int i = 0; i < NON_TERMINALS; i++) // Goes over all NTs
 	{
 		ruleHead* iterator = G[i];
-		while(!iterator){ // Goes Over Alternate Prodcutions
+		while(!iterator){ // Goes Over Alternate Prodcutions of an NT
 			fillParseTable(iterator->listHead, i);
 			iterator = iterator->next;
 		}
@@ -20,74 +19,34 @@ void computeParseTable()
 
 }
 
-void fillParseTable( g_RHS* rule, g_Term lhs)
-{
+void fillParseTable( g_RHS* rule, g_Term lhs){
 	//Case 1
 	bool* first_array = computeFirst(rule); // A->BCdE First[]
+
 	for(int i=0;i<TERMINALS;i++){
-		if(first_array[i]){
+		if(first_array[i]==true){
 			parseTable[lhs][i] = rule;
 		}
 	}
 
 	// Case 2 
-	if(first_array[eps]){
-		for(int i=0;i<TERMINALS;i++){
-			if(Follow[lhs][i]){
-				parseTable[lhs][i] = rule;
+	if(first_array[eps]==true){
+		for(int b=0;b<TERMINALS;b++){
+			if(Follow[lhs][b] == true){
+				parseTable[lhs][b] = rule;
 			}
 		}
 	}
 	
-	//Case 3
-
-	// Manage Dollar Case
-
-	// if(first_array[eps]){ 
-	// 	if(Follow[lhs]["dollar"]){
-	// 			parseTable[lhs]["dollar"] = rule;
-			
-	// 	}
-	// }
-	
 }
 
-bool* computeFirst(g_RHS* head){
+// void printParseTableRow(){
 	
-	g_RHS* iter = head; 
-	bool* first = (bool*)malloc(sizeof(bool)*TERMINALS);
-	memset(first,false,sizeof(bool)*TERMINALS);
+// }
 
-	// Case 1 
-	if(head->isTerminal){
-		first[head->symbol-51] = true;
-		return first;
-	}
-
-	// Case 2
-	while(iter!=NULL){ // Iterating over the NTs of an RHS
-	// A->BCDF
-	// B-> eps | gHHJJ
-	// C->d
-		
-		first = set_union(first, First[head->symbol],TERMINALS);
-		first[0] = false;
-		
-		if(!checkEpsiloninFirst(head->symbol)){
-			return first;
-		}
-		iter = iter->next;
-
-	}
-
-	first[0] = true;
-	return first;
-
-}
-
-
-bool checkEpsiloninFirst(g_Term NT){
-	return First[NT][51];
+// Works
+bool checkEpsiloninRHSFirst(g_Term NT){
+	return First[NT][eps-51];
 }
 
 bool* set_union(bool* A, bool*B, int len){
@@ -104,6 +63,53 @@ bool* set_union(bool* A, bool*B, int len){
     return union_array;
 }
 
+// Works
+bool* computeFirst(g_RHS* head){
+	
+	g_RHS* iter = head; 
+	bool* first = (bool*)malloc(sizeof(bool)*TERMINALS);
+	memset(first,false,sizeof(bool)*TERMINALS);
+
+	// Case 1 
+	if(head->isTerminal){
+		first[head->symbol-51] = true;
+		return first;
+	}
+
+	// Case 2
+	while(iter!=NULL){ // Iterating over the NTs of an RHS
+	// A->BCDF
+	// B-> eps | gHHJJ
+	// C-> d
+		
+		first = set_union(first, First[iter->symbol],TERMINALS);
+		first[0] = false;
+		
+		if(!checkEpsiloninRHSFirst(iter->symbol)){
+			return first;
+		}
+		iter = iter->next;
+
+	}
+
+	first[0] = true;
+	return first;
+
+}
+
+// Works
+void printFirstArray(bool* array, int n){
+	for(int i=0; i<n; i++){
+		if(array[i]==true)
+			//printf("%d\t",i);
+			printToken(i+eps);
+	}
+
+	printf("\n");
+}
+
+
+
 
 int main(){
 	
@@ -111,5 +117,25 @@ int main(){
 	populateFirstFollow("First.txt",true);
     populateFirstFollow("Follow.txt",false);
 
+	int i = 25;
+	ruleHead* list = G[i];
+	while(list!=NULL){
 
+		// if(checkEpsiloninRHSFirst(list->listHead->symbol)){
+		// 	printf("This rule contains epsilon\n");
+		// }
+
+		// else{
+		// 	printf("This rule does NOT contain epsilon\n");
+			
+		// }
+
+		bool* first = computeFirst(list->listHead);
+		printf("The first of RHS is:\n");
+		printFirstArray(first, TERMINALS);
+
+
+		// printRule(list->listHead);
+		list = list->next;
+	}
 }

@@ -27,8 +27,8 @@ Grammar G;
 
 g_RHS* parseTable[NON_TERMINALS][TERMINALS];
 
-bool First[NON_TERMINALS + TERMINALS][TERMINALS] = {false};
-bool Follow[NON_TERMINALS][TERMINALS] = {false};
+bool First[NON_TERMINALS + TERMINALS][TERMINALS];
+bool Follow[NON_TERMINALS][TERMINALS];
 
 //
 
@@ -44,11 +44,15 @@ void printNonTerminal(int token);
 void initGrammar();
 
 // PARSE TABLE Functions
-void populateFirstFollow(char* textfile, bool first);
+void populateFirstFollow(char* textfile, bool first); // Works
 void printFirst();
 void printFollow();
 
 
-bool* set_union(bool* A, bool*B, int len);
+bool* set_union(bool* A, bool*B, int len); // Works
 
-//bool* computeFirst(g_RHS* head, g_Term lhs);
+bool* computeFirst(g_RHS* head); // Works
+bool checkEpsiloninFirst(g_Term NT); // Works
+
+void computeParseTable();
+void fillParseTable( g_RHS* rule, g_Term lhs);

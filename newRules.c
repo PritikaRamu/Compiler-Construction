@@ -41,12 +41,12 @@ void populateFirstFollow(char* textfile, bool first){
         //linecount++;
     }
     //printf("\n");
-    if(first){
-        printf("Population of First Set Successful\n");
-    }
-    else{
-        printf("Population of Follow Set Successful\n");
-    }
+    // if(first){
+    //     printf("Population of First Set Successful\n");
+    // }
+    // else{
+    //     printf("Population of Follow Set Successful\n");
+    // }
     fclose(fp);
 }
 
@@ -957,26 +957,26 @@ void initGrammar(){
     G[112] = insertRuleList(G[112], Rule236082);
 }
 
-int main(){
+// int main(){
    
-    // Insert all Grammar Rules
-	initGrammar();
+//     // Insert all Grammar Rules
+// 	initGrammar();
 
 
-    printGrammar(G, 200);
+//     printGrammar(G, 200);
   
-    //populateFirstFollow("First.txt",true);
-    //printFirst();
+//     //populateFirstFollow("First.txt",true);
+//     //printFirst();
 
-    // populateFirstFollow("Follow.txt",false);
-    // printFollow();
+//     // populateFirstFollow("Follow.txt",false);
+//     // printFollow();
 
-    // for(int i = 0; i < NON_TERMINALS; i++){
-    //     for(int j =0; j<TERMINALS; j++){
-    //         if(Follow[i][j]){
-    //             printf("%d\t",j+51);
-    //         }
-    //     }
-    //     printf("\n");
-    // }
-}
+//     // for(int i = 0; i < NON_TERMINALS; i++){
+//     //     for(int j =0; j<TERMINALS; j++){
+//     //         if(Follow[i][j]){
+//     //             printf("%d\t",j+51);
+//     //         }
+//     //     }
+//     //     printf("\n");
+//     // }
+// }
