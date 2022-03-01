@@ -5,7 +5,7 @@
 
 Grammar G;
 
-void populateFirst(char* textfile){
+void populateFirstFollow(char* textfile, bool first){
     FILE* fp = fopen(textfile,"r");
 
     if(fp == NULL) {
@@ -20,30 +20,36 @@ void populateFirst(char* textfile){
     sizeRead = getline(&line, &len, fp);
     //printf("%d\n", sizeRead);
     
-    int linecount = 1;
+    //int linecount = 1;
 
     while(sizeRead != -1) {
         char* tok = strtok(line," ");
         //printf("\nLine number %d\n",linecount);
         int row = atoi(tok);
+        //printf("\nLine number %d\n",row);
         tok = strtok(NULL," ");
         while(tok){
+            //printf("%d ",atoi(tok)-51);
             First[row][atoi(tok)-51]=true;
             tok = strtok(NULL," ");
         }
         sizeRead = getline(&line, &len, fp);
-        linecount++;
+        //linecount++;
     }
     //printf("\n");
-
-    printf("Population of First Set Successful\n");
+    if(first){
+        printf("Population of First Set Successful\n");
+    }
+    else{
+        printf("Population of Follow Set Successful\n");
+    }
     fclose(fp);
 }
 
 void printFirst(){
-    for(int i = 0; i < NON_TERMINALS + TERMINALS + 1; i++){
+    for(int i = 0; i < NON_TERMINALS + TERMINALS; i++){
         printf("First Set of Symbol %d is = {", i);
-        for(int j =0; j<TERMINALS + 1; j++){
+        for(int j =0; j<TERMINALS; j++){
             if(First[i][j]){
                 // printf("%d\t",j+51);
                 
@@ -57,6 +63,7 @@ void printFirst(){
         // printf("\n");
     }
 }
+
 
 ruleHead* insertRuleList(ruleHead* head, g_RHS* rule){
 
@@ -934,9 +941,17 @@ int main(){
 
     // printGrammar(G, 200);
   
-    populateFirst("First.txt");
-    printFirst();
+    //populateFirstFollow("First.txt",true);
+    //printFirst();
 
-    
-   
+    populateFirstFollow("Follow.txt",false);
+    //printFollow();
+    // for(int i = 0; i < NON_TERMINALS; i++){
+    //     for(int j =0; j<TERMINALS; j++){
+    //         if(First[i][j]){
+    //             printf("%d\t",j+51);
+    //         }
+    //     }
+    //     printf("\n");
+    // }
 }
