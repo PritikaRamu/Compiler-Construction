@@ -37,7 +37,7 @@ void insertID(char* key, g_Term value)
 		symbolTable[index].head = entry;
 		noEle++;
 	}
-    else{ //entries are presesnt for the given index
+    else{ //entries are present for the given index
 		if(!exists(list, key)){ 
 			struct table *entry = (struct table*) malloc(sizeof(struct table));
 			entry->key = key;
