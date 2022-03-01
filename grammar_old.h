@@ -3,7 +3,6 @@
 
 #define NON_TERMINALS 49
 #define TERMINALS 52
-
 #include <stdio.h>
 #include <stdbool.h>
 #include "gterm.h"
@@ -20,7 +19,7 @@ typedef struct cell{
 } g_cell;
 
 typedef g_cell Grammar[200];
-Grammar G;
+
 
 bool isTerm(g_Term symbol);
 

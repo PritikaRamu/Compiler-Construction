@@ -3,11 +3,11 @@
 #include <stdbool.h>
 #include "newRules.h"
 
-
 //will compute first set for alpha in production A->alpha
 //will return a boolean array 
+Grammar G;
 
-void computeParseTable(Grammar G, FirstAndFollow F)
+void computeParseTable()
 {
 	for(int i = 0; i < NON_TERMINALS; i++) 
 	{

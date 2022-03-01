@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "grammar.h"
-
+Grammar G;
 void printRule(g_cell lhs){
 	printToken(lhs.symbol);
 	printf("->");

@@ -45,4 +45,4 @@ void printNonTerminal(int token);
 
 bool* set_union(bool* A, bool*B, int len);
 
-bool* computeFirst(g_RHS* head, g_Term lhs);
+//bool* computeFirst(g_RHS* head, g_Term lhs);
