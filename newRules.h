@@ -1,4 +1,4 @@
-#define NON_TERMINALS 49
+#define NON_TERMINALS 53
 #define TERMINALS 52
 #define NUM_RULES 100
 #include "gterm.h"
@@ -22,10 +22,6 @@ typedef ruleHead* Grammar[NON_TERMINALS];
 //
 
 // PARSE TABLE DATA STRUCTURES
-typedef struct firstAndFollowSet{
-	int** first; 
-	int** follow;
-} FirstAndFollow;
 
 g_RHS* parseTable[NON_TERMINALS][TERMINALS];
 

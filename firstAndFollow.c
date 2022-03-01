@@ -185,11 +185,11 @@ void printToken(int token) {
 				break;
 		case 107: printf("TK_RUID");
 				break;
-		case 120: printf("TK_UNION ");
+		case 108: printf("TK_UNION ");
 				break;
-		case 121: printf("TK_ENDUNION");
+		case 109: printf("TK_ENDUNION");
 				break;
-		case 122: printf("TK_DEFINETYPE");
+		case 110: printf("TK_DEFINETYPE");
 				break;
 		default: printf("<No Symbol found>");
 				break;
@@ -301,9 +301,9 @@ void printNonTerminal(int token) {
 				break;
 		case 50: printf("<more_ids> ");
 				break;
-		case 108: printf("<definetypestmt> ");
+		case 111: printf("<definetypestmt> ");
 				break;
-		case 109: printf("<A> ");
+		case 112: printf("<A> ");
 				break;
 
 		default: printf("<No Symbol found>");
@@ -406,7 +406,7 @@ void initGrammar(){
 
     g_RHS* Rule898819 = NULL;
     Rule898819 = insertIntoRule(Rule898819,107, true);
-    Rule898819 = insertIntoRule(Rule898819,120, true);
+    Rule898819 = insertIntoRule(Rule898819,108, true);
     G[9] = insertRuleList(G[9], Rule898819);
 
     g_RHS* Rule556652 = NULL;
@@ -447,7 +447,7 @@ void initGrammar(){
     G[24] = insertRuleList(G[24], Rule630284);
 
     g_RHS* Rule916641 = NULL;
-    Rule916641 = insertIntoRule(Rule916641,108, false);
+    Rule916641 = insertIntoRule(Rule916641,111, false);
     G[24] = insertRuleList(G[24], Rule916641);
 
     G[13] = NULL;
@@ -459,10 +459,10 @@ void initGrammar(){
     G[13] = insertRuleList(G[13], Rule958605);
 
     g_RHS* Rule248097 = NULL;
-    Rule248097 = insertIntoRule(Rule248097,121, true);
+    Rule248097 = insertIntoRule(Rule248097,109, true);
     Rule248097 = insertIntoRule(Rule248097,14, false);
     Rule248097 = insertIntoRule(Rule248097,107, true);
-    Rule248097 = insertIntoRule(Rule248097,120, true);
+    Rule248097 = insertIntoRule(Rule248097,108, true);
     G[13] = insertRuleList(G[13], Rule248097);
 
     G[14] = NULL;
@@ -853,24 +853,24 @@ void initGrammar(){
     Rule506593 = insertIntoRule(Rule506593,51, true);
     G[50] = insertRuleList(G[50], Rule506593);
 
-    G[108] = NULL;
+    G[111] = NULL;
     g_RHS* Rule288585 = NULL;
     Rule288585 = insertIntoRule(Rule288585,75, true);
     Rule288585 = insertIntoRule(Rule288585,107, true);
     Rule288585 = insertIntoRule(Rule288585,100, true);
     Rule288585 = insertIntoRule(Rule288585,107, true);
-    Rule288585 = insertIntoRule(Rule288585,109, false);
-    Rule288585 = insertIntoRule(Rule288585,122, true);
-    G[108] = insertRuleList(G[108], Rule288585);
+    Rule288585 = insertIntoRule(Rule288585,112, false);
+    Rule288585 = insertIntoRule(Rule288585,110, true);
+    G[111] = insertRuleList(G[111], Rule288585);
 
-    G[109] = NULL;
+    G[112] = NULL;
     g_RHS* Rule204291 = NULL;
     Rule204291 = insertIntoRule(Rule204291,92, true);
-    G[109] = insertRuleList(G[109], Rule204291);
+    G[112] = insertRuleList(G[112], Rule204291);
 
     g_RHS* Rule236082 = NULL;
-    Rule236082 = insertIntoRule(Rule236082,120, true);
-    G[109] = insertRuleList(G[109], Rule236082);
+    Rule236082 = insertIntoRule(Rule236082,108, true);
+    G[112] = insertRuleList(G[112], Rule236082);
 }
 
 int main(){
