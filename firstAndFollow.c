@@ -935,6 +935,7 @@ int main(){
     // printGrammar(G, 200);
   
     populateFirst("First.txt");
+    printFirst();
 
     
    
