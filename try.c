@@ -154,14 +154,6 @@ FILE* getStream(FILE *fp) {
 }
 
 
-    if(!inp){
-        printf("Error opening testcaseFile\n");
-        return;
-    }
-    
-    char *line = NULL;
-    size_t len = 0;
-    size_t sizeRead;
 char getNextChar(FILE *fp) {
 	
 	if(!startedReading)
@@ -1224,6 +1216,7 @@ void printToken(int token) {
 				break;
 	}
 }
+
 
 
 

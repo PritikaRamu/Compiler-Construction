@@ -1,10 +1,21 @@
-#ifndef _LEXERDEF_
-#define _LEXERDEF_
-
 #include <stdio.h>
-#define BUFFER_SIZE (1 << 12)
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-typedef enum {
+#define SIZE 200 //max size of hash table array
+
+
+struct arrayitem 
+{
+	struct table *head;      
+} arrayItem;
+
+struct arrayitem symbolTable[SIZE];
+
+int noEle = 0;
+
+typedef enum grammar_term {
 	program, mainFunction, otherFunctions, function, input_par, output_par,
 	parameter_list, dataType, primitiveDatatype, constructedDatatype,
 	remaining_list, stmts, typeDefinitions, typeDefinition, fieldDefinitions,
@@ -22,27 +33,51 @@ typedef enum {
 	TK_EQ, TK_GT, TK_GE, TK_NE, SENTINEL, LEX_ERROR, TK_RUID, TK_UNION, TK_ENDUNION, TK_DEFINETYPE
 } gterm;
 
+typedef struct keyword {
+	char key[20];
+	gterm value;
+}keyword;
 
-typedef struct token {
-	gterm tid; 
-	char* lexeme;
-	void* numVal; //Int, Float values for numbers
-	int lineNo;
-} tokenInfo;
+keyword keywords[] = {
+	{"with",TK_WITH},
+	{"parameters",TK_PARAMETERS},
+	{"end",TK_END},
+	{"while",TK_WHILE},
+	{"union",TK_UNION},
+	{"endunion",TK_ENDUNION},
+	{"definetype",TK_DEFINETYPE},
+	{"as",TK_AS},
+	{"type",TK_TYPE},
+	{"main",TK_MAIN},
+	{"global",TK_GLOBAL},
+	{"parameter",TK_PARAMETER},
+	{"list",TK_LIST},
+	{"input",TK_INPUT},
+	{"int",TK_INT},
+	{"real",TK_REAL},
+	{"endwhile",TK_ENDWHILE},
+	{"if",TK_IF},
+	{"then",TK_THEN},
+	{"endif",TK_ENDIF},
+	{"read",TK_READ},
+	{"write",TK_WRITE},
+	{"return",TK_RETURN},
+	{"call",TK_CALL},
+	{"record",TK_RECORD},
+	{"endrecord",TK_ENDRECORD},
+	{"else",TK_ELSE}
+};
 
-typedef struct twin {
-	char buff1[BUFFER_SIZE + 1];
-	char buff2[BUFFER_SIZE + 1];
-} twinBuffer;
+struct table {
+   gterm token;   
+   char* key;
+   struct table* next;
+} tableEntry;
 
-FILE* getStream(FILE* fp);
+int hash(char* key);
 
-tokenInfo getNextToken(twinBuffer B);
+gterm getToken(char* key);
 
-void removeComments(char* testcaseFile, char* cleanFile);
+void insertID(char* key, gterm token);
 
-void printToken(int token);
-
-void reset();
-
-#endif
+void initTable();
