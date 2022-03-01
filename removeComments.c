@@ -7,7 +7,7 @@
 //strip white space from beginning of string
 char *strip(char *str)
 {
-    while(*str==' ') str++;
+    while(*str==' ' || *str=='\t') str++;
     return str;
 }
 
@@ -25,7 +25,7 @@ void removeComments(char* testcaseFile, char* cleanFile){
     size_t len = 0;
     size_t sizeRead;
 
-    sizeRead = getline(&line, &len, inp);
+    // sizeRead = getline(&line, &len, inp);
 
     // while(sizeRead != -1) {
     //     char *mod = strip(line);
