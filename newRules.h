@@ -2,6 +2,7 @@
 #define TERMINALS 52
 #define NUM_RULES 100
 #include "gterm.h"
+#include <string.h>
 
 
 // GRAMMAR DATA STRUCTURES
@@ -25,8 +26,8 @@ typedef ruleHead* Grammar[NON_TERMINALS];
 
 g_RHS* parseTable[NON_TERMINALS][TERMINALS];
 
-bool First[NON_TERMINALS + TERMINALS + 1][TERMINALS + 1];
-bool Follow[NON_TERMINALS][TERMINALS+2];
+bool First[NON_TERMINALS + TERMINALS + 1][TERMINALS + 1] = {false};
+bool Follow[NON_TERMINALS][TERMINALS+2] = {false};
 
 //
 

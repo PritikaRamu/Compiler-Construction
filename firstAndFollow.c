@@ -3,6 +3,39 @@
 #include <stdbool.h>
 #include "newRules.h"
 
+void populateFirst(char* textfile){
+    FILE* fp = fopen(textfile,"r");
+
+    if(fp == NULL) {
+		printf("Error opening file\n");
+        return;
+	}
+
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t sizeRead;
+
+    sizeRead = getline(&line, &len, fp);
+    //printf("%d\n", sizeRead);
+    
+    int linecount = 1;
+
+    while(sizeRead != -1) {
+        char* tok = strtok(line," ");
+        //printf("\nLine number %d\n",linecount);
+        int row = atoi(tok);
+        tok = strtok(NULL," ");
+        while(tok){
+            First[row][atoi(tok)-51]=true;
+            tok = strtok(NULL," ");
+        }
+        sizeRead = getline(&line, &len, fp);
+        linecount++;
+    }
+    //printf("\n");
+    fclose(fp);
+}
+
 g_RHS* insertIntoRule(g_RHS* head, g_Term s, bool isTerm){
 	//we insert the symbols to get the RHS for the rules
 
@@ -881,9 +914,16 @@ int main(){
 	initGrammar();
 
 
-
-
     printGrammar(G, 50);
-
+    // populateFirst("firstSet.txt");
+    // for(int i = 0; i<NON_TERMINALS + TERMINALS + 1; i++){
+    //     for(int j =0; j<TERMINALS + 1; j++){
+    //         if(First[i][j]){
+    //             printf("%d\t",j+51);
+    //         }
+            
+    //     }
+    //     printf("\n");
+    // }
    
 }
