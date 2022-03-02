@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "newRules.h"
 
+// First and Follow Functions 
 
 void populateFirstFollow(char* textfile, bool first){
     FILE* fp = fopen(textfile,"r");
@@ -52,11 +53,12 @@ void populateFirstFollow(char* textfile, bool first){
 
 void printFirst(){
     for(int i = 0; i < NON_TERMINALS + TERMINALS; i++){
-        printf("First Set of Symbol %d is = {", i);
+        printf("First Set of Symbol "); printNonTerminal(i); printf(" is = {");
         for(int j =0; j<TERMINALS; j++){
-            if(First[i][j]){
+            if(First[i][j]==true && (i != LEX_ERROR)  ){ 
                 // printf("%d\t",j+eps);
                 
+
                 printToken(j+eps);
                 printf(",");
                
@@ -86,7 +88,41 @@ void printFollow(){
     }
 }
 
+bool* computeFirst(g_RHS* head){
+	
+	g_RHS* iter = head; 
+	bool* first = (bool*)malloc(sizeof(bool)*TERMINALS);
+	memset(first,false,sizeof(bool)*TERMINALS);
 
+	// Case 1 
+	if(head->isTerminal){
+		first[head->symbol-eps] = true;
+		return first;
+	}
+
+	// Case 2
+	while(iter!=NULL){ // Iterating over the NTs of an RHS
+	// A->BCDF
+	// B-> eps | gHHJJ
+	// C-> d
+		
+		first = set_union(first, First[iter->symbol],TERMINALS);
+		//first[0] = false;
+		
+		if(!checkEpsiloninRHSFirst(iter->symbol)){
+			first[0] = false;
+			return first;
+		}
+		iter = iter->next;
+
+	}
+
+	first[0] = true;
+	return first;
+
+}
+
+// GRAMMAR Functions
 ruleHead* insertRuleList(ruleHead* head, g_RHS* rule){
 
 
@@ -113,290 +149,6 @@ g_RHS* insertIntoRule(g_RHS* head, g_Term s, bool isTerm){
 
 	temp->next = head;
 	return temp;
-}
-
-void printRule(g_RHS* head){ // Print 1 single rule
-
-	g_RHS* temp = head;
-	while(temp!=NULL)
-	{
-		// printf("A%d ", temp->symbol); // For number printing
-        if(temp->isTerminal)
-            printToken(temp->symbol);
-        else
-            printNonTerminal(temp->symbol);
-		temp = temp->next;
-	} 
-	printf("\n");
-
-}
-
-void printRules(Grammar G, int i, bool needArrow){ // Print All Rules for a NT
-	
-	ruleHead* temp = G[i];
-	while(temp!=NULL)
-	{
-        printNonTerminal(i);
-        // printf("A%d ", i); // For number printing
-        if(needArrow){
-            printf(" -> ");
-        }
-		printRule(temp->listHead);
-		temp = temp->next;
-
-	}
-
-}
-
-void printGrammar(Grammar G, int len){
-
-    for(int i=0;i<len;i++){
-		// printf("\n");
-		printRules(G, i, true);
-    }
-
-}
-
-void printToken(int token) {
-	switch(token)
-	{
-		case eps: printf("<eps> ");
-				break;
-		case TK_ASSIGNOP: printf("TK_ASSIGNOP ");
-				break;
-		case TK_COMMENT: printf("TK_COMMENT ");
-				break;
-		case TK_FIELDID: printf("TK_FIELDID ");
-				break;
-		case TK_ID: printf("TK_ID ");
-				break;
-		case TK_NUM: printf("TK_NUM ");
-				break;
-		case TK_RNUM: printf("TK_RNUM ");
-				break;
-		case TK_FUNID: printf("TK_FUNID ");
-				break;
-		case TK_WITH: printf("TK_WITH ");
-				break;
-		case TK_PARAMETERS: printf("TK_PARAMETERS ");
-				break;
-		case TK_END: printf("TK_END ");
-				break;
-		case TK_WHILE: printf("TK_WHILE ");
-				break;
-		case TK_TYPE: printf("TK_TYPE ");
-				break;
-		case TK_MAIN: printf("TK_MAIN ");
-				break;
-		case TK_GLOBAL: printf("TK_GLOBAL ");
-				break;
-		case TK_PARAMETER: printf("TK_PARAMETER ");
-				break;
-		case TK_LIST: printf("TK_LIST ");
-				break;
-		case TK_SQL: printf("TK_SQL ");
-				break;
-		case TK_SQR: printf("TK_SQR ");
-				break;
-		case TK_INPUT: printf("TK_INPUT ");
-				break;
-		case TK_OUTPUT: printf("TK_OUTPUT ");
-				break;
-		case TK_INT: printf("TK_INT ");
-				break;
-		case TK_REAL: printf("TK_REAL ");
-				break;
-		case TK_COMMA: printf("TK_COMMA ");
-				break;
-		case TK_SEM: printf("TK_SEM ");
-				break;
-		case TK_COLON: printf("TK_COLON ");
-				break;
-		case TK_DOT: printf("TK_DOT ");
-				break;
-		case TK_ENDWHILE: printf("TK_ENDWHILE ");
-				break;
-		case TK_OP: printf("TK_OP ");
-				break;
-		case TK_CL: printf("TK_CL ");
-				break;
-		case TK_IF: printf("TK_IF ");
-				break;
-		case TK_THEN: printf("TK_THEN ");
-				break;
-		case TK_ENDIF: printf("TK_ENDIF ");
-				break;
-		case TK_READ: printf("TK_READ ");
-				break;
-		case TK_WRITE: printf("TK_WRITE ");
-				break;
-		case TK_RETURN: printf("TK_RETURN ");
-				break;
-		case TK_PLUS: printf("TK_PLUS ");
-				break;
-		case TK_MINUS: printf("TK_MINUS ");
-				break;
-		case TK_MUL: printf("TK_MUL ");
-				break;
-		case TK_DIV: printf("TK_DIV ");
-				break;
-		case TK_CALL: printf("TK_CALL ");
-				break;
-		case TK_RECORD: printf("TK_RECORD ");
-				break;
-		case TK_ENDRECORD: printf("TK_ENDRECORD ");
-				break;
-		case TK_ELSE: printf("TK_ELSE ");
-				break;
-		case TK_AND: printf("TK_AND ");
-				break;
-		case TK_OR: printf("TK_OR ");
-				break;
-		case TK_NOT: printf("TK_NOT ");
-				break;
-		case TK_LT: printf("TK_LT ");
-				break;
-		case TK_LE: printf("TK_LE ");
-				break;
-		case TK_AS: printf("TK_AS ");
-				break;
-		case TK_EQ: printf("TK_EQ ");
-				break;
-		case TK_GT: printf("TK_GT ");
-				break;
-		case TK_GE: printf("TK_GE ");
-				break;
-		case TK_NE: printf("TK_NE ");
-				break;
-        case SENTINEL: printf("SENTINEL ");
-				break;
-		case TK_RUID: printf("TK_RUID");
-				break;
-		case TK_UNION: printf("TK_UNION ");
-				break;
-		case TK_ENDUNION: printf("TK_ENDUNION ");
-				break;
-		case TK_DEFINETYPE: printf("TK_DEFINETYPE ");
-				break;
-		default: printf("<No Symbol found> ");
-				break;
-	}
-}
-
-void printNonTerminal(int token) {
-	switch(token)
-	{
-		case 0: printf("<program> ");
-				break;
-		case 1: printf("<mainFunction> ");
-				break;
-		case 2: printf("<otherFunctions> ");
-				break;
-		case 3: printf("<function> ");
-				break;
-		case 4: printf("<input_par> ");
-				break;
-		case 5: printf("<output_par> ");
-				break;
-		case 6: printf("<parameter_list> ");
-				break;
-		case 7: printf("<dataType> ");
-				break;
-		case 8: printf("<primitiveDatatype> ");
-				break;
-		case 9: printf("<constructedDatatype> ");
-				break;
-		case 10: printf("<remaining_list> ");
-				break;
-		case 11: printf("<stmts> ");
-				break;
-		case 12: printf("<typeDefinitions> ");
-				break;
-		case 13: printf("<typeDefinition> ");
-				break;
-		case 14: printf("<fieldDefinitions> ");
-				break;
-		case 15: printf("<fieldDefinition> ");
-				break;
-		case 16: printf("<moreFields> ");
-				break;
-		case 17: printf("<declarations> ");
-				break;
-		case 18: printf("<declaration> ");
-				break;
-		case 19: printf("<global_or_not> ");
-				break;
-		case 20: printf("<otherStmts> ");
-				break;
-		case 21: printf("<stmt> ");
-				break;
-		case 22: printf("<assignmentStmt> ");
-				break;
-		case 23: printf("<singleOrRecId> ");
-				break;
-		case 24: printf("<actualOrRedefined> ");// Changed to Support Grammar
-				break;
-		case 25: printf("<funCallStmt> ");
-				break;
-		case 26: printf("<outputParameters> ");
-				break;
-		case 27: printf("<inputParameters> ");
-				break;
-		case 28: printf("<iterativeStmt> ");
-				break;
-		case 29: printf("<conditionalStmt> ");
-				break;
-		case 30: printf("<elsePart> ");
-				break;
-		case 31: printf("<ioStmt> ");
-				break;
-		case 32: printf("<fieldtype> "); // Changed to Support Grammar
-				break;
-		case 33: printf("<option_single_constructed> "); // Changed to Support Grammar
-				break;
-		case 34: printf("<arithmeticExpression> ");
-				break;
-		case 35: printf("<expPrime> ");
-				break;
-		case 36: printf("<term> ");
-				break;
-		case 37: printf("<termPrime> ");
-				break;
-		case 38: printf("<factor> ");
-				break;
-		case 39: printf("<highPrecedenceOperators> ");
-				break;
-		case 40: printf("<lowPrecedenceOperators> ");
-				break;
-		case 41: printf("<oneExpansion> "); // Changed to Support Grammar
-				break;
-		case 42: printf("<moreExpansions> "); // Changed to Support Grammar 
-				break;
-		case 43: printf("<booleanExpression> ");
-				break;
-		case 44: printf("<var> ");
-				break;
-		case 45: printf("<logicalOp> ");
-				break;
-		case 46: printf("<relationalOp> ");
-				break;
-		case 47: printf("<returnStmt> ");
-				break;
-		case 48: printf("<optionalReturn> ");
-				break;
-		case 49: printf("<idList> ");
-				break;
-		case 50: printf("<more_ids> ");
-				break;
-		case definetypestmt: printf("<definetypestmt> ");
-				break;
-		case A: printf("<A> ");
-				break;
-
-		default: printf("<No Symbol found>");
-				break;
-		
-	}
 }
 
 void initGrammar(){
@@ -957,26 +709,312 @@ void initGrammar(){
     G[A] = insertRuleList(G[A], Rule23TK_PARAMETERSTK_THEN);
 }
 
+void printRule(g_RHS* head){ // Print 1 single rule
+
+	g_RHS* temp = head;
+	while(temp!=NULL)
+	{
+		// printf("A%d ", temp->symbol); // For number printing
+        if(temp->isTerminal)
+            printToken(temp->symbol);
+        else
+            printNonTerminal(temp->symbol);
+		temp = temp->next;
+	} 
+	printf("\n");
+
+}
+
+void printRules(Grammar G, int i, bool needArrow){ // Print All Rules for a NT
+	
+	ruleHead* temp = G[i];
+	while(temp!=NULL)
+	{
+        printNonTerminal(i);
+        // printf("A%d ", i); // For number printing
+        if(needArrow){
+            printf(" -> ");
+        }
+		printRule(temp->listHead);
+		temp = temp->next;
+
+	}
+
+}
+
+void printGrammar(Grammar G, int len){
+
+    for(int i=0;i<len;i++){
+		// printf("\n");
+		printRules(G, i, true);
+    }
+
+}
+
+void printToken(int token) {
+	switch(token)
+	{
+		case eps: printf("<eps> ");
+				break;
+		case TK_ASSIGNOP: printf("TK_ASSIGNOP ");
+				break;
+		case TK_COMMENT: printf("TK_COMMENT ");
+				break;
+		case TK_FIELDID: printf("TK_FIELDID ");
+				break;
+		case TK_ID: printf("TK_ID ");
+				break;
+		case TK_NUM: printf("TK_NUM ");
+				break;
+		case TK_RNUM: printf("TK_RNUM ");
+				break;
+		case TK_FUNID: printf("TK_FUNID ");
+				break;
+		case TK_WITH: printf("TK_WITH ");
+				break;
+		case TK_PARAMETERS: printf("TK_PARAMETERS ");
+				break;
+		case TK_END: printf("TK_END ");
+				break;
+		case TK_WHILE: printf("TK_WHILE ");
+				break;
+		case TK_TYPE: printf("TK_TYPE ");
+				break;
+		case TK_MAIN: printf("TK_MAIN ");
+				break;
+		case TK_GLOBAL: printf("TK_GLOBAL ");
+				break;
+		case TK_PARAMETER: printf("TK_PARAMETER ");
+				break;
+		case TK_LIST: printf("TK_LIST ");
+				break;
+		case TK_SQL: printf("TK_SQL ");
+				break;
+		case TK_SQR: printf("TK_SQR ");
+				break;
+		case TK_INPUT: printf("TK_INPUT ");
+				break;
+		case TK_OUTPUT: printf("TK_OUTPUT ");
+				break;
+		case TK_INT: printf("TK_INT ");
+				break;
+		case TK_REAL: printf("TK_REAL ");
+				break;
+		case TK_COMMA: printf("TK_COMMA ");
+				break;
+		case TK_SEM: printf("TK_SEM ");
+				break;
+		case TK_COLON: printf("TK_COLON ");
+				break;
+		case TK_DOT: printf("TK_DOT ");
+				break;
+		case TK_ENDWHILE: printf("TK_ENDWHILE ");
+				break;
+		case TK_OP: printf("TK_OP ");
+				break;
+		case TK_CL: printf("TK_CL ");
+				break;
+		case TK_IF: printf("TK_IF ");
+				break;
+		case TK_THEN: printf("TK_THEN ");
+				break;
+		case TK_ENDIF: printf("TK_ENDIF ");
+				break;
+		case TK_READ: printf("TK_READ ");
+				break;
+		case TK_WRITE: printf("TK_WRITE ");
+				break;
+		case TK_RETURN: printf("TK_RETURN ");
+				break;
+		case TK_PLUS: printf("TK_PLUS ");
+				break;
+		case TK_MINUS: printf("TK_MINUS ");
+				break;
+		case TK_MUL: printf("TK_MUL ");
+				break;
+		case TK_DIV: printf("TK_DIV ");
+				break;
+		case TK_CALL: printf("TK_CALL ");
+				break;
+		case TK_RECORD: printf("TK_RECORD ");
+				break;
+		case TK_ENDRECORD: printf("TK_ENDRECORD ");
+				break;
+		case TK_ELSE: printf("TK_ELSE ");
+				break;
+		case TK_AND: printf("TK_AND ");
+				break;
+		case TK_OR: printf("TK_OR ");
+				break;
+		case TK_NOT: printf("TK_NOT ");
+				break;
+		case TK_LT: printf("TK_LT ");
+				break;
+		case TK_LE: printf("TK_LE ");
+				break;
+		case TK_AS: printf("TK_AS ");
+				break;
+		case TK_EQ: printf("TK_EQ ");
+				break;
+		case TK_GT: printf("TK_GT ");
+				break;
+		case TK_GE: printf("TK_GE ");
+				break;
+		case TK_NE: printf("TK_NE ");
+				break;
+        case SENTINEL: printf("SENTINEL ");
+				break;
+		case TK_RUID: printf("TK_RUID");
+				break;
+		case TK_UNION: printf("TK_UNION ");
+				break;
+		case TK_ENDUNION: printf("TK_ENDUNION ");
+				break;
+		case TK_DEFINETYPE: printf("TK_DEFINETYPE ");
+				break;
+		default: printf("<No Symbol found> ");
+				break;
+	}
+}
+
+void printNonTerminal(int token) {
+	switch(token)
+	{
+		case 0: printf("<program> ");
+				break;
+		case 1: printf("<mainFunction> ");
+				break;
+		case 2: printf("<otherFunctions> ");
+				break;
+		case 3: printf("<function> ");
+				break;
+		case 4: printf("<input_par> ");
+				break;
+		case 5: printf("<output_par> ");
+				break;
+		case 6: printf("<parameter_list> ");
+				break;
+		case 7: printf("<dataType> ");
+				break;
+		case 8: printf("<primitiveDatatype> ");
+				break;
+		case 9: printf("<constructedDatatype> ");
+				break;
+		case 10: printf("<remaining_list> ");
+				break;
+		case 11: printf("<stmts> ");
+				break;
+		case 12: printf("<typeDefinitions> ");
+				break;
+		case 13: printf("<typeDefinition> ");
+				break;
+		case 14: printf("<fieldDefinitions> ");
+				break;
+		case 15: printf("<fieldDefinition> ");
+				break;
+		case 16: printf("<moreFields> ");
+				break;
+		case 17: printf("<declarations> ");
+				break;
+		case 18: printf("<declaration> ");
+				break;
+		case 19: printf("<global_or_not> ");
+				break;
+		case 20: printf("<otherStmts> ");
+				break;
+		case 21: printf("<stmt> ");
+				break;
+		case 22: printf("<assignmentStmt> ");
+				break;
+		case 23: printf("<singleOrRecId> ");
+				break;
+		case 24: printf("<actualOrRedefined> ");// Changed to Support Grammar
+				break;
+		case 25: printf("<funCallStmt> ");
+				break;
+		case 26: printf("<outputParameters> ");
+				break;
+		case 27: printf("<inputParameters> ");
+				break;
+		case 28: printf("<iterativeStmt> ");
+				break;
+		case 29: printf("<conditionalStmt> ");
+				break;
+		case 30: printf("<elsePart> ");
+				break;
+		case 31: printf("<ioStmt> ");
+				break;
+		case 32: printf("<fieldtype> "); // Changed to Support Grammar
+				break;
+		case 33: printf("<option_single_constructed> "); // Changed to Support Grammar
+				break;
+		case 34: printf("<arithmeticExpression> ");
+				break;
+		case 35: printf("<expPrime> ");
+				break;
+		case 36: printf("<term> ");
+				break;
+		case 37: printf("<termPrime> ");
+				break;
+		case 38: printf("<factor> ");
+				break;
+		case 39: printf("<highPrecedenceOperators> ");
+				break;
+		case 40: printf("<lowPrecedenceOperators> ");
+				break;
+		case 41: printf("<oneExpansion> "); // Changed to Support Grammar
+				break;
+		case 42: printf("<moreExpansions> "); // Changed to Support Grammar 
+				break;
+		case 43: printf("<booleanExpression> ");
+				break;
+		case 44: printf("<var> ");
+				break;
+		case 45: printf("<logicalOp> ");
+				break;
+		case 46: printf("<relationalOp> ");
+				break;
+		case 47: printf("<returnStmt> ");
+				break;
+		case 48: printf("<optionalReturn> ");
+				break;
+		case 49: printf("<idList> ");
+				break;
+		case 50: printf("<more_ids> ");
+				break;
+		case definetypestmt: printf("<definetypestmt> ");
+				break;
+		case A: printf("<A> ");
+				break;
+
+		default: printf("<No Symbol found>");
+				break;
+		
+	}
+}
+
+
+
+
 // int main(){
    
-//     // Insert all Grammar Rules
+
 // 	initGrammar();
+//     // printGrammar(G, 100);
 
 
-//     printGrammar(G, 200);
-  
-//     //populateFirstFollow("First.txt",true);
-//     //printFirst();
+//     printf("Hi\n");
+//     trialFirstAndFollow();
+//     printFirst();
+    
+//     // int nt = program;
 
-//     // populateFirstFollow("Follow.txt",false);
-//     // printFollow();
-
-//     // for(int i = 0; i < NON_TERMINALS; i++){
-//     //     for(int j =0; j<TERMINALS; j++){
-//     //         if(Follow[i][j]){
-//     //             printf("%d\t",j+eps);
-//     //         }
-//     //     }
-//     //     printf("\n");
+//     // if(containsEpsilon(nt)){
+//     //     printNonTerminal(nt); printf(" contains an e-rule\n");
 //     // }
+//     // else{
+//     //     printNonTerminal(nt); printf(" contains NO e-rules\n");
+//     // }
+
+  
 // }
