@@ -28,12 +28,12 @@ void populateFirstFollow(char* textfile, bool first){
         //printf("\nLine number %d\n",row);
         tok = strtok(NULL," ");
         while(tok){
-            //printf("%d ",atoi(tok)-51);
+            //printf("%d ",atoi(tok)-eps);
             if(first){
-                First[row][atoi(tok)-51]=true;
+                First[row][atoi(tok)-eps]=true;
             }
             else{
-                Follow[row][atoi(tok)-51]=true;
+                Follow[row][atoi(tok)-eps]=true;
             }
             tok = strtok(NULL," ");
         }
@@ -55,9 +55,9 @@ void printFirst(){
         printf("First Set of Symbol %d is = {", i);
         for(int j =0; j<TERMINALS; j++){
             if(First[i][j]){
-                // printf("%d\t",j+51);
+                // printf("%d\t",j+eps);
                 
-                printToken(j+51);
+                printToken(j+eps);
                 printf(",");
                
             }
@@ -73,9 +73,9 @@ void printFollow(){
         printf("Follow Set of Symbol %d is = {", i);
         for(int j =0; j<TERMINALS; j++){
             if(Follow[i][j]){
-                // printf("%d\t",j+51);
+                // printf("%d\t",j+eps);
                 
-                printToken(j+51);
+                printToken(j+eps);
                 printf(",");
                
             }
@@ -160,125 +160,125 @@ void printGrammar(Grammar G, int len){
 void printToken(int token) {
 	switch(token)
 	{
-		case 51: printf("<eps> ");
+		case eps: printf("<eps> ");
 				break;
-		case 52: printf("TK_ASSIGNOP ");
+		case TK_ASSIGNOP: printf("TK_ASSIGNOP ");
 				break;
-		case 53: printf("TK_COMMENT ");
+		case TK_COMMENT: printf("TK_COMMENT ");
 				break;
-		case 54: printf("TK_FIELDID ");
+		case TK_FIELDID: printf("TK_FIELDID ");
 				break;
-		case 55: printf("TK_ID ");
+		case TK_ID: printf("TK_ID ");
 				break;
-		case 56: printf("TK_NUM ");
+		case TK_NUM: printf("TK_NUM ");
 				break;
-		case 57: printf("TK_RNUM ");
+		case TK_RNUM: printf("TK_RNUM ");
 				break;
-		case 58: printf("TK_FUNID ");
+		case TK_FUNID: printf("TK_FUNID ");
 				break;
-		case 59: printf("TK_WITH ");
+		case TK_WITH: printf("TK_WITH ");
 				break;
-		case 60: printf("TK_PARAMETERS ");
+		case TK_PARAMETERS: printf("TK_PARAMETERS ");
 				break;
-		case 61: printf("TK_END ");
+		case TK_END: printf("TK_END ");
 				break;
-		case 62: printf("TK_WHILE ");
+		case TK_WHILE: printf("TK_WHILE ");
 				break;
-		case 63: printf("TK_TYPE ");
+		case TK_TYPE: printf("TK_TYPE ");
 				break;
-		case 64: printf("TK_MAIN ");
+		case TK_MAIN: printf("TK_MAIN ");
 				break;
-		case 65: printf("TK_GLOBAL ");
+		case TK_GLOBAL: printf("TK_GLOBAL ");
 				break;
-		case 66: printf("TK_PARAMETER ");
+		case TK_PARAMETER: printf("TK_PARAMETER ");
 				break;
-		case 67: printf("TK_LIST ");
+		case TK_LIST: printf("TK_LIST ");
 				break;
-		case 68: printf("TK_SQL ");
+		case TK_SQL: printf("TK_SQL ");
 				break;
-		case 69: printf("TK_SQR ");
+		case TK_SQR: printf("TK_SQR ");
 				break;
-		case 70: printf("TK_INPUT ");
+		case TK_INPUT: printf("TK_INPUT ");
 				break;
-		case 71: printf("TK_OUTPUT ");
+		case TK_OUTPUT: printf("TK_OUTPUT ");
 				break;
-		case 72: printf("TK_INT ");
+		case TK_INT: printf("TK_INT ");
 				break;
-		case 73: printf("TK_REAL ");
+		case TK_REAL: printf("TK_REAL ");
 				break;
-		case 74: printf("TK_COMMA ");
+		case TK_COMMA: printf("TK_COMMA ");
 				break;
-		case 75: printf("TK_SEM ");
+		case TK_SEM: printf("TK_SEM ");
 				break;
-		case 76: printf("TK_COLON ");
+		case TK_COLON: printf("TK_COLON ");
 				break;
-		case 77: printf("TK_DOT ");
+		case TK_DOT: printf("TK_DOT ");
 				break;
-		case 78: printf("TK_ENDWHILE ");
+		case TK_ENDWHILE: printf("TK_ENDWHILE ");
 				break;
-		case 79: printf("TK_OP ");
+		case TK_OP: printf("TK_OP ");
 				break;
-		case 80: printf("TK_CL ");
+		case TK_CL: printf("TK_CL ");
 				break;
-		case 81: printf("TK_IF ");
+		case TK_IF: printf("TK_IF ");
 				break;
-		case 82: printf("TK_THEN ");
+		case TK_THEN: printf("TK_THEN ");
 				break;
-		case 83: printf("TK_ENDIF ");
+		case TK_ENDIF: printf("TK_ENDIF ");
 				break;
-		case 84: printf("TK_READ ");
+		case TK_READ: printf("TK_READ ");
 				break;
-		case 85: printf("TK_WRITE ");
+		case TK_WRITE: printf("TK_WRITE ");
 				break;
-		case 86: printf("TK_RETURN ");
+		case TK_RETURN: printf("TK_RETURN ");
 				break;
-		case 87: printf("TK_PLUS ");
+		case TK_PLUS: printf("TK_PLUS ");
 				break;
-		case 88: printf("TK_MINUS ");
+		case TK_MINUS: printf("TK_MINUS ");
 				break;
-		case 89: printf("TK_MUL ");
+		case TK_MUL: printf("TK_MUL ");
 				break;
-		case 90: printf("TK_DIV ");
+		case TK_DIV: printf("TK_DIV ");
 				break;
-		case 91: printf("TK_CALL ");
+		case TK_CALL: printf("TK_CALL ");
 				break;
-		case 92: printf("TK_RECORD ");
+		case TK_RECORD: printf("TK_RECORD ");
 				break;
-		case 93: printf("TK_ENDRECORD ");
+		case TK_ENDRECORD: printf("TK_ENDRECORD ");
 				break;
-		case 94: printf("TK_ELSE ");
+		case TK_ELSE: printf("TK_ELSE ");
 				break;
-		case 95: printf("TK_AND ");
+		case TK_AND: printf("TK_AND ");
 				break;
-		case 96: printf("TK_OR ");
+		case TK_OR: printf("TK_OR ");
 				break;
-		case 97: printf("TK_NOT ");
+		case TK_NOT: printf("TK_NOT ");
 				break;
-		case 98: printf("TK_LT ");
+		case TK_LT: printf("TK_LT ");
 				break;
-		case 99: printf("TK_LE ");
+		case TK_LE: printf("TK_LE ");
 				break;
-		case 100: printf("TK_AS ");
+		case TK_AS: printf("TK_AS ");
 				break;
-		case 101: printf("TK_EQ ");
+		case TK_EQ: printf("TK_EQ ");
 				break;
-		case 102: printf("TK_GT ");
+		case TK_GT: printf("TK_GT ");
 				break;
-		case 103: printf("TK_GE ");
+		case TK_GE: printf("TK_GE ");
 				break;
-		case 104: printf("TK_NE ");
+		case TK_NE: printf("TK_NE ");
 				break;
-        case 105: printf("SENTINEL ");
+        case SENTINEL: printf("SENTINEL ");
 				break;
-		case 107: printf("TK_RUID");
+		case TK_RUID: printf("TK_RUID");
 				break;
-		case 108: printf("TK_UNION ");
+		case TK_UNION: printf("TK_UNION ");
 				break;
-		case 109: printf("TK_ENDUNION");
+		case TK_ENDUNION: printf("TK_ENDUNION ");
 				break;
-		case 110: printf("TK_DEFINETYPE");
+		case TK_DEFINETYPE: printf("TK_DEFINETYPE ");
 				break;
-		default: printf("<No Symbol found>");
+		default: printf("<No Symbol found> ");
 				break;
 	}
 }
@@ -388,9 +388,9 @@ void printNonTerminal(int token) {
 				break;
 		case 50: printf("<more_ids> ");
 				break;
-		case 111: printf("<definetypestmt> ");
+		case definetypestmt: printf("<definetypestmt> ");
 				break;
-		case 112: printf("<A> ");
+		case A: printf("<A> ");
 				break;
 
 		default: printf("<No Symbol found>");
@@ -401,582 +401,582 @@ void printNonTerminal(int token) {
 
 void initGrammar(){
 	G[0] = NULL;
-    g_RHS* Rule141765 = NULL;
-    Rule141765 = insertIntoRule(Rule141765,1, false);
-    Rule141765 = insertIntoRule(Rule141765,2, false);
-    G[0] = insertRuleList(G[0], Rule141765);
+    g_RHS* Rule1417TK_GLOBAL = NULL;
+    Rule1417TK_GLOBAL = insertIntoRule(Rule1417TK_GLOBAL,1, false);
+    Rule1417TK_GLOBAL = insertIntoRule(Rule1417TK_GLOBAL,2, false);
+    G[0] = insertRuleList(G[0], Rule1417TK_GLOBAL);
 
     G[1] = NULL;
-    g_RHS* Rule591183 = NULL;
-    Rule591183 = insertIntoRule(Rule591183,61, true);
-    Rule591183 = insertIntoRule(Rule591183,11, false);
-    Rule591183 = insertIntoRule(Rule591183,64, true);
-    G[1] = insertRuleList(G[1], Rule591183);
+    g_RHS* RuleTK_WITH11TK_ENDIF = NULL;
+    RuleTK_WITH11TK_ENDIF = insertIntoRule(RuleTK_WITH11TK_ENDIF,TK_END, true);
+    RuleTK_WITH11TK_ENDIF = insertIntoRule(RuleTK_WITH11TK_ENDIF,11, false);
+    RuleTK_WITH11TK_ENDIF = insertIntoRule(RuleTK_WITH11TK_ENDIF,TK_MAIN, true);
+    G[1] = insertRuleList(G[1], RuleTK_WITH11TK_ENDIF);
 
     G[2] = NULL;
-    g_RHS* Rule310546 = NULL;
-    Rule310546 = insertIntoRule(Rule310546,2, false);
-    Rule310546 = insertIntoRule(Rule310546,3, false);
-    G[2] = insertRuleList(G[2], Rule310546);
+    g_RHS* Rule310TK_FIELDID6 = NULL;
+    Rule310TK_FIELDID6 = insertIntoRule(Rule310TK_FIELDID6,2, false);
+    Rule310TK_FIELDID6 = insertIntoRule(Rule310TK_FIELDID6,3, false);
+    G[2] = insertRuleList(G[2], Rule310TK_FIELDID6);
 
-    g_RHS* Rule207287 = NULL;
-    Rule207287 = insertIntoRule(Rule207287,51, true);
-    G[2] = insertRuleList(G[2], Rule207287);
+    g_RHS* Rule20TK_INTTK_PLUS = NULL;
+    Rule20TK_INTTK_PLUS = insertIntoRule(Rule20TK_INTTK_PLUS,eps, true);
+    G[2] = insertRuleList(G[2], Rule20TK_INTTK_PLUS);
 
     G[3] = NULL;
-    g_RHS* Rule728832 = NULL;
-    Rule728832 = insertIntoRule(Rule728832,61, true);
-    Rule728832 = insertIntoRule(Rule728832,11, false);
-    Rule728832 = insertIntoRule(Rule728832,75, true);
-    Rule728832 = insertIntoRule(Rule728832,5, false);
-    Rule728832 = insertIntoRule(Rule728832,4, false);
-    Rule728832 = insertIntoRule(Rule728832,58, true);
-    G[3] = insertRuleList(G[3], Rule728832);
+    g_RHS* RuleTK_INT8TK_ENDIF2 = NULL;
+    RuleTK_INT8TK_ENDIF2 = insertIntoRule(RuleTK_INT8TK_ENDIF2,TK_END, true);
+    RuleTK_INT8TK_ENDIF2 = insertIntoRule(RuleTK_INT8TK_ENDIF2,11, false);
+    RuleTK_INT8TK_ENDIF2 = insertIntoRule(RuleTK_INT8TK_ENDIF2,TK_SEM, true);
+    RuleTK_INT8TK_ENDIF2 = insertIntoRule(RuleTK_INT8TK_ENDIF2,5, false);
+    RuleTK_INT8TK_ENDIF2 = insertIntoRule(RuleTK_INT8TK_ENDIF2,4, false);
+    RuleTK_INT8TK_ENDIF2 = insertIntoRule(RuleTK_INT8TK_ENDIF2,TK_FUNID, true);
+    G[3] = insertRuleList(G[3], RuleTK_INT8TK_ENDIF2);
 
     G[4] = NULL;
-    g_RHS* Rule786790 = NULL;
-    Rule786790 = insertIntoRule(Rule786790,69, true);
-    Rule786790 = insertIntoRule(Rule786790,6, false);
-    Rule786790 = insertIntoRule(Rule786790,68, true);
-    Rule786790 = insertIntoRule(Rule786790,67, true);
-    Rule786790 = insertIntoRule(Rule786790,66, true);
-    Rule786790 = insertIntoRule(Rule786790,70, true);
-    G[4] = insertRuleList(G[4], Rule786790);
+    g_RHS* RuleTK_ENDWHILETK_LISTTK_DIV = NULL;
+    RuleTK_ENDWHILETK_LISTTK_DIV = insertIntoRule(RuleTK_ENDWHILETK_LISTTK_DIV,TK_SQR, true);
+    RuleTK_ENDWHILETK_LISTTK_DIV = insertIntoRule(RuleTK_ENDWHILETK_LISTTK_DIV,6, false);
+    RuleTK_ENDWHILETK_LISTTK_DIV = insertIntoRule(RuleTK_ENDWHILETK_LISTTK_DIV,TK_SQL, true);
+    RuleTK_ENDWHILETK_LISTTK_DIV = insertIntoRule(RuleTK_ENDWHILETK_LISTTK_DIV,TK_LIST, true);
+    RuleTK_ENDWHILETK_LISTTK_DIV = insertIntoRule(RuleTK_ENDWHILETK_LISTTK_DIV,TK_PARAMETER, true);
+    RuleTK_ENDWHILETK_LISTTK_DIV = insertIntoRule(RuleTK_ENDWHILETK_LISTTK_DIV,TK_INPUT, true);
+    G[4] = insertRuleList(G[4], RuleTK_ENDWHILETK_LISTTK_DIV);
 
     G[5] = NULL;
-    g_RHS* Rule656885 = NULL;
-    Rule656885 = insertIntoRule(Rule656885,69, true);
-    Rule656885 = insertIntoRule(Rule656885,6, false);
-    Rule656885 = insertIntoRule(Rule656885,68, true);
-    Rule656885 = insertIntoRule(Rule656885,67, true);
-    Rule656885 = insertIntoRule(Rule656885,66, true);
-    Rule656885 = insertIntoRule(Rule656885,71, true);
-    G[5] = insertRuleList(G[5], Rule656885);
+    g_RHS* Rule6TK_NUM8TK_WRITE = NULL;
+    Rule6TK_NUM8TK_WRITE = insertIntoRule(Rule6TK_NUM8TK_WRITE,TK_SQR, true);
+    Rule6TK_NUM8TK_WRITE = insertIntoRule(Rule6TK_NUM8TK_WRITE,6, false);
+    Rule6TK_NUM8TK_WRITE = insertIntoRule(Rule6TK_NUM8TK_WRITE,TK_SQL, true);
+    Rule6TK_NUM8TK_WRITE = insertIntoRule(Rule6TK_NUM8TK_WRITE,TK_LIST, true);
+    Rule6TK_NUM8TK_WRITE = insertIntoRule(Rule6TK_NUM8TK_WRITE,TK_PARAMETER, true);
+    Rule6TK_NUM8TK_WRITE = insertIntoRule(Rule6TK_NUM8TK_WRITE,TK_OUTPUT, true);
+    G[5] = insertRuleList(G[5], Rule6TK_NUM8TK_WRITE);
 
-    g_RHS* Rule60880 = NULL;
-    Rule60880 = insertIntoRule(Rule60880,51, true);
-    G[5] = insertRuleList(G[5], Rule60880);
+    g_RHS* RuleTK_PARAMETERS8TK_CL = NULL;
+    RuleTK_PARAMETERS8TK_CL = insertIntoRule(RuleTK_PARAMETERS8TK_CL,eps, true);
+    G[5] = insertRuleList(G[5], RuleTK_PARAMETERS8TK_CL);
 
     G[6] = NULL;
-    g_RHS* Rule682698 = NULL;
-    Rule682698 = insertIntoRule(Rule682698,10, false);
-    Rule682698 = insertIntoRule(Rule682698,55, true);
-    Rule682698 = insertIntoRule(Rule682698,7, false);
-    G[6] = insertRuleList(G[6], Rule682698);
+    g_RHS* RuleTK_SQL2TK_SQR8 = NULL;
+    RuleTK_SQL2TK_SQR8 = insertIntoRule(RuleTK_SQL2TK_SQR8,10, false);
+    RuleTK_SQL2TK_SQR8 = insertIntoRule(RuleTK_SQL2TK_SQR8,TK_ID, true);
+    RuleTK_SQL2TK_SQR8 = insertIntoRule(RuleTK_SQL2TK_SQR8,7, false);
+    G[6] = insertRuleList(G[6], RuleTK_SQL2TK_SQR8);
 
     G[7] = NULL;
-    g_RHS* Rule508400 = NULL;
-    Rule508400 = insertIntoRule(Rule508400,8, false);
-    G[7] = insertRuleList(G[7], Rule508400);
+    g_RHS* Rule50TK_READ00 = NULL;
+    Rule50TK_READ00 = insertIntoRule(Rule50TK_READ00,8, false);
+    G[7] = insertRuleList(G[7], Rule50TK_READ00);
 
-    g_RHS* Rule938990 = NULL;
-    Rule938990 = insertIntoRule(Rule938990,9, false);
-    G[7] = insertRuleList(G[7], Rule938990);
+    g_RHS* RuleTK_ENDRECORDTK_MULTK_DIV = NULL;
+    RuleTK_ENDRECORDTK_MULTK_DIV = insertIntoRule(RuleTK_ENDRECORDTK_MULTK_DIV,9, false);
+    G[7] = insertRuleList(G[7], RuleTK_ENDRECORDTK_MULTK_DIV);
 
     G[8] = NULL;
-    g_RHS* Rule385359 = NULL;
-    Rule385359 = insertIntoRule(Rule385359,72, true);
-    G[8] = insertRuleList(G[8], Rule385359);
+    g_RHS* Rule38TK_COMMENTTK_WITH = NULL;
+    Rule38TK_COMMENTTK_WITH = insertIntoRule(Rule38TK_COMMENTTK_WITH,TK_INT, true);
+    G[8] = insertRuleList(G[8], Rule38TK_COMMENTTK_WITH);
 
-    g_RHS* Rule112664 = NULL;
-    Rule112664 = insertIntoRule(Rule112664,73, true);
-    G[8] = insertRuleList(G[8], Rule112664);
+    g_RHS* Rule1126TK_MAIN = NULL;
+    Rule1126TK_MAIN = insertIntoRule(Rule1126TK_MAIN,TK_REAL, true);
+    G[8] = insertRuleList(G[8], Rule1126TK_MAIN);
 
     G[9] = NULL;
-    g_RHS* Rule294065 = NULL;
-    Rule294065 = insertIntoRule(Rule294065,107, true);
-    Rule294065 = insertIntoRule(Rule294065,92, true);
-    G[9] = insertRuleList(G[9], Rule294065);
+    g_RHS* Rule2TK_ELSE0TK_GLOBAL = NULL;
+    Rule2TK_ELSE0TK_GLOBAL = insertIntoRule(Rule2TK_ELSE0TK_GLOBAL,TK_RUID, true);
+    Rule2TK_ELSE0TK_GLOBAL = insertIntoRule(Rule2TK_ELSE0TK_GLOBAL,TK_RECORD, true);
+    G[9] = insertRuleList(G[9], Rule2TK_ELSE0TK_GLOBAL);
 
-    g_RHS* Rule898819 = NULL;
-    Rule898819 = insertIntoRule(Rule898819,107, true);
-    Rule898819 = insertIntoRule(Rule898819,108, true);
-    G[9] = insertRuleList(G[9], Rule898819);
+    g_RHS* RuleTK_MUL8TK_IF9 = NULL;
+    RuleTK_MUL8TK_IF9 = insertIntoRule(RuleTK_MUL8TK_IF9,TK_RUID, true);
+    RuleTK_MUL8TK_IF9 = insertIntoRule(RuleTK_MUL8TK_IF9,TK_UNION, true);
+    G[9] = insertRuleList(G[9], RuleTK_MUL8TK_IF9);
 
-    g_RHS* Rule556652 = NULL;
-    Rule556652 = insertIntoRule(Rule556652,107, true);
-    G[9] = insertRuleList(G[9], Rule556652);
+    g_RHS* RuleTK_IDTK_PARAMETERTK_ASSIGNOP = NULL;
+    RuleTK_IDTK_PARAMETERTK_ASSIGNOP = insertIntoRule(RuleTK_IDTK_PARAMETERTK_ASSIGNOP,TK_RUID, true);
+    G[9] = insertRuleList(G[9], RuleTK_IDTK_PARAMETERTK_ASSIGNOP);
 
     G[10] = NULL;
-    g_RHS* Rule998087 = NULL;
-    Rule998087 = insertIntoRule(Rule998087,6, false);
-    Rule998087 = insertIntoRule(Rule998087,74, true);
-    G[10] = insertRuleList(G[10], Rule998087);
+    g_RHS* RuleTK_LETK_CLTK_PLUS = NULL;
+    RuleTK_LETK_CLTK_PLUS = insertIntoRule(RuleTK_LETK_CLTK_PLUS,6, false);
+    RuleTK_LETK_CLTK_PLUS = insertIntoRule(RuleTK_LETK_CLTK_PLUS,TK_COMMA, true);
+    G[10] = insertRuleList(G[10], RuleTK_LETK_CLTK_PLUS);
 
-    g_RHS* Rule166887 = NULL;
-    Rule166887 = insertIntoRule(Rule166887,51, true);
-    G[10] = insertRuleList(G[10], Rule166887);
+    g_RHS* Rule1TK_PARAMETER8TK_PLUS = NULL;
+    Rule1TK_PARAMETER8TK_PLUS = insertIntoRule(Rule1TK_PARAMETER8TK_PLUS,eps, true);
+    G[10] = insertRuleList(G[10], Rule1TK_PARAMETER8TK_PLUS);
 
     G[11] = NULL;
-    g_RHS* Rule583743 = NULL;
-    Rule583743 = insertIntoRule(Rule583743,47, false);
-    Rule583743 = insertIntoRule(Rule583743,20, false);
-    Rule583743 = insertIntoRule(Rule583743,17, false);
-    Rule583743 = insertIntoRule(Rule583743,12, false);
-    G[11] = insertRuleList(G[11], Rule583743);
+    g_RHS* RuleTK_FUNID3TK_COMMA3 = NULL;
+    RuleTK_FUNID3TK_COMMA3 = insertIntoRule(RuleTK_FUNID3TK_COMMA3,47, false);
+    RuleTK_FUNID3TK_COMMA3 = insertIntoRule(RuleTK_FUNID3TK_COMMA3,20, false);
+    RuleTK_FUNID3TK_COMMA3 = insertIntoRule(RuleTK_FUNID3TK_COMMA3,17, false);
+    RuleTK_FUNID3TK_COMMA3 = insertIntoRule(RuleTK_FUNID3TK_COMMA3,12, false);
+    G[11] = insertRuleList(G[11], RuleTK_FUNID3TK_COMMA3);
 
     G[12] = NULL;
-    g_RHS* Rule756180 = NULL;
-    Rule756180 = insertIntoRule(Rule756180,12, false);
-    Rule756180 = insertIntoRule(Rule756180,24, false);
-    G[12] = insertRuleList(G[12], Rule756180);
+    g_RHS* Rule7TK_NUM1TK_CL = NULL;
+    Rule7TK_NUM1TK_CL = insertIntoRule(Rule7TK_NUM1TK_CL,12, false);
+    Rule7TK_NUM1TK_CL = insertIntoRule(Rule7TK_NUM1TK_CL,24, false);
+    G[12] = insertRuleList(G[12], Rule7TK_NUM1TK_CL);
 
-    g_RHS* Rule452661 = NULL;
-    Rule452661 = insertIntoRule(Rule452661,51, true);
-    G[12] = insertRuleList(G[12], Rule452661);
+    g_RHS* Rule4TK_ASSIGNOP6TK_END = NULL;
+    Rule4TK_ASSIGNOP6TK_END = insertIntoRule(Rule4TK_ASSIGNOP6TK_END,eps, true);
+    G[12] = insertRuleList(G[12], Rule4TK_ASSIGNOP6TK_END);
 
     G[24] = NULL;
-    g_RHS* Rule630284 = NULL;
-    Rule630284 = insertIntoRule(Rule630284,13, false);
-    G[24] = insertRuleList(G[24], Rule630284);
+    g_RHS* RuleTK_TYPE02TK_READ = NULL;
+    RuleTK_TYPE02TK_READ = insertIntoRule(RuleTK_TYPE02TK_READ,13, false);
+    G[24] = insertRuleList(G[24], RuleTK_TYPE02TK_READ);
 
-    g_RHS* Rule916641 = NULL;
-    Rule916641 = insertIntoRule(Rule916641,111, false);
-    G[24] = insertRuleList(G[24], Rule916641);
+    g_RHS* RuleTK_CALL6TK_MAIN1 = NULL;
+    RuleTK_CALL6TK_MAIN1 = insertIntoRule(RuleTK_CALL6TK_MAIN1,definetypestmt, false);
+    G[24] = insertRuleList(G[24], RuleTK_CALL6TK_MAIN1);
 
     G[13] = NULL;
-    g_RHS* Rule958605 = NULL;
-    Rule958605 = insertIntoRule(Rule958605,93, true);
-    Rule958605 = insertIntoRule(Rule958605,14, false);
-    Rule958605 = insertIntoRule(Rule958605,107, true);
-    Rule958605 = insertIntoRule(Rule958605,92, true);
-    G[13] = insertRuleList(G[13], Rule958605);
+    g_RHS* Rule9TK_FUNIDTK_PARAMETERS5 = NULL;
+    Rule9TK_FUNIDTK_PARAMETERS5 = insertIntoRule(Rule9TK_FUNIDTK_PARAMETERS5,TK_ENDRECORD, true);
+    Rule9TK_FUNIDTK_PARAMETERS5 = insertIntoRule(Rule9TK_FUNIDTK_PARAMETERS5,14, false);
+    Rule9TK_FUNIDTK_PARAMETERS5 = insertIntoRule(Rule9TK_FUNIDTK_PARAMETERS5,TK_RUID, true);
+    Rule9TK_FUNIDTK_PARAMETERS5 = insertIntoRule(Rule9TK_FUNIDTK_PARAMETERS5,TK_RECORD, true);
+    G[13] = insertRuleList(G[13], Rule9TK_FUNIDTK_PARAMETERS5);
 
-    g_RHS* Rule248097 = NULL;
-    Rule248097 = insertIntoRule(Rule248097,109, true);
-    Rule248097 = insertIntoRule(Rule248097,14, false);
-    Rule248097 = insertIntoRule(Rule248097,107, true);
-    Rule248097 = insertIntoRule(Rule248097,108, true);
-    G[13] = insertRuleList(G[13], Rule248097);
+    g_RHS* Rule24TK_CLTK_NOT = NULL;
+    Rule24TK_CLTK_NOT = insertIntoRule(Rule24TK_CLTK_NOT,TK_ENDUNION, true);
+    Rule24TK_CLTK_NOT = insertIntoRule(Rule24TK_CLTK_NOT,14, false);
+    Rule24TK_CLTK_NOT = insertIntoRule(Rule24TK_CLTK_NOT,TK_RUID, true);
+    Rule24TK_CLTK_NOT = insertIntoRule(Rule24TK_CLTK_NOT,TK_UNION, true);
+    G[13] = insertRuleList(G[13], Rule24TK_CLTK_NOT);
 
     G[14] = NULL;
-    g_RHS* Rule965234 = NULL;
-    Rule965234 = insertIntoRule(Rule965234,16, false);
-    Rule965234 = insertIntoRule(Rule965234,15, false);
-    Rule965234 = insertIntoRule(Rule965234,15, false);
-    G[14] = insertRuleList(G[14], Rule965234);
+    g_RHS* RuleTK_ORTK_ASSIGNOP34 = NULL;
+    RuleTK_ORTK_ASSIGNOP34 = insertIntoRule(RuleTK_ORTK_ASSIGNOP34,16, false);
+    RuleTK_ORTK_ASSIGNOP34 = insertIntoRule(RuleTK_ORTK_ASSIGNOP34,15, false);
+    RuleTK_ORTK_ASSIGNOP34 = insertIntoRule(RuleTK_ORTK_ASSIGNOP34,15, false);
+    G[14] = insertRuleList(G[14], RuleTK_ORTK_ASSIGNOP34);
 
     G[15] = NULL;
-    g_RHS* Rule42739 = NULL;
-    Rule42739 = insertIntoRule(Rule42739,75, true);
-    Rule42739 = insertIntoRule(Rule42739,54, true);
-    Rule42739 = insertIntoRule(Rule42739,76, true);
-    Rule42739 = insertIntoRule(Rule42739,32, false);
-    Rule42739 = insertIntoRule(Rule42739,63, true);
-    G[15] = insertRuleList(G[15], Rule42739);
+    g_RHS* Rule42TK_REAL9 = NULL;
+    Rule42TK_REAL9 = insertIntoRule(Rule42TK_REAL9,TK_SEM, true);
+    Rule42TK_REAL9 = insertIntoRule(Rule42TK_REAL9,TK_FIELDID, true);
+    Rule42TK_REAL9 = insertIntoRule(Rule42TK_REAL9,TK_COLON, true);
+    Rule42TK_REAL9 = insertIntoRule(Rule42TK_REAL9,32, false);
+    Rule42TK_REAL9 = insertIntoRule(Rule42TK_REAL9,TK_TYPE, true);
+    G[15] = insertRuleList(G[15], Rule42TK_REAL9);
 
     G[32] = NULL;
-    g_RHS* Rule957280 = NULL;
-    Rule957280 = insertIntoRule(Rule957280,8, false);
-    G[32] = insertRuleList(G[32], Rule957280);
+    g_RHS* Rule9TK_RNUM2TK_CL = NULL;
+    Rule9TK_RNUM2TK_CL = insertIntoRule(Rule9TK_RNUM2TK_CL,8, false);
+    G[32] = insertRuleList(G[32], Rule9TK_RNUM2TK_CL);
 
-    g_RHS* Rule843083 = NULL;
-    Rule843083 = insertIntoRule(Rule843083,107, true);
-    G[32] = insertRuleList(G[32], Rule843083);
+    g_RHS* RuleTK_READ30TK_ENDIF = NULL;
+    RuleTK_READ30TK_ENDIF = insertIntoRule(RuleTK_READ30TK_ENDIF,TK_RUID, true);
+    G[32] = insertRuleList(G[32], RuleTK_READ30TK_ENDIF);
 
     G[16] = NULL;
-    g_RHS* Rule100043 = NULL;
-    Rule100043 = insertIntoRule(Rule100043,16, false);
-    Rule100043 = insertIntoRule(Rule100043,15, false);
-    G[16] = insertRuleList(G[16], Rule100043);
+    g_RHS* RuleTK_AS043 = NULL;
+    RuleTK_AS043 = insertIntoRule(RuleTK_AS043,16, false);
+    RuleTK_AS043 = insertIntoRule(RuleTK_AS043,15, false);
+    G[16] = insertRuleList(G[16], RuleTK_AS043);
 
-    g_RHS* Rule437859 = NULL;
-    Rule437859 = insertIntoRule(Rule437859,51, true);
-    G[16] = insertRuleList(G[16], Rule437859);
+    g_RHS* Rule43TK_ENDWHILETK_WITH = NULL;
+    Rule43TK_ENDWHILETK_WITH = insertIntoRule(Rule43TK_ENDWHILETK_WITH,eps, true);
+    G[16] = insertRuleList(G[16], Rule43TK_ENDWHILETK_WITH);
 
     G[17] = NULL;
-    g_RHS* Rule518766 = NULL;
-    Rule518766 = insertIntoRule(Rule518766,17, false);
-    Rule518766 = insertIntoRule(Rule518766,18, false);
-    G[17] = insertRuleList(G[17], Rule518766);
+    g_RHS* RuleepsTK_PLUSTK_PARAMETER = NULL;
+    RuleepsTK_PLUSTK_PARAMETER = insertIntoRule(RuleepsTK_PLUSTK_PARAMETER,17, false);
+    RuleepsTK_PLUSTK_PARAMETER = insertIntoRule(RuleepsTK_PLUSTK_PARAMETER,18, false);
+    G[17] = insertRuleList(G[17], RuleepsTK_PLUSTK_PARAMETER);
 
-    g_RHS* Rule336261 = NULL;
-    Rule336261 = insertIntoRule(Rule336261,51, true);
-    G[17] = insertRuleList(G[17], Rule336261);
+    g_RHS* Rule33TK_WHILETK_END = NULL;
+    Rule33TK_WHILETK_END = insertIntoRule(Rule33TK_WHILETK_END,eps, true);
+    G[17] = insertRuleList(G[17], Rule33TK_WHILETK_END);
 
     G[18] = NULL;
-    g_RHS* Rule972573 = NULL;
-    Rule972573 = insertIntoRule(Rule972573,75, true);
-    Rule972573 = insertIntoRule(Rule972573,19, false);
-    Rule972573 = insertIntoRule(Rule972573,55, true);
-    Rule972573 = insertIntoRule(Rule972573,76, true);
-    Rule972573 = insertIntoRule(Rule972573,7, false);
-    Rule972573 = insertIntoRule(Rule972573,63, true);
-    G[18] = insertRuleList(G[18], Rule972573);
+    g_RHS* Rule9TK_INTTK_RNUM3 = NULL;
+    Rule9TK_INTTK_RNUM3 = insertIntoRule(Rule9TK_INTTK_RNUM3,TK_SEM, true);
+    Rule9TK_INTTK_RNUM3 = insertIntoRule(Rule9TK_INTTK_RNUM3,19, false);
+    Rule9TK_INTTK_RNUM3 = insertIntoRule(Rule9TK_INTTK_RNUM3,TK_ID, true);
+    Rule9TK_INTTK_RNUM3 = insertIntoRule(Rule9TK_INTTK_RNUM3,TK_COLON, true);
+    Rule9TK_INTTK_RNUM3 = insertIntoRule(Rule9TK_INTTK_RNUM3,7, false);
+    Rule9TK_INTTK_RNUM3 = insertIntoRule(Rule9TK_INTTK_RNUM3,TK_TYPE, true);
+    G[18] = insertRuleList(G[18], Rule9TK_INTTK_RNUM3);
 
     G[19] = NULL;
-    g_RHS* Rule451182 = NULL;
-    Rule451182 = insertIntoRule(Rule451182,65, true);
-    Rule451182 = insertIntoRule(Rule451182,76, true);
-    G[19] = insertRuleList(G[19], Rule451182);
+    g_RHS* Rule4eps1TK_THEN = NULL;
+    Rule4eps1TK_THEN = insertIntoRule(Rule4eps1TK_THEN,TK_GLOBAL, true);
+    Rule4eps1TK_THEN = insertIntoRule(Rule4eps1TK_THEN,TK_COLON, true);
+    G[19] = insertRuleList(G[19], Rule4eps1TK_THEN);
 
-    g_RHS* Rule547762 = NULL;
-    Rule547762 = insertIntoRule(Rule547762,51, true);
-    G[19] = insertRuleList(G[19], Rule547762);
+    g_RHS* RuleTK_FIELDIDTK_DOTTK_WHILE = NULL;
+    RuleTK_FIELDIDTK_DOTTK_WHILE = insertIntoRule(RuleTK_FIELDIDTK_DOTTK_WHILE,eps, true);
+    G[19] = insertRuleList(G[19], RuleTK_FIELDIDTK_DOTTK_WHILE);
 
     G[20] = NULL;
-    g_RHS* Rule216042 = NULL;
-    Rule216042 = insertIntoRule(Rule216042,20, false);
-    Rule216042 = insertIntoRule(Rule216042,21, false);
-    G[20] = insertRuleList(G[20], Rule216042);
+    g_RHS* Rule21TK_PARAMETERS42 = NULL;
+    Rule21TK_PARAMETERS42 = insertIntoRule(Rule21TK_PARAMETERS42,20, false);
+    Rule21TK_PARAMETERS42 = insertIntoRule(Rule21TK_PARAMETERS42,21, false);
+    G[20] = insertRuleList(G[20], Rule21TK_PARAMETERS42);
 
-    g_RHS* Rule485571 = NULL;
-    Rule485571 = insertIntoRule(Rule485571,51, true);
-    G[20] = insertRuleList(G[20], Rule485571);
+    g_RHS* Rule48TK_IDTK_OUTPUT = NULL;
+    Rule48TK_IDTK_OUTPUT = insertIntoRule(Rule48TK_IDTK_OUTPUT,eps, true);
+    G[20] = insertRuleList(G[20], Rule48TK_IDTK_OUTPUT);
 
     G[21] = NULL;
-    g_RHS* Rule425397 = NULL;
-    Rule425397 = insertIntoRule(Rule425397,22, false);
-    G[21] = insertRuleList(G[21], Rule425397);
+    g_RHS* Rule42TK_COMMENTTK_NOT = NULL;
+    Rule42TK_COMMENTTK_NOT = insertIntoRule(Rule42TK_COMMENTTK_NOT,22, false);
+    G[21] = insertRuleList(G[21], Rule42TK_COMMENTTK_NOT);
 
-    g_RHS* Rule965149 = NULL;
-    Rule965149 = insertIntoRule(Rule965149,28, false);
-    G[21] = insertRuleList(G[21], Rule965149);
+    g_RHS* RuleTK_OReps49 = NULL;
+    RuleTK_OReps49 = insertIntoRule(RuleTK_OReps49,28, false);
+    G[21] = insertRuleList(G[21], RuleTK_OReps49);
 
-    g_RHS* Rule515461 = NULL;
-    Rule515461 = insertIntoRule(Rule515461,29, false);
-    G[21] = insertRuleList(G[21], Rule515461);
+    g_RHS* RuleepsTK_FIELDIDTK_END = NULL;
+    RuleepsTK_FIELDIDTK_END = insertIntoRule(RuleepsTK_FIELDIDTK_END,29, false);
+    G[21] = insertRuleList(G[21], RuleepsTK_FIELDIDTK_END);
 
-    g_RHS* Rule867604 = NULL;
-    Rule867604 = insertIntoRule(Rule867604,31, false);
-    G[21] = insertRuleList(G[21], Rule867604);
+    g_RHS* Rule8TK_LISTTK_PARAMETERS4 = NULL;
+    Rule8TK_LISTTK_PARAMETERS4 = insertIntoRule(Rule8TK_LISTTK_PARAMETERS4,31, false);
+    G[21] = insertRuleList(G[21], Rule8TK_LISTTK_PARAMETERS4);
 
-    g_RHS* Rule788056 = NULL;
-    Rule788056 = insertIntoRule(Rule788056,25, false);
-    G[21] = insertRuleList(G[21], Rule788056);
+    g_RHS* RuleTK_ENDWHILETK_CLTK_NUM = NULL;
+    RuleTK_ENDWHILETK_CLTK_NUM = insertIntoRule(RuleTK_ENDWHILETK_CLTK_NUM,25, false);
+    G[21] = insertRuleList(G[21], RuleTK_ENDWHILETK_CLTK_NUM);
 
     G[22] = NULL;
-    g_RHS* Rule854326 = NULL;
-    Rule854326 = insertIntoRule(Rule854326,75, true);
-    Rule854326 = insertIntoRule(Rule854326,34, false);
-    Rule854326 = insertIntoRule(Rule854326,52, true);
-    Rule854326 = insertIntoRule(Rule854326,23, false);
-    G[22] = insertRuleList(G[22], Rule854326);
+    g_RHS* Rule8TK_FIELDID326 = NULL;
+    Rule8TK_FIELDID326 = insertIntoRule(Rule8TK_FIELDID326,TK_SEM, true);
+    Rule8TK_FIELDID326 = insertIntoRule(Rule8TK_FIELDID326,34, false);
+    Rule8TK_FIELDID326 = insertIntoRule(Rule8TK_FIELDID326,TK_ASSIGNOP, true);
+    Rule8TK_FIELDID326 = insertIntoRule(Rule8TK_FIELDID326,23, false);
+    G[22] = insertRuleList(G[22], Rule8TK_FIELDID326);
 
     G[23] = NULL;
-    g_RHS* Rule996835 = NULL;
-    Rule996835 = insertIntoRule(Rule996835,33, false);
-    Rule996835 = insertIntoRule(Rule996835,55, true);
-    G[23] = insertRuleList(G[23], Rule996835);
+    g_RHS* RuleTK_LETK_SQL35 = NULL;
+    RuleTK_LETK_SQL35 = insertIntoRule(RuleTK_LETK_SQL35,33, false);
+    RuleTK_LETK_SQL35 = insertIntoRule(RuleTK_LETK_SQL35,TK_ID, true);
+    G[23] = insertRuleList(G[23], RuleTK_LETK_SQL35);
 
     G[33] = NULL;
-    g_RHS* Rule495311 = NULL;
-    Rule495311 = insertIntoRule(Rule495311,51, true);
-    G[33] = insertRuleList(G[33], Rule495311);
+    g_RHS* Rule49TK_COMMENT11 = NULL;
+    Rule49TK_COMMENT11 = insertIntoRule(Rule49TK_COMMENT11,eps, true);
+    G[33] = insertRuleList(G[33], Rule49TK_COMMENT11);
 
     G[33] = NULL;
-    g_RHS* Rule540189 = NULL;
-    Rule540189 = insertIntoRule(Rule540189,42, false);
-    Rule540189 = insertIntoRule(Rule540189,41, false);
-    G[33] = insertRuleList(G[33], Rule540189);
+    g_RHS* RuleTK_FIELDID01TK_MUL = NULL;
+    RuleTK_FIELDID01TK_MUL = insertIntoRule(RuleTK_FIELDID01TK_MUL,42, false);
+    RuleTK_FIELDID01TK_MUL = insertIntoRule(RuleTK_FIELDID01TK_MUL,41, false);
+    G[33] = insertRuleList(G[33], RuleTK_FIELDID01TK_MUL);
 
     G[41] = NULL;
-    g_RHS* Rule314852 = NULL;
-    Rule314852 = insertIntoRule(Rule314852,54, true);
-    Rule314852 = insertIntoRule(Rule314852,77, true);
-    G[41] = insertRuleList(G[41], Rule314852);
+    g_RHS* Rule3148TK_ASSIGNOP = NULL;
+    Rule3148TK_ASSIGNOP = insertIntoRule(Rule3148TK_ASSIGNOP,TK_FIELDID, true);
+    Rule3148TK_ASSIGNOP = insertIntoRule(Rule3148TK_ASSIGNOP,TK_DOT, true);
+    G[41] = insertRuleList(G[41], Rule3148TK_ASSIGNOP);
 
     G[42] = NULL;
-    g_RHS* Rule288892 = NULL;
-    Rule288892 = insertIntoRule(Rule288892,42, false);
-    Rule288892 = insertIntoRule(Rule288892,41, false);
-    G[42] = insertRuleList(G[42], Rule288892);
+    g_RHS* Rule2TK_MINUSTK_MUL2 = NULL;
+    Rule2TK_MINUSTK_MUL2 = insertIntoRule(Rule2TK_MINUSTK_MUL2,42, false);
+    Rule2TK_MINUSTK_MUL2 = insertIntoRule(Rule2TK_MINUSTK_MUL2,41, false);
+    G[42] = insertRuleList(G[42], Rule2TK_MINUSTK_MUL2);
 
     G[42] = NULL;
-    g_RHS* Rule7077 = NULL;
-    Rule7077 = insertIntoRule(Rule7077,51, true);
-    G[42] = insertRuleList(G[42], Rule7077);
+    g_RHS* RuleTK_INPUTTK_DOT = NULL;
+    RuleTK_INPUTTK_DOT = insertIntoRule(RuleTK_INPUTTK_DOT,eps, true);
+    G[42] = insertRuleList(G[42], RuleTK_INPUTTK_DOT);
 
     G[25] = NULL;
-    g_RHS* Rule381719 = NULL;
-    Rule381719 = insertIntoRule(Rule381719,75, true);
-    Rule381719 = insertIntoRule(Rule381719,27, false);
-    Rule381719 = insertIntoRule(Rule381719,60, true);
-    Rule381719 = insertIntoRule(Rule381719,59, true);
-    Rule381719 = insertIntoRule(Rule381719,58, true);
-    Rule381719 = insertIntoRule(Rule381719,91, true);
-    Rule381719 = insertIntoRule(Rule381719,26, false);
-    G[25] = insertRuleList(G[25], Rule381719);
+    g_RHS* Rule3TK_IFTK_OUTPUT9 = NULL;
+    Rule3TK_IFTK_OUTPUT9 = insertIntoRule(Rule3TK_IFTK_OUTPUT9,TK_SEM, true);
+    Rule3TK_IFTK_OUTPUT9 = insertIntoRule(Rule3TK_IFTK_OUTPUT9,27, false);
+    Rule3TK_IFTK_OUTPUT9 = insertIntoRule(Rule3TK_IFTK_OUTPUT9,TK_PARAMETERS, true);
+    Rule3TK_IFTK_OUTPUT9 = insertIntoRule(Rule3TK_IFTK_OUTPUT9,TK_WITH, true);
+    Rule3TK_IFTK_OUTPUT9 = insertIntoRule(Rule3TK_IFTK_OUTPUT9,TK_FUNID, true);
+    Rule3TK_IFTK_OUTPUT9 = insertIntoRule(Rule3TK_IFTK_OUTPUT9,TK_CALL, true);
+    Rule3TK_IFTK_OUTPUT9 = insertIntoRule(Rule3TK_IFTK_OUTPUT9,26, false);
+    G[25] = insertRuleList(G[25], Rule3TK_IFTK_OUTPUT9);
 
     G[26] = NULL;
-    g_RHS* Rule377416 = NULL;
-    Rule377416 = insertIntoRule(Rule377416,52, true);
-    Rule377416 = insertIntoRule(Rule377416,69, true);
-    Rule377416 = insertIntoRule(Rule377416,49, false);
-    Rule377416 = insertIntoRule(Rule377416,68, true);
-    G[26] = insertRuleList(G[26], Rule377416);
+    g_RHS* Rule37TK_COMMA16 = NULL;
+    Rule37TK_COMMA16 = insertIntoRule(Rule37TK_COMMA16,TK_ASSIGNOP, true);
+    Rule37TK_COMMA16 = insertIntoRule(Rule37TK_COMMA16,TK_SQR, true);
+    Rule37TK_COMMA16 = insertIntoRule(Rule37TK_COMMA16,49, false);
+    Rule37TK_COMMA16 = insertIntoRule(Rule37TK_COMMA16,TK_SQL, true);
+    G[26] = insertRuleList(G[26], Rule37TK_COMMA16);
 
-    g_RHS* Rule478079 = NULL;
-    Rule478079 = insertIntoRule(Rule478079,51, true);
-    G[26] = insertRuleList(G[26], Rule478079);
+    g_RHS* Rule4TK_ENDWHILE0TK_OP = NULL;
+    Rule4TK_ENDWHILE0TK_OP = insertIntoRule(Rule4TK_ENDWHILE0TK_OP,eps, true);
+    G[26] = insertRuleList(G[26], Rule4TK_ENDWHILE0TK_OP);
 
     G[27] = NULL;
-    g_RHS* Rule843901 = NULL;
-    Rule843901 = insertIntoRule(Rule843901,69, true);
-    Rule843901 = insertIntoRule(Rule843901,49, false);
-    Rule843901 = insertIntoRule(Rule843901,68, true);
-    G[27] = insertRuleList(G[27], Rule843901);
+    g_RHS* RuleTK_READ3TK_DIV1 = NULL;
+    RuleTK_READ3TK_DIV1 = insertIntoRule(RuleTK_READ3TK_DIV1,TK_SQR, true);
+    RuleTK_READ3TK_DIV1 = insertIntoRule(RuleTK_READ3TK_DIV1,49, false);
+    RuleTK_READ3TK_DIV1 = insertIntoRule(RuleTK_READ3TK_DIV1,TK_SQL, true);
+    G[27] = insertRuleList(G[27], RuleTK_READ3TK_DIV1);
 
     G[28] = NULL;
-    g_RHS* Rule307932 = NULL;
-    Rule307932 = insertIntoRule(Rule307932,78, true);
-    Rule307932 = insertIntoRule(Rule307932,20, false);
-    Rule307932 = insertIntoRule(Rule307932,21, false);
-    Rule307932 = insertIntoRule(Rule307932,80, true);
-    Rule307932 = insertIntoRule(Rule307932,43, false);
-    Rule307932 = insertIntoRule(Rule307932,79, true);
-    Rule307932 = insertIntoRule(Rule307932,62, true);
-    G[28] = insertRuleList(G[28], Rule307932);
+    g_RHS* Rule30TK_OP32 = NULL;
+    Rule30TK_OP32 = insertIntoRule(Rule30TK_OP32,TK_ENDWHILE, true);
+    Rule30TK_OP32 = insertIntoRule(Rule30TK_OP32,20, false);
+    Rule30TK_OP32 = insertIntoRule(Rule30TK_OP32,21, false);
+    Rule30TK_OP32 = insertIntoRule(Rule30TK_OP32,TK_CL, true);
+    Rule30TK_OP32 = insertIntoRule(Rule30TK_OP32,43, false);
+    Rule30TK_OP32 = insertIntoRule(Rule30TK_OP32,TK_OP, true);
+    Rule30TK_OP32 = insertIntoRule(Rule30TK_OP32,TK_WHILE, true);
+    G[28] = insertRuleList(G[28], Rule30TK_OP32);
 
     G[29] = NULL;
-    g_RHS* Rule280473 = NULL;
-    Rule280473 = insertIntoRule(Rule280473,30, false);
-    Rule280473 = insertIntoRule(Rule280473,20, false);
-    Rule280473 = insertIntoRule(Rule280473,21, false);
-    Rule280473 = insertIntoRule(Rule280473,82, true);
-    Rule280473 = insertIntoRule(Rule280473,80, true);
-    Rule280473 = insertIntoRule(Rule280473,43, false);
-    Rule280473 = insertIntoRule(Rule280473,79, true);
-    Rule280473 = insertIntoRule(Rule280473,81, true);
-    G[29] = insertRuleList(G[29], Rule280473);
+    g_RHS* Rule2TK_CL4TK_REAL = NULL;
+    Rule2TK_CL4TK_REAL = insertIntoRule(Rule2TK_CL4TK_REAL,30, false);
+    Rule2TK_CL4TK_REAL = insertIntoRule(Rule2TK_CL4TK_REAL,20, false);
+    Rule2TK_CL4TK_REAL = insertIntoRule(Rule2TK_CL4TK_REAL,21, false);
+    Rule2TK_CL4TK_REAL = insertIntoRule(Rule2TK_CL4TK_REAL,TK_THEN, true);
+    Rule2TK_CL4TK_REAL = insertIntoRule(Rule2TK_CL4TK_REAL,TK_CL, true);
+    Rule2TK_CL4TK_REAL = insertIntoRule(Rule2TK_CL4TK_REAL,43, false);
+    Rule2TK_CL4TK_REAL = insertIntoRule(Rule2TK_CL4TK_REAL,TK_OP, true);
+    Rule2TK_CL4TK_REAL = insertIntoRule(Rule2TK_CL4TK_REAL,TK_IF, true);
+    G[29] = insertRuleList(G[29], Rule2TK_CL4TK_REAL);
 
     G[30] = NULL;
-    g_RHS* Rule516166 = NULL;
-    Rule516166 = insertIntoRule(Rule516166,83, true);
-    Rule516166 = insertIntoRule(Rule516166,20, false);
-    Rule516166 = insertIntoRule(Rule516166,21, false);
-    Rule516166 = insertIntoRule(Rule516166,94, true);
-    G[30] = insertRuleList(G[30], Rule516166);
+    g_RHS* RuleepsTK_ENDTK_PARAMETER = NULL;
+    RuleepsTK_ENDTK_PARAMETER = insertIntoRule(RuleepsTK_ENDTK_PARAMETER,TK_ENDIF, true);
+    RuleepsTK_ENDTK_PARAMETER = insertIntoRule(RuleepsTK_ENDTK_PARAMETER,20, false);
+    RuleepsTK_ENDTK_PARAMETER = insertIntoRule(RuleepsTK_ENDTK_PARAMETER,21, false);
+    RuleepsTK_ENDTK_PARAMETER = insertIntoRule(RuleepsTK_ENDTK_PARAMETER,TK_ELSE, true);
+    G[30] = insertRuleList(G[30], RuleepsTK_ENDTK_PARAMETER);
 
-    g_RHS* Rule190139 = NULL;
-    Rule190139 = insertIntoRule(Rule190139,83, true);
-    G[30] = insertRuleList(G[30], Rule190139);
+    g_RHS* Rule1TK_DIV139 = NULL;
+    Rule1TK_DIV139 = insertIntoRule(Rule1TK_DIV139,TK_ENDIF, true);
+    G[30] = insertRuleList(G[30], Rule1TK_DIV139);
 
     G[31] = NULL;
-    g_RHS* Rule887236 = NULL;
-    Rule887236 = insertIntoRule(Rule887236,75, true);
-    Rule887236 = insertIntoRule(Rule887236,80, true);
-    Rule887236 = insertIntoRule(Rule887236,44, false);
-    Rule887236 = insertIntoRule(Rule887236,79, true);
-    Rule887236 = insertIntoRule(Rule887236,84, true);
-    G[31] = insertRuleList(G[31], Rule887236);
+    g_RHS* RuleTK_MINUSTK_INT36 = NULL;
+    RuleTK_MINUSTK_INT36 = insertIntoRule(RuleTK_MINUSTK_INT36,TK_SEM, true);
+    RuleTK_MINUSTK_INT36 = insertIntoRule(RuleTK_MINUSTK_INT36,TK_CL, true);
+    RuleTK_MINUSTK_INT36 = insertIntoRule(RuleTK_MINUSTK_INT36,44, false);
+    RuleTK_MINUSTK_INT36 = insertIntoRule(RuleTK_MINUSTK_INT36,TK_OP, true);
+    RuleTK_MINUSTK_INT36 = insertIntoRule(RuleTK_MINUSTK_INT36,TK_READ, true);
+    G[31] = insertRuleList(G[31], RuleTK_MINUSTK_INT36);
 
-    g_RHS* Rule386388 = NULL;
-    Rule386388 = insertIntoRule(Rule386388,75, true);
-    Rule386388 = insertIntoRule(Rule386388,80, true);
-    Rule386388 = insertIntoRule(Rule386388,44, false);
-    Rule386388 = insertIntoRule(Rule386388,79, true);
-    Rule386388 = insertIntoRule(Rule386388,85, true);
-    G[31] = insertRuleList(G[31], Rule386388);
+    g_RHS* Rule38TK_TYPETK_MINUS = NULL;
+    Rule38TK_TYPETK_MINUS = insertIntoRule(Rule38TK_TYPETK_MINUS,TK_SEM, true);
+    Rule38TK_TYPETK_MINUS = insertIntoRule(Rule38TK_TYPETK_MINUS,TK_CL, true);
+    Rule38TK_TYPETK_MINUS = insertIntoRule(Rule38TK_TYPETK_MINUS,44, false);
+    Rule38TK_TYPETK_MINUS = insertIntoRule(Rule38TK_TYPETK_MINUS,TK_OP, true);
+    Rule38TK_TYPETK_MINUS = insertIntoRule(Rule38TK_TYPETK_MINUS,TK_WRITE, true);
+    G[31] = insertRuleList(G[31], Rule38TK_TYPETK_MINUS);
 
     G[34] = NULL;
-    g_RHS* Rule947820 = NULL;
-    Rule947820 = insertIntoRule(Rule947820,35, false);
-    Rule947820 = insertIntoRule(Rule947820,36, false);
-    G[34] = insertRuleList(G[34], Rule947820);
+    g_RHS* RuleTK_ELSETK_ENDWHILE20 = NULL;
+    RuleTK_ELSETK_ENDWHILE20 = insertIntoRule(RuleTK_ELSETK_ENDWHILE20,35, false);
+    RuleTK_ELSETK_ENDWHILE20 = insertIntoRule(RuleTK_ELSETK_ENDWHILE20,36, false);
+    G[34] = insertRuleList(G[34], RuleTK_ELSETK_ENDWHILE20);
 
     G[35] = NULL;
-    g_RHS* Rule654984 = NULL;
-    Rule654984 = insertIntoRule(Rule654984,35, false);
-    Rule654984 = insertIntoRule(Rule654984,36, false);
-    Rule654984 = insertIntoRule(Rule654984,40, false);
-    G[35] = insertRuleList(G[35], Rule654984);
+    g_RHS* Rule6TK_FIELDID9TK_READ = NULL;
+    Rule6TK_FIELDID9TK_READ = insertIntoRule(Rule6TK_FIELDID9TK_READ,35, false);
+    Rule6TK_FIELDID9TK_READ = insertIntoRule(Rule6TK_FIELDID9TK_READ,36, false);
+    Rule6TK_FIELDID9TK_READ = insertIntoRule(Rule6TK_FIELDID9TK_READ,40, false);
+    G[35] = insertRuleList(G[35], Rule6TK_FIELDID9TK_READ);
 
-    g_RHS* Rule587669 = NULL;
-    Rule587669 = insertIntoRule(Rule587669,51, true);
-    G[35] = insertRuleList(G[35], Rule587669);
+    g_RHS* RuleTK_FUNID7TK_PARAMETER9 = NULL;
+    RuleTK_FUNID7TK_PARAMETER9 = insertIntoRule(RuleTK_FUNID7TK_PARAMETER9,eps, true);
+    G[35] = insertRuleList(G[35], RuleTK_FUNID7TK_PARAMETER9);
 
     G[36] = NULL;
-    g_RHS* Rule23762 = NULL;
-    Rule23762 = insertIntoRule(Rule23762,37, false);
-    Rule23762 = insertIntoRule(Rule23762,38, false);
-    G[36] = insertRuleList(G[36], Rule23762);
+    g_RHS* Rule237TK_WHILE = NULL;
+    Rule237TK_WHILE = insertIntoRule(Rule237TK_WHILE,37, false);
+    Rule237TK_WHILE = insertIntoRule(Rule237TK_WHILE,38, false);
+    G[36] = insertRuleList(G[36], Rule237TK_WHILE);
 
     G[37] = NULL;
-    g_RHS* Rule884708 = NULL;
-    Rule884708 = insertIntoRule(Rule884708,37, false);
-    Rule884708 = insertIntoRule(Rule884708,38, false);
-    Rule884708 = insertIntoRule(Rule884708,39, false);
-    G[37] = insertRuleList(G[37], Rule884708);
+    g_RHS* Rule8TK_READTK_INPUT8 = NULL;
+    Rule8TK_READTK_INPUT8 = insertIntoRule(Rule8TK_READTK_INPUT8,37, false);
+    Rule8TK_READTK_INPUT8 = insertIntoRule(Rule8TK_READTK_INPUT8,38, false);
+    Rule8TK_READTK_INPUT8 = insertIntoRule(Rule8TK_READTK_INPUT8,39, false);
+    G[37] = insertRuleList(G[37], Rule8TK_READTK_INPUT8);
 
-    g_RHS* Rule934942 = NULL;
-    Rule934942 = insertIntoRule(Rule934942,51, true);
-    G[37] = insertRuleList(G[37], Rule934942);
+    g_RHS* RuleTK_ENDRECORD4TK_ELSE2 = NULL;
+    RuleTK_ENDRECORD4TK_ELSE2 = insertIntoRule(RuleTK_ENDRECORD4TK_ELSE2,eps, true);
+    G[37] = insertRuleList(G[37], RuleTK_ENDRECORD4TK_ELSE2);
 
     G[38] = NULL;
-    g_RHS* Rule458110 = NULL;
-    Rule458110 = insertIntoRule(Rule458110,80, true);
-    Rule458110 = insertIntoRule(Rule458110,34, false);
-    Rule458110 = insertIntoRule(Rule458110,79, true);
-    G[38] = insertRuleList(G[38], Rule458110);
+    g_RHS* Rule4TK_FUNIDTK_DEFINETYPE = NULL;
+    Rule4TK_FUNIDTK_DEFINETYPE = insertIntoRule(Rule4TK_FUNIDTK_DEFINETYPE,TK_CL, true);
+    Rule4TK_FUNIDTK_DEFINETYPE = insertIntoRule(Rule4TK_FUNIDTK_DEFINETYPE,34, false);
+    Rule4TK_FUNIDTK_DEFINETYPE = insertIntoRule(Rule4TK_FUNIDTK_DEFINETYPE,TK_OP, true);
+    G[38] = insertRuleList(G[38], Rule4TK_FUNIDTK_DEFINETYPE);
 
-    g_RHS* Rule582613 = NULL;
-    Rule582613 = insertIntoRule(Rule582613,44, false);
-    G[38] = insertRuleList(G[38], Rule582613);
+    g_RHS* RuleTK_FUNID2TK_END3 = NULL;
+    RuleTK_FUNID2TK_END3 = insertIntoRule(RuleTK_FUNID2TK_END3,44, false);
+    G[38] = insertRuleList(G[38], RuleTK_FUNID2TK_END3);
 
     G[39] = NULL;
-    g_RHS* Rule856761 = NULL;
-    Rule856761 = insertIntoRule(Rule856761,89, true);
-    G[39] = insertRuleList(G[39], Rule856761);
+    g_RHS* Rule8TK_NUM7TK_END = NULL;
+    Rule8TK_NUM7TK_END = insertIntoRule(Rule8TK_NUM7TK_END,TK_MUL, true);
+    G[39] = insertRuleList(G[39], Rule8TK_NUM7TK_END);
 
-    g_RHS* Rule128228 = NULL;
-    Rule128228 = insertIntoRule(Rule128228,90, true);
-    G[39] = insertRuleList(G[39], Rule128228);
+    g_RHS* Rule12TK_THEN28 = NULL;
+    Rule12TK_THEN28 = insertIntoRule(Rule12TK_THEN28,TK_DIV, true);
+    G[39] = insertRuleList(G[39], Rule12TK_THEN28);
 
     G[40] = NULL;
-    g_RHS* Rule189832 = NULL;
-    Rule189832 = insertIntoRule(Rule189832,87, true);
-    G[40] = insertRuleList(G[40], Rule189832);
+    g_RHS* Rule1TK_MULTK_ENDIF2 = NULL;
+    Rule1TK_MULTK_ENDIF2 = insertIntoRule(Rule1TK_MULTK_ENDIF2,TK_PLUS, true);
+    G[40] = insertRuleList(G[40], Rule1TK_MULTK_ENDIF2);
 
-    g_RHS* Rule260401 = NULL;
-    Rule260401 = insertIntoRule(Rule260401,88, true);
-    G[40] = insertRuleList(G[40], Rule260401);
+    g_RHS* Rule2TK_PARAMETERS401 = NULL;
+    Rule2TK_PARAMETERS401 = insertIntoRule(Rule2TK_PARAMETERS401,TK_MINUS, true);
+    G[40] = insertRuleList(G[40], Rule2TK_PARAMETERS401);
 
     G[43] = NULL;
-    g_RHS* Rule156608 = NULL;
-    Rule156608 = insertIntoRule(Rule156608,80, true);
-    Rule156608 = insertIntoRule(Rule156608,43, false);
-    Rule156608 = insertIntoRule(Rule156608,79, true);
-    Rule156608 = insertIntoRule(Rule156608,45, false);
-    Rule156608 = insertIntoRule(Rule156608,80, true);
-    Rule156608 = insertIntoRule(Rule156608,43, false);
-    Rule156608 = insertIntoRule(Rule156608,79, true);
-    G[43] = insertRuleList(G[43], Rule156608);
+    g_RHS* Rule1TK_NUMTK_PARAMETERS8 = NULL;
+    Rule1TK_NUMTK_PARAMETERS8 = insertIntoRule(Rule1TK_NUMTK_PARAMETERS8,TK_CL, true);
+    Rule1TK_NUMTK_PARAMETERS8 = insertIntoRule(Rule1TK_NUMTK_PARAMETERS8,43, false);
+    Rule1TK_NUMTK_PARAMETERS8 = insertIntoRule(Rule1TK_NUMTK_PARAMETERS8,TK_OP, true);
+    Rule1TK_NUMTK_PARAMETERS8 = insertIntoRule(Rule1TK_NUMTK_PARAMETERS8,45, false);
+    Rule1TK_NUMTK_PARAMETERS8 = insertIntoRule(Rule1TK_NUMTK_PARAMETERS8,TK_CL, true);
+    Rule1TK_NUMTK_PARAMETERS8 = insertIntoRule(Rule1TK_NUMTK_PARAMETERS8,43, false);
+    Rule1TK_NUMTK_PARAMETERS8 = insertIntoRule(Rule1TK_NUMTK_PARAMETERS8,TK_OP, true);
+    G[43] = insertRuleList(G[43], Rule1TK_NUMTK_PARAMETERS8);
 
-    g_RHS* Rule333934 = NULL;
-    Rule333934 = insertIntoRule(Rule333934,44, false);
-    Rule333934 = insertIntoRule(Rule333934,46, false);
-    Rule333934 = insertIntoRule(Rule333934,44, false);
-    G[43] = insertRuleList(G[43], Rule333934);
+    g_RHS* Rule333TK_ENDRECORD4 = NULL;
+    Rule333TK_ENDRECORD4 = insertIntoRule(Rule333TK_ENDRECORD4,44, false);
+    Rule333TK_ENDRECORD4 = insertIntoRule(Rule333TK_ENDRECORD4,46, false);
+    Rule333TK_ENDRECORD4 = insertIntoRule(Rule333TK_ENDRECORD4,44, false);
+    G[43] = insertRuleList(G[43], Rule333TK_ENDRECORD4);
 
-    g_RHS* Rule85068 = NULL;
-    Rule85068 = insertIntoRule(Rule85068,80, true);
-    Rule85068 = insertIntoRule(Rule85068,43, false);
-    Rule85068 = insertIntoRule(Rule85068,79, true);
-    Rule85068 = insertIntoRule(Rule85068,97, true);
-    G[43] = insertRuleList(G[43], Rule85068);
+    g_RHS* RuleTK_WRITE0TK_SQL = NULL;
+    RuleTK_WRITE0TK_SQL = insertIntoRule(RuleTK_WRITE0TK_SQL,TK_CL, true);
+    RuleTK_WRITE0TK_SQL = insertIntoRule(RuleTK_WRITE0TK_SQL,43, false);
+    RuleTK_WRITE0TK_SQL = insertIntoRule(RuleTK_WRITE0TK_SQL,TK_OP, true);
+    RuleTK_WRITE0TK_SQL = insertIntoRule(RuleTK_WRITE0TK_SQL,TK_NOT, true);
+    G[43] = insertRuleList(G[43], RuleTK_WRITE0TK_SQL);
 
     G[44] = NULL;
-    g_RHS* Rule959415 = NULL;
-    Rule959415 = insertIntoRule(Rule959415,23, false);
-    G[44] = insertRuleList(G[44], Rule959415);
+    g_RHS* Rule9TK_WITH415 = NULL;
+    Rule9TK_WITH415 = insertIntoRule(Rule9TK_WITH415,23, false);
+    G[44] = insertRuleList(G[44], Rule9TK_WITH415);
 
-    g_RHS* Rule559772 = NULL;
-    Rule559772 = insertIntoRule(Rule559772,56, true);
-    G[44] = insertRuleList(G[44], Rule559772);
+    g_RHS* RuleTK_IDTK_NOTTK_INT = NULL;
+    RuleTK_IDTK_NOTTK_INT = insertIntoRule(RuleTK_IDTK_NOTTK_INT,TK_NUM, true);
+    G[44] = insertRuleList(G[44], RuleTK_IDTK_NOTTK_INT);
 
-    g_RHS* Rule661976 = NULL;
-    Rule661976 = insertIntoRule(Rule661976,57, true);
-    G[44] = insertRuleList(G[44], Rule661976);
+    g_RHS* Rule6TK_END9TK_COLON = NULL;
+    Rule6TK_END9TK_COLON = insertIntoRule(Rule6TK_END9TK_COLON,TK_RNUM, true);
+    G[44] = insertRuleList(G[44], Rule6TK_END9TK_COLON);
 
     G[45] = NULL;
-    g_RHS* Rule741429 = NULL;
-    Rule741429 = insertIntoRule(Rule741429,95, true);
-    G[45] = insertRuleList(G[45], Rule741429);
+    g_RHS* RuleTK_COMMA1429 = NULL;
+    RuleTK_COMMA1429 = insertIntoRule(RuleTK_COMMA1429,TK_AND, true);
+    G[45] = insertRuleList(G[45], RuleTK_COMMA1429);
 
-    g_RHS* Rule969827 = NULL;
-    Rule969827 = insertIntoRule(Rule969827,96, true);
-    G[45] = insertRuleList(G[45], Rule969827);
+    g_RHS* Rule9TK_SQRTK_THEN7 = NULL;
+    Rule9TK_SQRTK_THEN7 = insertIntoRule(Rule9TK_SQRTK_THEN7,TK_OR, true);
+    G[45] = insertRuleList(G[45], Rule9TK_SQRTK_THEN7);
 
     G[46] = NULL;
-    g_RHS* Rule851079 = NULL;
-    Rule851079 = insertIntoRule(Rule851079,98, true);
-    G[46] = insertRuleList(G[46], Rule851079);
+    g_RHS* Rule8eps0TK_OP = NULL;
+    Rule8eps0TK_OP = insertIntoRule(Rule8eps0TK_OP,TK_LT, true);
+    G[46] = insertRuleList(G[46], Rule8eps0TK_OP);
 
-    g_RHS* Rule804224 = NULL;
-    Rule804224 = insertIntoRule(Rule804224,99, true);
-    G[46] = insertRuleList(G[46], Rule804224);
+    g_RHS* RuleTK_CL4224 = NULL;
+    RuleTK_CL4224 = insertIntoRule(RuleTK_CL4224,TK_LE, true);
+    G[46] = insertRuleList(G[46], RuleTK_CL4224);
 
-    g_RHS* Rule324551 = NULL;
-    Rule324551 = insertIntoRule(Rule324551,101, true);
-    G[46] = insertRuleList(G[46], Rule324551);
+    g_RHS* Rule3245eps = NULL;
+    Rule3245eps = insertIntoRule(Rule3245eps,TK_EQ, true);
+    G[46] = insertRuleList(G[46], Rule3245eps);
 
-    g_RHS* Rule237761 = NULL;
-    Rule237761 = insertIntoRule(Rule237761,102, true);
-    G[46] = insertRuleList(G[46], Rule237761);
+    g_RHS* Rule23TK_DOTTK_END = NULL;
+    Rule23TK_DOTTK_END = insertIntoRule(Rule23TK_DOTTK_END,TK_GT, true);
+    G[46] = insertRuleList(G[46], Rule23TK_DOTTK_END);
 
-    g_RHS* Rule416836 = NULL;
-    Rule416836 = insertIntoRule(Rule416836,103, true);
-    G[46] = insertRuleList(G[46], Rule416836);
+    g_RHS* Rule41TK_SQL36 = NULL;
+    Rule41TK_SQL36 = insertIntoRule(Rule41TK_SQL36,TK_GE, true);
+    G[46] = insertRuleList(G[46], Rule41TK_SQL36);
 
-    g_RHS* Rule872933 = NULL;
-    Rule872933 = insertIntoRule(Rule872933,104, true);
-    G[46] = insertRuleList(G[46], Rule872933);
+    g_RHS* Rule8TK_INTTK_ENDRECORD3 = NULL;
+    Rule8TK_INTTK_ENDRECORD3 = insertIntoRule(Rule8TK_INTTK_ENDRECORD3,TK_NE, true);
+    G[46] = insertRuleList(G[46], Rule8TK_INTTK_ENDRECORD3);
 
     G[47] = NULL;
-    g_RHS* Rule146010 = NULL;
-    Rule146010 = insertIntoRule(Rule146010,75, true);
-    Rule146010 = insertIntoRule(Rule146010,48, false);
-    Rule146010 = insertIntoRule(Rule146010,86, true);
-    G[47] = insertRuleList(G[47], Rule146010);
+    g_RHS* Rule14TK_PARAMETERS10 = NULL;
+    Rule14TK_PARAMETERS10 = insertIntoRule(Rule14TK_PARAMETERS10,TK_SEM, true);
+    Rule14TK_PARAMETERS10 = insertIntoRule(Rule14TK_PARAMETERS10,48, false);
+    Rule14TK_PARAMETERS10 = insertIntoRule(Rule14TK_PARAMETERS10,TK_RETURN, true);
+    G[47] = insertRuleList(G[47], Rule14TK_PARAMETERS10);
 
     G[48] = NULL;
     g_RHS* Rule214012 = NULL;
-    Rule214012 = insertIntoRule(Rule214012,69, true);
+    Rule214012 = insertIntoRule(Rule214012,TK_SQR, true);
     Rule214012 = insertIntoRule(Rule214012,49, false);
-    Rule214012 = insertIntoRule(Rule214012,68, true);
+    Rule214012 = insertIntoRule(Rule214012,TK_SQL, true);
     G[48] = insertRuleList(G[48], Rule214012);
 
-    g_RHS* Rule272677 = NULL;
-    Rule272677 = insertIntoRule(Rule272677,51, true);
-    G[48] = insertRuleList(G[48], Rule272677);
+    g_RHS* Rule2TK_INTTK_LIST7 = NULL;
+    Rule2TK_INTTK_LIST7 = insertIntoRule(Rule2TK_INTTK_LIST7,eps, true);
+    G[48] = insertRuleList(G[48], Rule2TK_INTTK_LIST7);
 
     G[49] = NULL;
-    g_RHS* Rule299435 = NULL;
-    Rule299435 = insertIntoRule(Rule299435,50, false);
-    Rule299435 = insertIntoRule(Rule299435,55, true);
-    G[49] = insertRuleList(G[49], Rule299435);
+    g_RHS* Rule29TK_ELSE35 = NULL;
+    Rule29TK_ELSE35 = insertIntoRule(Rule29TK_ELSE35,50, false);
+    Rule29TK_ELSE35 = insertIntoRule(Rule29TK_ELSE35,TK_ID, true);
+    G[49] = insertRuleList(G[49], Rule29TK_ELSE35);
 
     G[50] = NULL;
-    g_RHS* Rule889578 = NULL;
-    Rule889578 = insertIntoRule(Rule889578,49, false);
-    Rule889578 = insertIntoRule(Rule889578,74, true);
-    G[50] = insertRuleList(G[50], Rule889578);
+    g_RHS* RuleTK_MINUS9TK_RNUM8 = NULL;
+    RuleTK_MINUS9TK_RNUM8 = insertIntoRule(RuleTK_MINUS9TK_RNUM8,49, false);
+    RuleTK_MINUS9TK_RNUM8 = insertIntoRule(RuleTK_MINUS9TK_RNUM8,TK_COMMA, true);
+    G[50] = insertRuleList(G[50], RuleTK_MINUS9TK_RNUM8);
 
-    g_RHS* Rule506593 = NULL;
-    Rule506593 = insertIntoRule(Rule506593,51, true);
-    G[50] = insertRuleList(G[50], Rule506593);
+    g_RHS* Rule506TK_WITH3 = NULL;
+    Rule506TK_WITH3 = insertIntoRule(Rule506TK_WITH3,eps, true);
+    G[50] = insertRuleList(G[50], Rule506TK_WITH3);
 
-    G[111] = NULL;
-    g_RHS* Rule288585 = NULL;
-    Rule288585 = insertIntoRule(Rule288585,75, true);
-    Rule288585 = insertIntoRule(Rule288585,107, true);
-    Rule288585 = insertIntoRule(Rule288585,100, true);
-    Rule288585 = insertIntoRule(Rule288585,107, true);
-    Rule288585 = insertIntoRule(Rule288585,112, false);
-    Rule288585 = insertIntoRule(Rule288585,110, true);
-    G[111] = insertRuleList(G[111], Rule288585);
+    G[definetypestmt] = NULL; // definetypestmt
+    g_RHS* Rule2TK_MINUSTK_FUNID5 = NULL;
+    Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_SEM, true);
+    Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_RUID, true);
+    Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_AS, true);
+    Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_RUID, true);
+    Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,A, false);
+    Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_DEFINETYPE, true);
+    G[definetypestmt] = insertRuleList(G[definetypestmt], Rule2TK_MINUSTK_FUNID5);
 
-    G[112] = NULL;
-    g_RHS* Rule204291 = NULL;
-    Rule204291 = insertIntoRule(Rule204291,92, true);
-    G[112] = insertRuleList(G[112], Rule204291);
+    G[A] = NULL;
+    g_RHS* Rule2042TK_CALL = NULL;
+    Rule2042TK_CALL = insertIntoRule(Rule2042TK_CALL,TK_RECORD, true);
+    G[A] = insertRuleList(G[A], Rule2042TK_CALL);
 
-    g_RHS* Rule236082 = NULL;
-    Rule236082 = insertIntoRule(Rule236082,108, true);
-    G[112] = insertRuleList(G[112], Rule236082);
+    g_RHS* Rule23TK_PARAMETERSTK_THEN = NULL;
+    Rule23TK_PARAMETERSTK_THEN = insertIntoRule(Rule23TK_PARAMETERSTK_THEN,TK_UNION, true);
+    G[A] = insertRuleList(G[A], Rule23TK_PARAMETERSTK_THEN);
 }
 
-// int main(){
+int main(){
    
-//     // Insert all Grammar Rules
-// 	initGrammar();
+    // Insert all Grammar Rules
+	initGrammar();
 
 
-//     printGrammar(G, 200);
+    printGrammar(G, 200);
   
-//     //populateFirstFollow("First.txt",true);
-//     //printFirst();
+    //populateFirstFollow("First.txt",true);
+    //printFirst();
 
-//     // populateFirstFollow("Follow.txt",false);
-//     // printFollow();
+    // populateFirstFollow("Follow.txt",false);
+    // printFollow();
 
-//     // for(int i = 0; i < NON_TERMINALS; i++){
-//     //     for(int j =0; j<TERMINALS; j++){
-//     //         if(Follow[i][j]){
-//     //             printf("%d\t",j+51);
-//     //         }
-//     //     }
-//     //     printf("\n");
-//     // }
-// }
+    // for(int i = 0; i < NON_TERMINALS; i++){
+    //     for(int j =0; j<TERMINALS; j++){
+    //         if(Follow[i][j]){
+    //             printf("%d\t",j+eps);
+    //         }
+    //     }
+    //     printf("\n");
+    // }
+}

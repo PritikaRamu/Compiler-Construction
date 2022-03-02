@@ -40,6 +40,7 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 	
 }
 
+// Chnage 51
 void printParseTableRow(g_Term NT){
 	printf("NT is: ");
 	printNonTerminal(NT);
@@ -47,7 +48,7 @@ void printParseTableRow(g_Term NT){
 	for(int i=0;i<TERMINALS;i++){
 		if(parseTable[NT][i]){
 			printf("[ Terminal: ");
-			printToken(i+51);
+			printToken(i+eps);
 			printf(", Rule: ");
 			printRule(parseTable[NT][i]);
 			printf("], ");
@@ -56,9 +57,9 @@ void printParseTableRow(g_Term NT){
 
 }
 
-// Works
+// Chnage 51
 bool checkEpsiloninRHSFirst(g_Term NT){
-	return First[NT][eps-51];
+	return First[NT][0];
 }
 
 bool* set_union(bool* A, bool*B, int len){
@@ -75,7 +76,7 @@ bool* set_union(bool* A, bool*B, int len){
     return union_array;
 }
 
-// Works
+// Chnage 51
 bool* computeFirst(g_RHS* head){
 	
 	g_RHS* iter = head; 
@@ -84,7 +85,7 @@ bool* computeFirst(g_RHS* head){
 
 	// Case 1 
 	if(head->isTerminal){
-		first[head->symbol-51] = true;
+		first[head->symbol-eps] = true;
 		return first;
 	}
 

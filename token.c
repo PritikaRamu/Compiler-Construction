@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "gterm.h"
 
 void printNonTerminal(int token)
 {
@@ -161,13 +162,13 @@ void printNonTerminal(int token)
 	case 50:
 		printf("<more_ids> ");
 		break;
-	case 51:
+	case eps:
 		printf("<eps> ");
 		break;
-	case 111:
+	case definetypestmt:
 		printf("<definetypestmt> ");
 		break;
-	case 112:
+	case A:
 		printf("<A> ");
 		break;
 	}
