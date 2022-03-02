@@ -3,8 +3,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include "gterm.h"
-
+#include "token.h"
 // typedef struct treeNode {
 //     gterm symbol;
 //     bool isTerminal;

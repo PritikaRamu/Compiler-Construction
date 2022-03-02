@@ -2,7 +2,7 @@
 #include <string.h>
 #include "parser.h"
 
-#define offset 51
+#define offset eps
 
 tokenInfo arr[5];
 
@@ -80,32 +80,46 @@ parseTree addChildren(g_Term nonterm, g_Term term, Stack* stack, parseTree ptree
 
 parseTree parseInputSourceCode(char* testcaseFile) {
 
-    printf("In psource code\n");
+    printf("In source code\n");
     FILE* fp = startLexer(testcaseFile);
     initTable();
 
     //init stack, push SENTINEL, push start symbol
     Stack* stack = initStack();
     push(stack, SENTINEL);
-    printf("Bruh\n");
-    printToken(top(stack));
-    printf("\n");
-    push(stack, program);
-    printf("Top of the stack: %d\n", top(stack));
+   // printf("Bruh\n");
+    //printToken(top(stack));
+    //printf("\n");
+     push(stack, program);
+     printf("Top of the stack: %d\n", top(stack));
     
     parseTree ptree = initTree(program, 1);
-
+    //printf("Check");
     parseTree curr = ptree;
 
     tokenInfo look = getNextToken();
-    //printToken(look.tid);
-    printf("\n");
+    // if(look.tid>=eps)
+    //  printToken(look.tid);
+    // else 
+    //     printNonTerminal(look.tid);
+    // printf("\n");
     g_RHS* rule;
 
-    while(look.tid == TK_COMMENT) {
+     while(look.tid == TK_COMMENT) {
         look = getNextToken(); //ignore the comments until a newline
     }
 
+    // while(1)
+    //     {
+    //         look = getNextToken();
+    //         if(look.tid==SENTINEL)
+    //             break;
+    //         if(look.tid>=eps)
+    //             printToken(look.tid);
+    //         else 
+    //             printNonTerminal(look.tid);
+    //         printf("\n");
+    //     }
     //printToken(look.tid);
 
     while(1){
@@ -318,6 +332,7 @@ int main(){
 
 
     parseTree ptree = parseInputSourceCode(testFile);
+    printf("Check");
     int numNodes = 0;
     inorderNary(ptree, &numNodes);
     printf("\n\nNumber of nodes in the tree is: %d\n\n", numNodes);

@@ -2,10 +2,8 @@
 #define _PARSEDEF_
 
 #include <stdio.h>
-#include "narytree.h"
-#include "stack.h"
 #include "lexer.h"
-#include "newRules.h"
+
 
 //typedef g_Node table[49][53];
 //typedef g_cell **table;

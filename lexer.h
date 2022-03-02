@@ -2,7 +2,7 @@
 #define _LEXERDEF_
 
 #include <stdio.h>
-#include "symbolTable.h"
+#include "stack.h"
 #define BUFFER_SIZE (1 << 12)
 //#define BUFFER_SIZE 
 

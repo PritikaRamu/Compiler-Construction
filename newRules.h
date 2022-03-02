@@ -4,7 +4,7 @@
 #define NON_TERMINALS 53
 #define TERMINALS 60
 #define NUM_RULES 100
-#include "gterm.h"
+#include "symbolTable.h"
 #include <string.h>
 
 

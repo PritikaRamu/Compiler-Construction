@@ -129,42 +129,42 @@ void printFirstArray(bool* array, int n){
 
 
 
-int main(){
+// int main(){
 	
-	initGrammar(G);
-	//printf("Init grammar working fine");
-	populateFirstFollow("First.txt",true);
-    populateFirstFollow("Follow.txt",false);
+// 	initGrammar(G);
+// 	//printf("Init grammar working fine");
+// 	populateFirstFollow("First.txt",true);
+//     populateFirstFollow("Follow.txt",false);
 
-	// int i = 25;
-	// ruleHead* list = G[i];
-	// while(list!=NULL){
+// 	// int i = 25;
+// 	// ruleHead* list = G[i];
+// 	// while(list!=NULL){
 
-	// 	// if(checkEpsiloninRHSFirst(list->listHead->symbol)){
-	// 	// 	printf("This rule contains epsilon\n");
-	// 	// }
+// 	// 	// if(checkEpsiloninRHSFirst(list->listHead->symbol)){
+// 	// 	// 	printf("This rule contains epsilon\n");
+// 	// 	// }
 
-	// 	// else{
-	// 	// 	printf("This rule does NOT contain epsilon\n");
+// 	// 	// else{
+// 	// 	// 	printf("This rule does NOT contain epsilon\n");
 			
-	// 	// }
+// 	// 	// }
 
-	// 	bool* first = computeFirst(list->listHead);
-	// 	printf("The first of RHS is:\n");
-	// 	printFirstArray(first, TERMINALS);
+// 	// 	bool* first = computeFirst(list->listHead);
+// 	// 	printf("The first of RHS is:\n");
+// 	// 	printFirstArray(first, TERMINALS);
 
 
-	// 	// printRule(list->listHead);
-	// 	list = list->next;
-	// }
+// 	// 	// printRule(list->listHead);
+// 	// 	list = list->next;
+// 	// }
 
-	// computeParseTable();
-	segFaultsSuck();
-	for(int i=0; i<NON_TERMINALS; i++){
-		printParseTableRow(i);
-	}
+// 	// computeParseTable();
+// 	segFaultsSuck();
+// 	for(int i=0; i<NON_TERMINALS; i++){
+// 		printParseTableRow(i);
+// 	}
 	
 
 
 
-}
+// }
