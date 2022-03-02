@@ -55,7 +55,7 @@ void printFollow();
 bool* set_union(bool* A, bool*B, int len); // Works
 
 bool* computeFirst(g_RHS* head); // Works
-bool checkEpsiloninFirst(g_Term NT); // Works
+bool checkEpsiloninRHSFirst(g_Term NT); // Works
 
 void segFaultsSuck();
 void fillParseTable( g_RHS* rule, g_Term lhs);

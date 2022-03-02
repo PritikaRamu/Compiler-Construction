@@ -88,39 +88,39 @@ void printFollow(){
     }
 }
 
-bool* computeFirst(g_RHS* head){
+// bool* computeFirst(g_RHS* head){
 	
-	g_RHS* iter = head; 
-	bool* first = (bool*)malloc(sizeof(bool)*TERMINALS);
-	memset(first,false,sizeof(bool)*TERMINALS);
+// 	g_RHS* iter = head; 
+// 	bool* first = (bool*)malloc(sizeof(bool)*TERMINALS);
+// 	memset(first,false,sizeof(bool)*TERMINALS);
 
-	// Case 1 
-	if(head->isTerminal){
-		first[head->symbol-eps] = true;
-		return first;
-	}
+// 	// Case 1 
+// 	if(head->isTerminal){
+// 		first[head->symbol-eps] = true;
+// 		return first;
+// 	}
 
-	// Case 2
-	while(iter!=NULL){ // Iterating over the NTs of an RHS
-	// A->BCDF
-	// B-> eps | gHHJJ
-	// C-> d
+// 	// Case 2
+// 	while(iter!=NULL){ // Iterating over the NTs of an RHS
+// 	// A->BCDF
+// 	// B-> eps | gHHJJ
+// 	// C-> d
 		
-		first = set_union(first, First[iter->symbol],TERMINALS);
-		//first[0] = false;
+// 		first = set_union(first, First[iter->symbol],TERMINALS);
+// 		//first[0] = false;
 		
-		if(!checkEpsiloninRHSFirst(iter->symbol)){
-			first[0] = false;
-			return first;
-		}
-		iter = iter->next;
+// 		if(!checkEpsiloninRHSFirst(iter->symbol)){
+// 			first[0] = false;
+// 			return first;
+// 		}
+// 		iter = iter->next;
 
-	}
+// 	}
 
-	first[0] = true;
-	return first;
+// 	first[0] = true;
+// 	return first;
 
-}
+// }
 
 // GRAMMAR Functions
 ruleHead* insertRuleList(ruleHead* head, g_RHS* rule){
