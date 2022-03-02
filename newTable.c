@@ -24,9 +24,11 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 	//Case 1
 	bool* first_array = computeFirst(rule); // A->BCdE First[]
 
+
 	for(int i=54;i<=112;i++){
 		if(first_array[i-eps]==true){
-			parseTable[lhs][i-eps] = rule;
+			if(!parseTable[lhs][i-eps])
+				parseTable[lhs][i-eps] = rule;
 		}
 	}
 
@@ -34,7 +36,8 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 	if(first_array[0]==true){
 		for(int b=54;b<=112;b++){
 			if(Follow[lhs][b-eps] == true){
-				parseTable[lhs][b-eps] = rule;
+				if(!parseTable[lhs][b-eps])
+					parseTable[lhs][b-eps] = rule;
 			}
 		}
 	}
@@ -167,4 +170,4 @@ void printFirstArray(bool* array, int n){
 
 
 
-// }
+//  }

@@ -31,8 +31,9 @@ parseTree getNearestUncle(parseTree curr){
 	else return getNearestUncle(curr->parent);
 }
 
-void pushRuleIntoStack(g_RHS* rule, Stack* stack){
+void pushRuleIntoStack(g_RHS* rule1, Stack* stack){
     Stack* temp = initStack();
+    g_RHS* rule = rule1;
     while(rule){
         push(temp, rule->symbol);
         rule = rule->next;
@@ -43,35 +44,39 @@ void pushRuleIntoStack(g_RHS* rule, Stack* stack){
         push(stack, topStack);
     }
     printf("Pushed the rule into stack.\n Top of stack is: ");
-    printNonTerminal(top(stack));
+    if(top(stack)>=eps)
+        printToken(top(stack));
+    else
+        printNonTerminal(top(stack));
 }
 
-parseTree addChildren(g_Term nonterm, g_Term term, Stack* stack, parseTree ptree){
-    g_RHS* rhs = (g_RHS*)malloc(sizeof(g_RHS)); 
-    rhs = parseTable[nonterm][term-51];
+parseTree addChildren(g_RHS* rule1, parseTree ptree){
+    //g_RHS* rhs = (g_RHS*)malloc(sizeof(g_RHS)); 
+    //rule = parseTable[nonterm][term-eps];
+    g_RHS* rule = rule1;
     parseTree curr;
-    if(rhs){
+    if(rule!=NULL){
         parseTree fChild = (parseTree)malloc(sizeof(struct tree));
-        fChild->symbol = rhs->symbol;
-        fChild->isTerminal = rhs->isTerminal;
+        fChild->symbol = rule->symbol;
+        fChild->isTerminal = rule->isTerminal;
         fChild->firstChild = NULL;
         fChild->nextSibling = NULL;
         fChild->parent = ptree;
         ptree->firstChild = fChild;
         curr = fChild;
-        rhs = rhs->next;
+        rule = rule->next;
     }
-    while(rhs){
+    while(rule){
         //printf("%d ",curr->symbol);
         parseTree temp = (parseTree)malloc(sizeof(struct tree));
-        temp->symbol = rhs->symbol;
-        temp->isTerminal = rhs->isTerminal;
+        temp->symbol = rule->symbol;
+        temp->isTerminal = rule->isTerminal;
         temp->firstChild = NULL;
         temp->nextSibling = NULL;
         temp->parent = ptree;
         curr->nextSibling = temp;
         curr = temp;
-        rhs = rhs->next;
+        rule = rule->next;
     }
     return ptree->firstChild;
     //printf("%d ",curr->symbol);
@@ -98,6 +103,9 @@ parseTree parseInputSourceCode(char* testcaseFile) {
     parseTree curr = ptree;
 
     tokenInfo look = getNextToken();
+    if(look.tid==SENTINEL)
+        return ptree;
+
     // if(look.tid>=eps)
     //  printToken(look.tid);
     // else 
@@ -108,6 +116,8 @@ parseTree parseInputSourceCode(char* testcaseFile) {
      while(look.tid == TK_COMMENT) {
         look = getNextToken(); //ignore the comments until a newline
     }
+    if(look.tid==SENTINEL)
+        return ptree;
 
     // while(1)
     //     {
@@ -125,15 +135,22 @@ parseTree parseInputSourceCode(char* testcaseFile) {
     while(1){
         g_Term topStack = top(stack);
         pop(stack);
-        printToken(topStack);
+        if(topStack>=eps)
+            printToken(topStack);
+        else
+            printNonTerminal(topStack);
+        
+        printf("check\n\n");
         if(topStack == -1) {
             break;
         }
-        while(isTerm(topStack)) {
+
+        while(topStack>=eps) {
             printf("Inner While loop\n");
             if(topStack==eps){
                 topStack = top(stack);
                 pop(stack);
+                printf("after eps pop, %d\n",topStack);
                 if(topStack == -1) {
                     break;
                 }
@@ -148,14 +165,11 @@ parseTree parseInputSourceCode(char* testcaseFile) {
                 continue;
             }
 
+
             if(topStack!=look.tid){
-                //code is consumed along with the stack
-                if(topStack == SENTINEL && look.tid==SENTINEL){
-                    fclose(fp);
-                    return ptree;
-                }
+                
                 //input is consumed, stack not empty
-                else if(look.tid == SENTINEL){
+                if(look.tid == SENTINEL){
                     printf("Syntax error: Expected ");
                     printToken(topStack);
                     printf(" at line %d \n",look.lineNo);
@@ -163,6 +177,7 @@ parseTree parseInputSourceCode(char* testcaseFile) {
                 }
                 //stack may or may not be empty, input still coming in
                 else{
+
                     printf("Syntax error\n");
                     topStack = top(stack);
                     pop(stack);
@@ -183,12 +198,17 @@ parseTree parseInputSourceCode(char* testcaseFile) {
                     //top of the stack is terminal or non terminal which does not match with look
                     if(topStack != look.tid) {
                         look = getNextToken();
+                        if(look.tid==SENTINEL)
+                            return ptree;
+                            
                         while(look.tid == TK_COMMENT) look = getNextToken();
                         //remove the comments and check if lookahead token is now equal to top of the stack
                         if(topStack != look.tid) {
                             //if token still not equal then syntax error
                             printf("Syntax error, expected %d token but got %d", topStack, look.tid);
-                            while(look.tid != SENTINEL) look = getNextToken();
+                            while(look.tid != SENTINEL) 
+                            look = getNextToken();
+
                             printf("Syntax Error: Input is consumed but stack not empty\n");
                             fclose(fp);
                             return ptree;
@@ -201,10 +221,20 @@ parseTree parseInputSourceCode(char* testcaseFile) {
             //the top of the stack is a terminal and matches the input
             //pop the stack and move the pointer ahead
             else {
+                //code is consumed along with the stack
+
                 topStack = top(stack);
                 pop(stack);
+                printf("Top of stack before final cond %d\n",topStack);
                 curr->lineNo = look.lineNo;
-
+                look = getNextToken();
+                printf("Look.tid prints this: %d\n",look.tid);
+                if(topStack == SENTINEL && look.tid==SENTINEL){
+                    printf("Input consumed and stack clear\n");
+                    fclose(fp);
+                    return ptree;
+                }
+                //printToken(look.tid);
                 if(curr->nextSibling) {
                     curr = curr->nextSibling;
                 }
@@ -213,7 +243,7 @@ parseTree parseInputSourceCode(char* testcaseFile) {
                 }
                 else continue;
 
-                look = getNextToken();
+                
             }
         }
 
@@ -253,7 +283,9 @@ parseTree parseInputSourceCode(char* testcaseFile) {
         printRule(rule);
         printf("\nPushing into Stack\n");
         pushRuleIntoStack(rule, stack);
-        curr = addChildren(topStack, look.tid, stack, curr);
+        printf("Look.tid is %d\n", look.tid);
+        curr = addChildren(rule,curr);
+        printf("check2");
     }
     return NULL;
 }
@@ -323,17 +355,17 @@ int main(){
     printSet(set_union(A, B, 5), 5);
 
 
-    char* testFile = "custom1.txt";
+    char* testFile = "t3.txt";
     initGrammar(G);
 	populateFirstFollow("First.txt",true);
     populateFirstFollow("Follow.txt",false);
     segFaultsSuck();
-    printRule(parseTable[program][TK_MAIN-51]);
+    //printRule(parseTable[otherStmts][TK_RETURN-eps]);
 
 
     parseTree ptree = parseInputSourceCode(testFile);
-    printf("Check");
+    //printf("\n\n\nCheck");
     int numNodes = 0;
-    inorderNary(ptree, &numNodes);
+    // inorderNary(ptree, &numNodes);
     printf("\n\nNumber of nodes in the tree is: %d\n\n", numNodes);
 }

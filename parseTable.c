@@ -15,12 +15,12 @@
 
 
 
-int main(){
+// int main(){
 
 	
-	G[0].symbol = 54;
-	G[0].head = insertNode(G[0].head, 68);
-	G[0].head = insertNode(G[0].head, 89);
+// 	G[0].symbol = 54;
+// 	G[0].head = insertNode(G[0].head, 68);
+// 	G[0].head = insertNode(G[0].head, 89);
 
-	printRule(G[0]);
-}
+// 	printRule(G[0]);
+// }

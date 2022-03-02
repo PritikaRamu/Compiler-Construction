@@ -1104,6 +1104,15 @@ tokenInfo getNextToken()
 
 		case 100:
 		{
+			g_Term token = getToken(lexeme);
+					// if(token==-1)
+					// 	{
+					// 		t.tid = SENTINEL;
+					// 	}
+					// else
+					// 	{
+					// 		t.tid = token;
+					// 	}
 			t.tid = SENTINEL;
 			return t;
 		}
