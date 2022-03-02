@@ -61,4 +61,11 @@ void segFaultsSuck();
 void fillParseTable( g_RHS* rule, g_Term lhs);
 void printParseTableRow(g_Term NT);
 
+
+// Own First, Follow
+bool* firstNT(g_Term i);
+void firstRuleNT(g_Term lhs, ruleHead* rhs);
+void fillFirstArray(g_Term lhs, bool* A);
+void trialFirstAndFollow();
+bool containsEpsilon(g_Term lhs);
 #endif
