@@ -1,7 +1,10 @@
+#ifndef _NEWRULES_
+#define _NEWRULES_
+
 #define NON_TERMINALS 53
 #define TERMINALS 60
 #define NUM_RULES 100
-#include "gterm.h"
+#include "symbolTable.h"
 #include <string.h>
 
 
@@ -9,7 +12,7 @@
 typedef struct rhs{ 
 	g_Term symbol;
 	bool isTerminal;
-	struct RHS* next;
+	struct rhs* next;
 } g_RHS;
 
 typedef struct ruleHead{
@@ -65,3 +68,4 @@ void firstRuleNT(g_Term lhs, ruleHead* rhs);
 void fillFirstArray(g_Term lhs, bool* A);
 void trialFirstAndFollow();
 bool containsEpsilon(g_Term lhs);
+#endif

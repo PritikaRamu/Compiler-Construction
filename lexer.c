@@ -5,6 +5,27 @@
 #include <stdlib.h>
 #include "lexer.h"
 
+twinBuffer buffers;
+int line = 1;
+//helps to keep track of the line number
+
+bool file_end;
+//tells us if we have reached the end of file
+
+bool startedReading;
+//tells us if we have started reading or not
+
+char *lexemeBegin, *forward;
+//two pointers for the twin buffer
+
+int charCount;
+//keeps track of the size of lexeme
+
+bool readBuff1, readBuff2;
+//tells us if both these buffers have been read or not
+
+FILE *fp;
+
 FILE *startLexer(char *inputFile)
 {
 	//must be called in the driver file before starting the lexer
@@ -13,11 +34,11 @@ FILE *startLexer(char *inputFile)
 	memset(buffers.buff1, 0, sizeof(buffers.buff1));
 	memset(buffers.buff2, 0, sizeof(buffers.buff2));
 
-	line = 1;
-	file_end = false;
-	charCount = 0;
-	readBuff1 = false;
-	readBuff2 = false;
+	int line = 1;
+	bool file_end = false;
+	int charCount = 0;
+	bool readBuff1 = false;
+	bool readBuff2 = false;
 	lexemeBegin = NULL;
 	forward = NULL;
 	startedReading = false;
@@ -1196,7 +1217,7 @@ tokenInfo getNextToken()
 			retract(1);
 			break;
 		case 33:
-			printf("Line no. %d : Variable identifier is longer than the prescribed length of 20 characters\n");
+			printf("Line no. %d : Variable identifier is longer than the prescribed length of 20 characters\n",line);
 			retract(1);
 			break;
 		case 11:
@@ -1209,86 +1230,87 @@ tokenInfo getNextToken()
 			break;
 		case 23:
 			//fprintf(stdout, "\tFunction identifier length exceeds the limit of 30 characters\n");
-			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n");
+			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n",line);
 			retract(1);
 			break;
 		case 25:
 			//fprintf(stdout, "\tVariable identifier length exceeds the limit of 20 characters\n");
-			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n");
+			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n",line);
 			retract(1);
 			break;
 		}
 		reset();
 		t.tid = LEX_ERROR;
-		return t;
-	}
+		// free(lexeme);
+	return t;
+	}	
 }
 
-int main()
-{
+// int main()
+// {
 
 
-	fp = startLexer("t1.txt");
-	initTable();
-	/*
-	printf("\nSIZE OF TWIN BUFFER %lu %lu %lu \n",sizeof(buffers), sizeof(buffers.buff1), sizeof(buffers.buff2));
+// 	fp = startLexer("t1.txt");
+// 	initTable();
+// 	/*
+// 	printf("\nSIZE OF TWIN BUFFER %lu %lu %lu \n",sizeof(buffers), sizeof(buffers.buff1), sizeof(buffers.buff2));
 	
-	printf("Checking if twin buffers have been initialized or not \n %d %c %c %c \n", buffers.buff1[0],buffers.buff1[BUFFER_SIZE], buffers.buff2[0], buffers.buff2[BUFFER_SIZE]);	
+// 	printf("Checking if twin buffers have been initialized or not \n %d %c %c %c \n", buffers.buff1[0],buffers.buff1[BUFFER_SIZE], buffers.buff2[0], buffers.buff2[BUFFER_SIZE]);	
 
-	printf("Startlexer working fine\n");
+// 	printf("Startlexer working fine\n");
 
 	
 		
-// 	for(int i = 0; i < 40; i++)
-// 		{
-// 		char c = getNextChar(fp);
-// 		printf("%c %d\n",c,c);
-// 		}
+// // 	for(int i = 0; i < 40; i++)
+// // 		{
+// // 		char c = getNextChar(fp);
+// // 		printf("%c %d\n",c,c);
+// // 		}
 	
-// 	printf("Retraction\n");
-// 	retract(4);
+// // 	printf("Retraction\n");
+// // 	retract(4);
 	
-// 	for(int i = 0; i < 20; i++)
+// // 	for(int i = 0; i < 20; i++)
+// // 		{
+// // 		char c = getNextChar(fp);
+// // 		printf("%c %d\n",c, c);
+// // 		}
+// // 	*/
+// 	while (1)
+// 	{
+// 		tokenInfo pleasework = getNextToken();
+// 		if (pleasework.tid == SENTINEL)
+// 			break;
+// 		if(pleasework.tid!=LEX_ERROR && pleasework.tid!=TK_COMMENT)
 // 		{
-// 		char c = getNextChar(fp);
-// 		printf("%c %d\n",c, c);
+// 		printf("Line no. %d\t\tLexeme %s\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
+// 		printToken(pleasework.tid);
+// 		printf("\n");
 // 		}
-// 	*/
-	while (1)
-	{
-		tokenInfo pleasework = getNextToken();
-		if (pleasework.tid == SENTINEL)
-			break;
-		if(pleasework.tid!=LEX_ERROR && pleasework.tid!=TK_COMMENT)
-		{
-		printf("Line no. %d\t\tLexeme %s\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
-		printToken(pleasework.tid);
-		printf("\n");
-		}
-	}
-	// 	/*
-	// 	printf("\nFirst call to getStream function\n");
+// 	}
+// 	// 	/*
+// 	// 	printf("\nFirst call to getStream function\n");
 
-	// 	printf("\nContents of buffer 1\n");
+// 	// 	printf("\nContents of buffer 1\n");
 
-	// 	printf("\n%s", buffers.buff1);
+// 	// 	printf("\n%s", buffers.buff1);
 
-	// 	printf("\nContents of buffer 2\n");
+// 	// 	printf("\nContents of buffer 2\n");
 
-	// 	printf("\n%s", buffers.buff2);
+// 	// 	printf("\n%s", buffers.buff2);
 
-	// 	printf("\nSecond call to getStream function\n");
+// 	// 	printf("\nSecond call to getStream function\n");
 
-	//  	fp = getStream(fp);
+// 	//  	fp = getStream(fp);
 
-	// 	printf("\nContents of buffer 1\n");
+// 	// 	printf("\nContents of buffer 1\n");
 
-	// 	printf("\n%s", buffers.buff1);
+// 	// 	printf("\n%s", buffers.buff1);
 
-	// 	printf("\nContents of buffer 2\n");
+// 	// 	printf("\nContents of buffer 2\n");
 
-	// 	printf("\n%s", buffers.buff2);
-	// 	*/
+// 	// 	printf("\n%s", buffers.buff2);
+// 	// 	*/
 
-	// 	return 0;
-}
+// 	// 	return 0;
+// }

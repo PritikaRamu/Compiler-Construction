@@ -1,3 +1,6 @@
+#ifndef _TOKEN_
+#define _TOKEN_
+
 #include "gterm.h"
 
 typedef struct token {
@@ -9,3 +12,5 @@ typedef struct token {
 
 void printToken(int token);
 void printNonTerminal(int token);
+
+#endif

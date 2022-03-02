@@ -1,8 +1,11 @@
+#ifndef _SYSMBOLTABLE_
+#define _SYSMBOLTABLE_
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "token.h"
+#include "narytree.h"
 
 #define SIZE 200 //max size of hash table array
 
@@ -29,3 +32,5 @@ int hashcode(char* key);
 g_Term getToken(char* key);
 void insertID(char* key, g_Term token);
 void initTable();
+
+#endif
