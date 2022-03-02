@@ -23,31 +23,34 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 	//Case 1
 	bool* first_array = computeFirst(rule); // A->BCdE First[]
 
-	for(int i=0;i<TERMINALS;i++){
-		if(first_array[i]==true){
-			parseTable[lhs][i] = rule;
+	for(int i=54;i<=112;i++){
+		if(first_array[i-eps]==true){
+			parseTable[lhs][i-eps] = rule;
 		}
 	}
 
 	// Case 2 
-	if(first_array[eps]==true){
-		for(int b=0;b<TERMINALS;b++){
-			if(Follow[lhs][b] == true){
-				parseTable[lhs][b] = rule;
+	if(first_array[0]==true){
+		for(int b=54;b<=112;b++){
+			if(Follow[lhs][b-eps] == true){
+				parseTable[lhs][b-eps] = rule;
 			}
 		}
 	}
+
+
 	
 }
 
+// Chnage 51
 void printParseTableRow(g_Term NT){
 	printf("NT is: ");
 	printNonTerminal(NT);
 	printf(" The Parse Table entries are: ");
-	for(int i=0;i<TERMINALS;i++){
+	for(int i=0;i<TERMINALS-1;i++){
 		if(parseTable[NT][i]){
 			printf("[ Terminal: ");
-			printToken(i+51);
+			printToken(i+eps);
 			printf(", Rule: ");
 			printRule(parseTable[NT][i]);
 			printf("], ");
@@ -56,9 +59,9 @@ void printParseTableRow(g_Term NT){
 
 }
 
-// Works
+// Chnage 51
 bool checkEpsiloninRHSFirst(g_Term NT){
-	return First[NT][eps-51];
+	return First[NT][0];
 }
 
 bool* set_union(bool* A, bool*B, int len){
@@ -75,7 +78,7 @@ bool* set_union(bool* A, bool*B, int len){
     return union_array;
 }
 
-// Works
+// Chnage 51
 bool* computeFirst(g_RHS* head){
 	
 	g_RHS* iter = head; 
@@ -84,7 +87,7 @@ bool* computeFirst(g_RHS* head){
 
 	// Case 1 
 	if(head->isTerminal){
-		first[head->symbol-51] = true;
+		first[head->symbol-eps] = true;
 		return first;
 	}
 
@@ -95,9 +98,10 @@ bool* computeFirst(g_RHS* head){
 	// C-> d
 		
 		first = set_union(first, First[iter->symbol],TERMINALS);
-		first[0] = false;
+		//first[0] = false;
 		
 		if(!checkEpsiloninRHSFirst(iter->symbol)){
+			first[0] = false;
 			return first;
 		}
 		iter = iter->next;
@@ -153,8 +157,10 @@ int main(){
 
 	// computeParseTable();
 	segFaultsSuck();
-	printParseTableRow(mainFunction);
-
+	for(int i=0; i<NON_TERMINALS; i++){
+		printParseTableRow(i);
+	}
+	
 
 
 
