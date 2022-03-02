@@ -1,3 +1,6 @@
+#ifndef _NEWRULES_
+#define _NEWRULES_
+
 #define NON_TERMINALS 53
 #define TERMINALS 60
 #define NUM_RULES 100
@@ -9,7 +12,7 @@
 typedef struct rhs{ 
 	g_Term symbol;
 	bool isTerminal;
-	struct RHS* next;
+	struct rhs* next;
 } g_RHS;
 
 typedef struct ruleHead{
@@ -57,3 +60,5 @@ bool checkEpsiloninFirst(g_Term NT); // Works
 void segFaultsSuck();
 void fillParseTable( g_RHS* rule, g_Term lhs);
 void printParseTableRow(g_Term NT);
+
+#endif

@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "lexer.h"
 
+int line = 1;
+
 FILE *startLexer(char *inputFile)
 {
 	//must be called in the driver file before starting the lexer
@@ -1224,71 +1226,71 @@ tokenInfo getNextToken()
 	}
 }
 
-int main()
-{
+// int main()
+// {
 
 
-	fp = startLexer("t1.txt");
-	initTable();
-	/*
-	printf("\nSIZE OF TWIN BUFFER %lu %lu %lu \n",sizeof(buffers), sizeof(buffers.buff1), sizeof(buffers.buff2));
+// 	fp = startLexer("t1.txt");
+// 	initTable();
+// 	/*
+// 	printf("\nSIZE OF TWIN BUFFER %lu %lu %lu \n",sizeof(buffers), sizeof(buffers.buff1), sizeof(buffers.buff2));
 	
-	printf("Checking if twin buffers have been initialized or not \n %d %c %c %c \n", buffers.buff1[0],buffers.buff1[BUFFER_SIZE], buffers.buff2[0], buffers.buff2[BUFFER_SIZE]);	
+// 	printf("Checking if twin buffers have been initialized or not \n %d %c %c %c \n", buffers.buff1[0],buffers.buff1[BUFFER_SIZE], buffers.buff2[0], buffers.buff2[BUFFER_SIZE]);	
 
-	printf("Startlexer working fine\n");
+// 	printf("Startlexer working fine\n");
 
 	
 		
-// 	for(int i = 0; i < 40; i++)
-// 		{
-// 		char c = getNextChar(fp);
-// 		printf("%c %d\n",c,c);
-// 		}
+// // 	for(int i = 0; i < 40; i++)
+// // 		{
+// // 		char c = getNextChar(fp);
+// // 		printf("%c %d\n",c,c);
+// // 		}
 	
-// 	printf("Retraction\n");
-// 	retract(4);
+// // 	printf("Retraction\n");
+// // 	retract(4);
 	
-// 	for(int i = 0; i < 20; i++)
+// // 	for(int i = 0; i < 20; i++)
+// // 		{
+// // 		char c = getNextChar(fp);
+// // 		printf("%c %d\n",c, c);
+// // 		}
+// // 	*/
+// 	while (1)
+// 	{
+// 		tokenInfo pleasework = getNextToken();
+// 		if (pleasework.tid == SENTINEL)
+// 			break;
+// 		if(pleasework.tid!=LEX_ERROR && pleasework.tid!=TK_COMMENT)
 // 		{
-// 		char c = getNextChar(fp);
-// 		printf("%c %d\n",c, c);
+// 		printf("Line no. %d\t\tLexeme %s\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
+// 		printToken(pleasework.tid);
+// 		printf("\n");
 // 		}
-// 	*/
-	while (1)
-	{
-		tokenInfo pleasework = getNextToken();
-		if (pleasework.tid == SENTINEL)
-			break;
-		if(pleasework.tid!=LEX_ERROR && pleasework.tid!=TK_COMMENT)
-		{
-		printf("Line no. %d\t\tLexeme %s\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
-		printToken(pleasework.tid);
-		printf("\n");
-		}
-	}
-	// 	/*
-	// 	printf("\nFirst call to getStream function\n");
+// 	}
+// 	// 	/*
+// 	// 	printf("\nFirst call to getStream function\n");
 
-	// 	printf("\nContents of buffer 1\n");
+// 	// 	printf("\nContents of buffer 1\n");
 
-	// 	printf("\n%s", buffers.buff1);
+// 	// 	printf("\n%s", buffers.buff1);
 
-	// 	printf("\nContents of buffer 2\n");
+// 	// 	printf("\nContents of buffer 2\n");
 
-	// 	printf("\n%s", buffers.buff2);
+// 	// 	printf("\n%s", buffers.buff2);
 
-	// 	printf("\nSecond call to getStream function\n");
+// 	// 	printf("\nSecond call to getStream function\n");
 
-	//  	fp = getStream(fp);
+// 	//  	fp = getStream(fp);
 
-	// 	printf("\nContents of buffer 1\n");
+// 	// 	printf("\nContents of buffer 1\n");
 
-	// 	printf("\n%s", buffers.buff1);
+// 	// 	printf("\n%s", buffers.buff1);
 
-	// 	printf("\nContents of buffer 2\n");
+// 	// 	printf("\nContents of buffer 2\n");
 
-	// 	printf("\n%s", buffers.buff2);
-	// 	*/
+// 	// 	printf("\n%s", buffers.buff2);
+// 	// 	*/
 
-	// 	return 0;
-}
+// 	// 	return 0;
+// }

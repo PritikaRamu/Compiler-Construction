@@ -2,16 +2,18 @@
 #define _STACKDEF
 
 #include <stdlib.h>
-#include "grammar.h"
+#include <stdbool.h>
+#include "newRules.h"
 
 typedef struct stack {
-    g_Node* data;
+    g_RHS* data;
     struct stack* next;
 } Stack;
 
+bool isTerm(g_Term symbol);
 Stack* initStack();
-void push(Stack* head, gterm data);
+void push(Stack* head, g_Term data);
 void pop(Stack* head);
-gterm top(Stack* head);
+g_Term top(Stack* head);
 
 #endif

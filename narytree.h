@@ -2,7 +2,8 @@
 #define _NARYTREE_
 
 #include <stdlib.h>
-#include "grammar.h"
+#include <stdbool.h>
+#include "gterm.h"
 
 // typedef struct treeNode {
 //     gterm symbol;

@@ -15,7 +15,7 @@ typedef struct twin {
 //#define BUFFER_SIZE 100
 
 twinBuffer buffers;
-int line = 1;
+//int line = 1;
 //helps to keep track of the line number
 
 bool file_end;
@@ -35,6 +35,7 @@ bool readBuff1, readBuff2;
 
 FILE *fp;
 
+FILE* startLexer(char* testcaseFile);
 FILE* getStream(FILE* fp);
 tokenInfo getNextToken();
 void removeComments(char* testcaseFile, char* cleanFile);

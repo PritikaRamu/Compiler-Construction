@@ -1,3 +1,6 @@
+#ifndef _SYSMBOLTABLE_
+#define _SYSMBOLTABLE_
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -29,3 +32,5 @@ int hashcode(char* key);
 g_Term getToken(char* key);
 void insertID(char* key, g_Term token);
 void initTable();
+
+#endif

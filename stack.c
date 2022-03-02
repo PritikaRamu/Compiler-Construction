@@ -1,13 +1,22 @@
 #include "stack.h"
 #include <stdio.h>
 
-gterm top(Stack* head) {
+bool isTerm(g_Term symbol) {
+	if((symbol >= program && symbol <= eps)||symbol == definetypestmt || symbol == A) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+g_Term top(Stack* head) {
     if(!head->next) {
-        printf("Stack is empty\n");
+        //printf("Stack is empty\n");
         return -1;
     }
     else {
-        gterm symbol = head->next->data->symbol;
+        g_Term symbol = head->next->data->symbol;
         return symbol;
     }
 }
@@ -20,7 +29,8 @@ Stack* initStack() {
 
 void pop(Stack* head) {
     if(!head->next) {
-        printf("Empty stack, can't pop from stack\n");
+        //printf("Empty stack, can't pop from stack\n");
+        return;
     }
     else {
         Stack* temp = head->next;
@@ -29,9 +39,9 @@ void pop(Stack* head) {
     }
 }
 
-void push(Stack* head, gterm symbol) {
+void push(Stack* head, g_Term symbol) {
     Stack* newNode = (Stack*)malloc(sizeof(Stack));
-    g_Node* stackData = (g_Node*)malloc(sizeof(g_Node));
+    g_RHS* stackData = (g_RHS*)malloc(sizeof(g_RHS));
     newNode->data = stackData;
     newNode->data->symbol = symbol;
     newNode->data->next = NULL;
@@ -50,41 +60,42 @@ void printStack(Stack* head) {
     printf("End of stack\n");
 }
 
-int main() {
-    gterm trial[] = {TK_ASSIGNOP, TK_COMMENT, TK_FIELDID, TK_ID, TK_NUM, TK_RNUM, TK_FUNID, TK_WITH, TK_PARAMETERS, TK_END, TK_WHILE, TK_TYPE, TK_MAIN,
-	TK_GLOBAL, TK_PARAMETER, TK_LIST, TK_SQL, TK_SQR, TK_INPUT, TK_OUTPUT, TK_INT,
-	TK_REAL, TK_COMMA, TK_SEM, TK_COLON, TK_DOT, TK_ENDWHILE, TK_OP, TK_CL, TK_IF,
-	TK_THEN, TK_ENDIF, TK_READ, TK_WRITE, TK_RETURN, TK_PLUS, TK_MINUS, TK_MUL, TK_DIV,
-	TK_CALL, TK_RECORD, TK_ENDRECORD, TK_ELSE, TK_AND, TK_OR, TK_NOT, TK_LT, TK_LE, TK_AS,
-	TK_EQ, TK_GT, TK_GE, TK_NE, SENTINEL, LEX_ERROR, TK_RUID, TK_UNION, TK_ENDUNION, TK_DEFINETYPE};
 
-    int size = sizeof(trial)/sizeof(gterm);
+// int main() {
+//     g_Term trial[] = {TK_ASSIGNOP, TK_COMMENT, TK_FIELDID, TK_ID, TK_NUM, TK_RNUM, TK_FUNID, TK_WITH, TK_PARAMETERS, TK_END, TK_WHILE, TK_TYPE, TK_MAIN,
+// 	TK_GLOBAL, TK_PARAMETER, TK_LIST, TK_SQL, TK_SQR, TK_INPUT, TK_OUTPUT, TK_INT,
+// 	TK_REAL, TK_COMMA, TK_SEM, TK_COLON, TK_DOT, TK_ENDWHILE, TK_OP, TK_CL, TK_IF,
+// 	TK_THEN, TK_ENDIF, TK_READ, TK_WRITE, TK_RETURN, TK_PLUS, TK_MINUS, TK_MUL, TK_DIV,
+// 	TK_CALL, TK_RECORD, TK_ENDRECORD, TK_ELSE, TK_AND, TK_OR, TK_NOT, TK_LT, TK_LE, TK_AS,
+// 	TK_EQ, TK_GT, TK_GE, TK_NE, SENTINEL, LEX_ERROR, TK_RUID, TK_UNION, TK_ENDUNION, TK_DEFINETYPE};
 
-    Stack *head = initStack();
+//     int size = sizeof(trial)/sizeof(g_Term);
 
-    for(int i=0; i<size; i++) {
-        push(head, trial[i]);
-    }
+//     Stack *head = initStack();
 
-    //printf("%d\n", head->next->data);
-    printStack(head);
-    //printf("%d\n", head->next->data);
+//     for(int i=0; i<size; i++) {
+//         push(head, trial[i]);
+//     }
 
-    gterm t1 = top(head);
-    pop(head);
-    printf("%d\n", t1);
+//     //printf("%d\n", head->next->data);
+//     printStack(head);
+//     //printf("%d\n", head->next->data);
 
-    gterm t2 = top(head);
-    pop(head);
-    printf("%d\n", t2);
+//     g_Term t1 = top(head);
+//     pop(head);
+//     printf("%d\n", t1);
 
-    printf("While started\n");
+//     g_Term t2 = top(head);
+//     pop(head);
+//     printf("%d\n", t2);
 
-    while(head->next) {
-        gterm temp = top(head);
-        pop(head);
-        printf("%d\n", temp);
-    }
+//     printf("While started\n");
 
-    return 0;
-}
+//     while(head->next) {
+//         g_Term temp = top(head);
+//         pop(head);
+//         printf("%d\n", temp);
+//     }
+
+//     return 0;
+// }

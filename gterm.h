@@ -1,3 +1,6 @@
+#ifndef _GTERM_
+#define _GTERM_
+
 typedef enum {
 	program, mainFunction, otherFunctions, function, input_par, output_par,
 	parameter_list, dataType, primitiveDatatype, constructedDatatype,
@@ -9,7 +12,7 @@ typedef enum {
 	highPrecedenceOperators, lowPrecedenceOperators, oneExpansion, moreExpansions, booleanExpression,
 	var, logicalOp, relationalOp, returnStmt, optionalReturn, idList, more_ids, definetypestmt, A,
 	eps,  TK_ASSIGNOP, TK_COMMENT, TK_FIELDID, TK_ID, TK_NUM, TK_RNUM,
-	 TK_FUNID, TK_WITH, TK_PARAMETERS, TK_END, TK_WHILE, TK_TYPE, TK_MAIN,
+	TK_FUNID, TK_WITH, TK_PARAMETERS, TK_END, TK_WHILE, TK_TYPE, TK_MAIN,
 	TK_GLOBAL, TK_PARAMETER, TK_LIST, TK_SQL, TK_SQR, TK_INPUT, TK_OUTPUT, TK_INT,
 	TK_REAL, TK_COMMA, TK_SEM, TK_COLON, TK_DOT, TK_ENDWHILE, TK_OP, TK_CL, TK_IF,
 	TK_THEN, TK_ENDIF, TK_READ, TK_WRITE, TK_RETURN, TK_PLUS, TK_MINUS, TK_MUL, TK_DIV,
@@ -22,3 +25,5 @@ typedef enum {
 // A old 112 new is 52
 
 // tk_definetype old-110 new-112
+
+#endif
