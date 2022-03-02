@@ -3,7 +3,6 @@
 #include <sys/types.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "grammar.h"
 
 // FirstAndFollow ComputeFirstAndFollowSets (Grammar G){
 // 	return NULL;

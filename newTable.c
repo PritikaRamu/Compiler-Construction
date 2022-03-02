@@ -10,6 +10,7 @@ void segFaultsSuck(){
 	for(int i = 0; i < NON_TERMINALS; i++) // Goes over all NTs
 	{	
 		// printf("%d\t",i);
+		//printf("check1 %d\n", i);
 		ruleHead* iterator = G[i];
 		while(iterator!=NULL){ // Goes Over Alternate Prodcutions of an NT
 			fillParseTable(iterator->listHead, i);
@@ -48,10 +49,11 @@ void printParseTableRow(g_Term NT){
 	printNonTerminal(NT);
 	printf(" The Parse Table entries are: ");
 	for(int i=0;i<TERMINALS-1;i++){
-		if(parseTable[NT][i]){
+		if(parseTable[NT][i]!=NULL){
 			printf("[ Terminal: ");
 			printToken(i+eps);
 			printf(", Rule: ");
+			//printf("Check before print rule");
 			printRule(parseTable[NT][i]);
 			printf("], ");
 		}
@@ -127,41 +129,42 @@ void printFirstArray(bool* array, int n){
 
 
 
-// int main(){
+int main(){
 	
-// 	initGrammar(G);
-// 	populateFirstFollow("First.txt",true);
-//     populateFirstFollow("Follow.txt",false);
+	initGrammar(G);
+	//printf("Init grammar working fine");
+	populateFirstFollow("First.txt",true);
+    populateFirstFollow("Follow.txt",false);
 
-// 	// int i = 25;
-// 	// ruleHead* list = G[i];
-// 	// while(list!=NULL){
+	// int i = 25;
+	// ruleHead* list = G[i];
+	// while(list!=NULL){
 
-// 	// 	// if(checkEpsiloninRHSFirst(list->listHead->symbol)){
-// 	// 	// 	printf("This rule contains epsilon\n");
-// 	// 	// }
+	// 	// if(checkEpsiloninRHSFirst(list->listHead->symbol)){
+	// 	// 	printf("This rule contains epsilon\n");
+	// 	// }
 
-// 	// 	// else{
-// 	// 	// 	printf("This rule does NOT contain epsilon\n");
+	// 	// else{
+	// 	// 	printf("This rule does NOT contain epsilon\n");
 			
-// 	// 	// }
+	// 	// }
 
-// 	// 	bool* first = computeFirst(list->listHead);
-// 	// 	printf("The first of RHS is:\n");
-// 	// 	printFirstArray(first, TERMINALS);
+	// 	bool* first = computeFirst(list->listHead);
+	// 	printf("The first of RHS is:\n");
+	// 	printFirstArray(first, TERMINALS);
 
 
-// 	// 	// printRule(list->listHead);
-// 	// 	list = list->next;
-// 	// }
+	// 	// printRule(list->listHead);
+	// 	list = list->next;
+	// }
 
-// 	// computeParseTable();
-// 	segFaultsSuck();
-// 	for(int i=0; i<NON_TERMINALS; i++){
-// 		printParseTableRow(i);
-// 	}
+	// computeParseTable();
+	segFaultsSuck();
+	for(int i=0; i<NON_TERMINALS; i++){
+		printParseTableRow(i);
+	}
 	
 
 
 
-// }
+}

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "newRules.h"
 
 
@@ -19,15 +20,18 @@ void populateFirstFollow(char* textfile, bool first){
     sizeRead = getline(&line, &len, fp);
     //printf("%d\n", sizeRead);
     
-    //int linecount = 1;
+    int linecount = 1;
 
     while(sizeRead != -1) {
         char* tok = strtok(line," ");
-        //printf("\nLine number %d\n",linecount);
         int row = atoi(tok);
-        //printf("\nLine number %d\n",row);
-        tok = strtok(NULL," ");
-        while(tok){
+       // printf("\nLine number %d\n",row);
+        
+        while(1){
+            tok = strtok(NULL," ");
+            if(tok==NULL)
+                break;
+           // printf("%s ", tok);
             //printf("%d ",atoi(tok)-eps);
             if(first){
                 First[row][atoi(tok)-eps]=true;
@@ -35,10 +39,10 @@ void populateFirstFollow(char* textfile, bool first){
             else{
                 Follow[row][atoi(tok)-eps]=true;
             }
-            tok = strtok(NULL," ");
+            //tok = strtok(NULL," ");
         }
         sizeRead = getline(&line, &len, fp);
-        //linecount++;
+        linecount++;
     }
     //printf("\n");
     // if(first){
@@ -117,6 +121,7 @@ g_RHS* insertIntoRule(g_RHS* head, g_Term s, bool isTerm){
 
 void printRule(g_RHS* head){ // Print 1 single rule
 
+    //printf("Checkprintrule");
 	g_RHS* temp = head;
 	while(temp!=NULL)
 	{
@@ -963,13 +968,13 @@ void initGrammar(){
 // 	initGrammar();
 
 
-//     printGrammar(G, 200);
+//     //printGrammar(G, 200);
   
-//     //populateFirstFollow("First.txt",true);
-//     //printFirst();
+//     populateFirstFollow("First.txt",true);
+//     printFirst();
 
-//     // populateFirstFollow("Follow.txt",false);
-//     // printFollow();
+//     populateFirstFollow("Follow.txt",false);
+//     printFollow();
 
 //     // for(int i = 0; i < NON_TERMINALS; i++){
 //     //     for(int j =0; j<TERMINALS; j++){
