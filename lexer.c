@@ -5,7 +5,26 @@
 #include <stdlib.h>
 #include "lexer.h"
 
+twinBuffer buffers;
 int line = 1;
+//helps to keep track of the line number
+
+bool file_end;
+//tells us if we have reached the end of file
+
+bool startedReading;
+//tells us if we have started reading or not
+
+char *lexemeBegin, *forward;
+//two pointers for the twin buffer
+
+int charCount;
+//keeps track of the size of lexeme
+
+bool readBuff1, readBuff2;
+//tells us if both these buffers have been read or not
+
+FILE *fp;
 
 FILE *startLexer(char *inputFile)
 {
@@ -15,11 +34,11 @@ FILE *startLexer(char *inputFile)
 	memset(buffers.buff1, 0, sizeof(buffers.buff1));
 	memset(buffers.buff2, 0, sizeof(buffers.buff2));
 
-	line = 1;
-	file_end = false;
-	charCount = 0;
-	readBuff1 = false;
-	readBuff2 = false;
+	int line = 1;
+	bool file_end = false;
+	int charCount = 0;
+	bool readBuff1 = false;
+	bool readBuff2 = false;
 	lexemeBegin = NULL;
 	forward = NULL;
 	startedReading = false;
@@ -1198,7 +1217,7 @@ tokenInfo getNextToken()
 			retract(1);
 			break;
 		case 33:
-			printf("Line no. %d : Variable identifier is longer than the prescribed length of 20 characters\n");
+			printf("Line no. %d : Variable identifier is longer than the prescribed length of 20 characters\n",line);
 			retract(1);
 			break;
 		case 11:
@@ -1211,19 +1230,20 @@ tokenInfo getNextToken()
 			break;
 		case 23:
 			//fprintf(stdout, "\tFunction identifier length exceeds the limit of 30 characters\n");
-			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n");
+			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n",line);
 			retract(1);
 			break;
 		case 25:
 			//fprintf(stdout, "\tVariable identifier length exceeds the limit of 20 characters\n");
-			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n");
+			printf("Line no. %d : Function identifier is longer than the prescribed length of 30 characters\n",line);
 			retract(1);
 			break;
 		}
 		reset();
 		t.tid = LEX_ERROR;
-		return t;
-	}
+		// free(lexeme);
+	return t;
+	}	
 }
 
 // int main()

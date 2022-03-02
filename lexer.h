@@ -14,27 +14,6 @@ typedef struct twin {
 #define COUNT_KEYWORDS 28
 //#define BUFFER_SIZE 100
 
-twinBuffer buffers;
-//int line = 1;
-//helps to keep track of the line number
-
-bool file_end;
-//tells us if we have reached the end of file
-
-bool startedReading;
-//tells us if we have started reading or not
-
-char *lexemeBegin, *forward;
-//two pointers for the twin buffer
-
-int charCount;
-//keeps track of the size of lexeme
-
-bool readBuff1, readBuff2;
-//tells us if both these buffers have been read or not
-
-FILE *fp;
-
 FILE* startLexer(char* testcaseFile);
 FILE* getStream(FILE* fp);
 tokenInfo getNextToken();
