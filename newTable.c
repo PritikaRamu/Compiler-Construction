@@ -9,7 +9,7 @@
 void segFaultsSuck(){
 	for(int i = 0; i < NON_TERMINALS; i++) // Goes over all NTs
 	{	
-		printf("%d\t",i);
+		// printf("%d\t",i);
 		ruleHead* iterator = G[i];
 		while(iterator!=NULL){ // Goes Over Alternate Prodcutions of an NT
 			fillParseTable(iterator->listHead, i);
@@ -41,8 +41,9 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 }
 
 void printParseTableRow(g_Term NT){
-	//printNonTerminal(NT);
-	printf("The Parse Table entries are: ");
+	printf("NT is: ");
+	printNonTerminal(NT);
+	printf(" The Parse Table entries are: ");
 	for(int i=0;i<TERMINALS;i++){
 		if(parseTable[NT][i]){
 			printf("[ Terminal: ");
