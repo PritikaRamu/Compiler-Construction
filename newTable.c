@@ -42,8 +42,6 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 		}
 	}
 
-
-	
 }
 
 // Chnage 51
