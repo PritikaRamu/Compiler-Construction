@@ -92,27 +92,20 @@ parseTree parseInputSourceCode(char* testcaseFile) {
     //init stack, push SENTINEL, push start symbol
     Stack* stack = initStack();
     push(stack, SENTINEL);
-   // printf("Bruh\n");
-    //printToken(top(stack));
-    //printf("\n");
-     push(stack, program);
-     printf("Top of the stack: %d\n", top(stack));
+    push(stack, program);
+    printf("Top of the stack: ");
+    if(top(stack)>=eps)
+        printToken(top(stack));
+    else
+        printNonTerminal(top(stack));
     
     parseTree ptree = initTree(program, 1);
-    //printf("Check");
     parseTree curr = ptree;
-
     tokenInfo look = getNextToken();
+    
+    g_RHS* rule;
     if(look.tid==SENTINEL)
         return ptree;
-
-    // if(look.tid>=eps)
-    //  printToken(look.tid);
-    // else 
-    //     printNonTerminal(look.tid);
-    // printf("\n");
-    g_RHS* rule;
-
      while(look.tid == TK_COMMENT) {
         look = getNextToken(); //ignore the comments until a newline
     }
@@ -225,10 +218,12 @@ parseTree parseInputSourceCode(char* testcaseFile) {
 
                 topStack = top(stack);
                 pop(stack);
-                printf("Top of stack before final cond %d\n",topStack);
+                printf("Top of stack %d\n",topStack);
                 curr->lineNo = look.lineNo;
                 look = getNextToken();
-                printf("Look.tid prints this: %d\n",look.tid);
+                while(look.tid == TK_COMMENT) look = getNextToken();
+                printf("Look.tid is ");
+                printToken(look.tid);
                 if(topStack == SENTINEL && look.tid==SENTINEL){
                     printf("Input consumed and stack clear\n");
                     fclose(fp);
@@ -359,13 +354,16 @@ int main(){
     initGrammar(G);
 	populateFirstFollow("First.txt",true);
     populateFirstFollow("Follow.txt",false);
+    // printFirst();
+    // printFollow();
     segFaultsSuck();
-    //printRule(parseTable[otherStmts][TK_RETURN-eps]);
-
+    printRule(parseTable[otherStmts][TK_RETURN-eps]);
 
     parseTree ptree = parseInputSourceCode(testFile);
     //printf("\n\n\nCheck");
+    // for(int NT = 0; NT < NON_TERMINALS; NT++)
+    //     printParseTableRow(NT);
     int numNodes = 0;
-    // inorderNary(ptree, &numNodes);
-    printf("\n\nNumber of nodes in the tree is: %d\n\n", numNodes);
+    // // inorderNary(ptree, &numNodes);
+    // printf("\n\nNumber of nodes in the tree is: %d\n\n", numNodes);
 }

@@ -72,7 +72,9 @@ void printFirst(){
 
 void printFollow(){
     for(int i = 0; i < NON_TERMINALS + TERMINALS; i++){
-        printf("Follow Set of Symbol %d is = {", i);
+        printf("Follow Set of");
+        printNonTerminal(i);
+        printf(" ");
         for(int j =0; j<TERMINALS; j++){
             if(Follow[i][j]){
                 // printf("%d\t",j+eps);
@@ -689,7 +691,7 @@ void initGrammar(){
 
     G[definetypestmt] = NULL; // definetypestmt
     g_RHS* Rule2TK_MINUSTK_FUNID5 = NULL;
-    Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_SEM, true);
+    //Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_SEM, true);
     Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_RUID, true);
     Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_AS, true);
     Rule2TK_MINUSTK_FUNID5 = insertIntoRule(Rule2TK_MINUSTK_FUNID5,TK_RUID, true);
