@@ -1,5 +1,10 @@
-#ifndef _GTERM_
-#define _GTERM_
+// #ifndef _LEXERDEF_
+// #define _LEXERDEF_
+
+#include <stdio.h>
+#define BUFFER_SIZE (1 << 12)
+#define COUNT_KEYWORDS 28
+#define SIZE 200 //max size of hash table array
 
 typedef enum {
 	program, mainFunction, otherFunctions, function, input_par, output_par,
@@ -21,9 +26,34 @@ typedef enum {
 	
 } g_Term;
 
-// definetypestmt old 111 new is 51
-// A old 112 new is 52
+typedef struct twin {
+	char buff1[BUFFER_SIZE + 1];
+	char buff2[BUFFER_SIZE + 1];
+} twinBuffer;
 
-// tk_definetype old-110 new-112
+typedef struct token {
+	g_Term tid; 
+	char* lexeme;
+	void* numVal; //Int, Float values for numbers
+	int lineNo;
+} tokenInfo;
 
-#endif
+struct arrayitem 
+{
+	struct table *head;      
+} arrayItem;
+
+struct table {
+   g_Term token;   
+   char* key;
+   struct table* next;
+} tableEntry;
+
+typedef struct keyword {
+	char key[20];
+	g_Term value;
+}keyword;
+
+struct arrayitem symbolTable[SIZE];
+
+//#endif

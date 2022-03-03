@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "newRules.h"
+#include "parser.h"
 
 // First and Follow Functions 
 

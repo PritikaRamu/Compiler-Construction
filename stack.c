@@ -1,5 +1,5 @@
-#include "stack.h"
 #include <stdio.h>
+#include "parser.h"
 
 bool isTerm(g_Term symbol) {
 	if((symbol >= program && symbol <= eps)||symbol == definetypestmt || symbol == A) {

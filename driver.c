@@ -5,40 +5,6 @@
 #include "parser.h"
 #include <time.h>
 
-
-// char *strip(char *str)
-// {
-//     while(*str==' ' || *str=='\t') str++;
-//     return str;
-// }
-
-// void removeComments(char* testcaseFile, char* cleanFile){
-//     //printf("%s\n",testcaseFile);
-//     FILE *inp = fopen(testcaseFile,"r");
-//     //FILE *out = fopen(cleanFile,"w");
-
-//     if(!inp){
-//         printf("Error opening testcaseFile\n");
-//         return;
-//     }
-
-//     char *line = NULL;
-//     size_t len = 0;
-//     size_t sizeRead;
-
-//     while(1){
-//         sizeRead = getline(&line, &len, inp);
-//         if(sizeRead==-1)
-//             break;
-//         char *mod = strip(line);
-//         if(strlen(mod)>0){
-//             if(mod[0]!='%'){
-//                 printf("%s",line);
-//             }
-//         }
-//     }
-// }
-
 int main(int argc, char* argv[]){
 
 	if(argc<2){
@@ -75,7 +41,7 @@ int main(int argc, char* argv[]){
 		switch(choice){
 
 			case 0:{
-                printf("THANK YOU!\n");
+                printf("So true bestie ;)!\n");
 				flag = false;
 			}break;
 

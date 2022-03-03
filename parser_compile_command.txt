@@ -1,1 +1,1 @@
-gcc -o parser.out parser.c stack.c newTable.c newRules.c lexer.c symbolTable.c
+gcc -o bruh parser.c stack.c newTable.c newRules.c lexer.c symbolTable.c driver.c

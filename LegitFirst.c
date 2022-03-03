@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "newRules.h"
+#include "parser.h"
 
 void fillFirstArray(g_Term lhs, bool* A){ // Union of bool array and First Table Row
     for(int i=0; i<TERMINALS;i++){ 

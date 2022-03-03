@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "narytree.h"
+#include "parser.h"
 
 parseTree initTree(g_Term symbol, int lineNo) {
     // TreeNode* node = (TreeNode*)malloc(sizeof(TreeNode));

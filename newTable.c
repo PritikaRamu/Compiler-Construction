@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "newRules.h"
+#include "parser.h"
 
 //will compute first set for alpha in production A->alpha
 //will return a boolean array 

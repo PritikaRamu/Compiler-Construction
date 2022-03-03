@@ -1,18 +1,13 @@
-#ifndef _LEXERDEF_
-#define _LEXERDEF_
+// #ifndef _LEXER_
+// #define _LEXER_
 
-#include <stdio.h>
-#include "stack.h"
-#define BUFFER_SIZE (1 << 12)
-//#define BUFFER_SIZE 
+#include "lexerDef.h"
 
-typedef struct twin {
-	char buff1[BUFFER_SIZE + 1];
-	char buff2[BUFFER_SIZE + 1];
-} twinBuffer;
+int hashcode(char* key);
+g_Term getToken(char* key);
+void insertID(char* key, g_Term token);
+void initTable();
 
-#define COUNT_KEYWORDS 28
-//#define BUFFER_SIZE 100
 
 FILE* startLexer(char* testcaseFile);
 FILE* getStream(FILE* fp);
@@ -20,4 +15,4 @@ tokenInfo getNextToken();
 void removeComments(char* testcaseFile, char* cleanFile);
 void reset();
 
-#endif
+// #endif

@@ -1,19 +1,7 @@
-#ifndef _PARSEDEF_
-#define _PARSEDEF_
 
-#include <stdio.h>
-#include "lexer.h"
-
-
-//typedef g_Node table[49][53];
-//typedef g_cell **table;
-
-
-typedef struct firstAndFollowSet{
-	int** first; 
-	int** follow;
-} FirstAndFollow;
-
+#include "parserDef.h"
+#include <stdlib.h>
+#include <stdbool.h>
 
 // FIRST and FOLLOW 
 void ComputeFirstAndFollowSets (Grammar G);
@@ -32,13 +20,41 @@ parseTree parseInputSourceCode(char* testcaseFile);
 
 void printParseTree(parseTree PT, char *outfile);
 
-FirstAndFollow FFSet;
-
 void initGrammar();
 
-/*
-void initFF(){
-	ComputeFirstAndFollowSets(G);
-}*/
+void printToken(int token);
+void printNonTerminal(int token);
+void printRules(Grammar G, int i, bool needArrow);
 
-#endif
+// GRAMMAR Functions
+void printGrammar(Grammar G, int len);
+void initGrammar();
+
+// PARSE TABLE Functions
+void populateFirstFollow(char* textfile, bool first); // Works
+void printFirst();
+void printFollow();
+
+
+bool* set_union(bool* A, bool*B, int len); // Works
+
+bool* computeFirst(g_RHS* head); // Works
+
+void segFaultsSuck();
+void printParseTableRow(g_Term NT);
+
+
+// Own First, Follow
+bool* firstNT(g_Term i);
+void firstRuleNT(g_Term lhs, ruleHead* rhs);
+void fillFirstArray(g_Term lhs, bool* A);
+void trialFirstAndFollow();
+bool containsEpsilon(g_Term lhs);
+
+bool isTerm(g_Term symbol);
+Stack* initStack();
+void push(Stack* head, g_Term data);
+void pop(Stack* head);
+g_Term top(Stack* head);
+
+

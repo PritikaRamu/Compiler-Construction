@@ -305,26 +305,6 @@ void ComputeFirstAndFollowSets (Grammar G){
 
 }
 
-// int* First(Grammar G, g_Term NT){
-    
-//     int array_size = sizeof(int)*TERMINALS;
-//     int* first_array = (int*)malloc(array_size);
-//     memset(first_array, 0, array_size);
-//     // printf("Size is %d and element is %d \n", array_size, first_array[59]);
-
-//     g_Node* head = nt.head;
-
-//     if(head->isTerminal){
-//         first_array[head->symbol]=1;
-//     }
-
-//     else{
-//         int* other_first = First()
-//     }
-    
-
-// }
-
 void printSet(bool* array, int len){
     printf("[");
     for(int i=0; i<len;i++){
@@ -334,36 +314,28 @@ void printSet(bool* array, int len){
 
 }
 
-void printSetSymbols(int*array, int len){
-    
-}
+// int main(){
 
-/*table createParseTable(Grammar G, FirstAndFollow F, table T){
-
-}*/
-
-int main(){
-
-// printf("No. of terminals is %d and no. of NTs is %d\n", TERMINALS, NON_TERMINALS);
-    bool A[5] = {1, 0, 0, 1, 0};
-    bool B[5] = {0, 0, 1, 1, 0};
-    printSet(set_union(A, B, 5), 5);
+// // printf("No. of terminals is %d and no. of NTs is %d\n", TERMINALS, NON_TERMINALS);
+//     bool A[5] = {1, 0, 0, 1, 0};
+//     bool B[5] = {0, 0, 1, 1, 0};
+//     printSet(set_union(A, B, 5), 5);
 
 
-    char* testFile = "t3.txt";
-    initGrammar(G);
-	populateFirstFollow("First.txt",true);
-    populateFirstFollow("Follow.txt",false);
-    // printFirst();
-    // printFollow();
-    segFaultsSuck();
-    printRule(parseTable[otherStmts][TK_RETURN-eps]);
+//     char* testFile = "t3.txt";
+//     initGrammar(G);
+// 	populateFirstFollow("First.txt",true);
+//     populateFirstFollow("Follow.txt",false);
+//     // printFirst();
+//     // printFollow();
+//     segFaultsSuck();
+//     printRule(parseTable[otherStmts][TK_RETURN-eps]);
 
-    parseTree ptree = parseInputSourceCode(testFile);
-    //printf("\n\n\nCheck");
-    // for(int NT = 0; NT < NON_TERMINALS; NT++)
-    //     printParseTableRow(NT);
-    int numNodes = 0;
-    // // inorderNary(ptree, &numNodes);
-    // printf("\n\nNumber of nodes in the tree is: %d\n\n", numNodes);
-}
+//     parseTree ptree = parseInputSourceCode(testFile);
+//     //printf("\n\n\nCheck");
+//     // for(int NT = 0; NT < NON_TERMINALS; NT++)
+//     //     printParseTableRow(NT);
+//     int numNodes = 0;
+//     // // inorderNary(ptree, &numNodes);
+//     // printf("\n\nNumber of nodes in the tree is: %d\n\n", numNodes);
+// }
