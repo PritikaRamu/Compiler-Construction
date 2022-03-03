@@ -27,8 +27,8 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 
 	for(int i=54;i<=112;i++){
 		if(first_array[i-eps]==true){
-			if(!parseTable[lhs][i-eps])
-				parseTable[lhs][i-eps] = rule;
+			if(!parseTable[lhs][i-eps-1])
+				parseTable[lhs][i-eps-1] = rule;
 		}
 	}
 
@@ -48,13 +48,13 @@ void fillParseTable( g_RHS* rule, g_Term lhs){
 
 // Chnage 51
 void printParseTableRow(g_Term NT){
-	printf("NT is: ");
+	printf("\nNT is: ");
 	printNonTerminal(NT);
 	printf(" The Parse Table entries are: ");
 	for(int i=0;i<TERMINALS-1;i++){
 		if(parseTable[NT][i]!=NULL){
 			printf("[ Terminal: ");
-			printToken(i+eps);
+			printToken(i+eps+1);
 			printf(", Rule: ");
 			//printf("Check before print rule");
 			printRule(parseTable[NT][i]);
@@ -139,6 +139,9 @@ void printFirstArray(bool* array, int n){
 // 	populateFirstFollow("First.txt",true);
 //     populateFirstFollow("Follow.txt",false);
 
+// 	//bool* f = computeFirst(G[11]->listHead);
+
+
 // 	// int i = 25;
 // 	// ruleHead* list = G[i];
 // 	// while(list!=NULL){
@@ -152,16 +155,16 @@ void printFirstArray(bool* array, int n){
 			
 // 	// 	// }
 
-// 	// 	bool* first = computeFirst(list->listHead);
-// 	// 	printf("The first of RHS is:\n");
-// 	// 	printFirstArray(first, TERMINALS);
+// 		// bool* first = computeFirst(G[11]->listHead);
+// 		// printf("The first of RHS is:\n");
+// 		// printFirstArray(first, TERMINALS);
 
 
 // 	// 	// printRule(list->listHead);
 // 	// 	list = list->next;
 // 	// }
 
-// 	// computeParseTable();
+// 	//computeParseTable();
 // 	segFaultsSuck();
 // 	for(int i=0; i<NON_TERMINALS; i++){
 // 		printParseTableRow(i);
