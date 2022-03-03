@@ -412,11 +412,10 @@ void initGrammar(){
     G[23] = insertRuleList(G[23], RuleTK_LETK_SQL35);
 
     G[33] = NULL;
-    g_RHS* Rule49TK_COMMENT11 = NULL;
-    Rule49TK_COMMENT11 = insertIntoRule(Rule49TK_COMMENT11,eps, true);
-    G[33] = insertRuleList(G[33], Rule49TK_COMMENT11);
+    g_RHS* Rule49TK = NULL;
+    Rule49TK = insertIntoRule(Rule49TK,eps, true);
+    G[33] = insertRuleList(G[33], Rule49TK);
 
-    G[33] = NULL;
     g_RHS* RuleTK_FIELDID01TK_MUL = NULL;
     RuleTK_FIELDID01TK_MUL = insertIntoRule(RuleTK_FIELDID01TK_MUL,42, false);
     RuleTK_FIELDID01TK_MUL = insertIntoRule(RuleTK_FIELDID01TK_MUL,41, false);
@@ -434,7 +433,6 @@ void initGrammar(){
     Rule2TK_MINUSTK_MUL2 = insertIntoRule(Rule2TK_MINUSTK_MUL2,41, false);
     G[42] = insertRuleList(G[42], Rule2TK_MINUSTK_MUL2);
 
-    G[42] = NULL;
     g_RHS* RuleTK_INPUTTK_DOT = NULL;
     RuleTK_INPUTTK_DOT = insertIntoRule(RuleTK_INPUTTK_DOT,eps, true);
     G[42] = insertRuleList(G[42], RuleTK_INPUTTK_DOT);
@@ -864,7 +862,7 @@ void printToken(int token) {
 				break;
         case SENTINEL: printf("SENTINEL ");
 				break;
-		case TK_RUID: printf("TK_RUID");
+		case TK_RUID: printf("TK_RUID ");
 				break;
 		case TK_UNION: printf("TK_UNION ");
 				break;
@@ -1000,12 +998,11 @@ void printNonTerminal(int token) {
    
 
 // 	initGrammar();
-//     // printGrammar(G, 100);
+//     printGrammar(G, 100);
 
-
-//     printf("Hi\n");
-//     trialFirstAndFollow();
-//     printFirst();
+//     //printf("Hi\n");
+//     //trialFirstAndFollow();
+//     //printFirst();
     
 //     // int nt = program;
 
