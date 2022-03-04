@@ -1,9 +1,13 @@
-#include "symbolTable.h"
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <stdbool.h>
-#include <stdlib.h>
+/* GROUP 15
+Group Members:
+Pritika Ramu          ID: 2019A7PS1140P
+Preetike Verma        ID: 2019A7PS0088P
+Aadit Deshpande       ID: 2019A7PS0077P
+Sneha                 ID: 2019A7PS0042P
+Nandan B Parikh       ID: 2019A7PS0097P
+*/
+
+#include "lexer.h"
 
 keyword keywords[] = {
 	{"with",TK_WITH},
@@ -33,7 +37,7 @@ keyword keywords[] = {
 	{"call",TK_CALL},
 	{"record",TK_RECORD},
 	{"endrecord",TK_ENDRECORD},
-	{"else",TK_ELSE}
+	{"else",TK_ELSE}	
 };
 
 int noEle = 0;
@@ -109,7 +113,7 @@ void initTable()
     {
 		symbolTable[i].head = NULL;
 	}
-	for(int i=0; i<27; i++){
+	for(int i=0; i<28; i++){
          insertID(keywords[i].key,keywords[i].value);
     }
 }
@@ -131,6 +135,8 @@ void display()
 		}
 	}
 }
+
+// FOR TESTING PURPOSES
 
 // void main(){
 // 	initTable();

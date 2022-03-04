@@ -1,12 +1,42 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "newRules.h"
+/* GROUP 15
+Group Members:
+Pritika Ramu          ID: 2019A7PS1140P
+Preetike Verma        ID: 2019A7PS0088P
+Aadit Deshpande       ID: 2019A7PS0077P
+Sneha                 ID: 2019A7PS0042P
+Nandan B Parikh       ID: 2019A7PS0097P
+*/
+
+#include "parser.h"
 
 //will compute first set for alpha in production A->alpha
 //will return a boolean array 
 
-void segFaultsSuck(){
+void fillParseTable( g_RHS* rule, g_Term lhs){
+	//Case 1
+	bool* first_array = computeFirst(rule); // A->BCdE First[]
+
+
+	for(int i=TK_ASSIGNOP;i<=TK_DEFINETYPE;i++){
+		if(first_array[i-eps]==true){
+			if(!parseTable[lhs][i-TK_ASSIGNOP])
+				parseTable[lhs][i-TK_ASSIGNOP] = rule;
+		}
+	}
+
+	// Case 2 
+	if(first_array[0]==true){
+		for(int b=TK_ASSIGNOP;b<=TK_DEFINETYPE;b++){
+			if(Follow[lhs][b-eps] == true){
+				if(!parseTable[lhs][b-TK_ASSIGNOP])
+					parseTable[lhs][b-TK_ASSIGNOP] = rule;
+			}
+		}
+	}
+
+}
+
+void computeParseTable(){
 	for(int i = 0; i < NON_TERMINALS; i++) // Goes over all NTs
 	{	
 		// printf("%d\t",i);
@@ -20,39 +50,14 @@ void segFaultsSuck(){
 
 }
 
-void fillParseTable( g_RHS* rule, g_Term lhs){
-	//Case 1
-	bool* first_array = computeFirst(rule); // A->BCdE First[]
-
-
-	for(int i=54;i<=112;i++){
-		if(first_array[i-eps]==true){
-			if(!parseTable[lhs][i-eps-1])
-				parseTable[lhs][i-eps-1] = rule;
-		}
-	}
-
-	// Case 2 
-	if(first_array[0]==true){
-		for(int b=54;b<=112;b++){
-			if(Follow[lhs][b-eps] == true){
-				if(!parseTable[lhs][b-eps])
-					parseTable[lhs][b-eps] = rule;
-			}
-		}
-	}
-
-}
-
-// Chnage 51
 void printParseTableRow(g_Term NT){
-	printf("\nNT is: ");
+	printf("NT is: ");
 	printNonTerminal(NT);
 	printf(" The Parse Table entries are: ");
 	for(int i=0;i<TERMINALS-1;i++){
 		if(parseTable[NT][i]!=NULL){
 			printf("[ Terminal: ");
-			printToken(i+eps+1);
+			printToken(i+eps);
 			printf(", Rule: ");
 			//printf("Check before print rule");
 			printRule(parseTable[NT][i]);
@@ -62,7 +67,6 @@ void printParseTableRow(g_Term NT){
 
 }
 
-// Chnage 51
 bool checkEpsiloninRHSFirst(g_Term NT){
 	return First[NT][0];
 }
@@ -81,7 +85,6 @@ bool* set_union(bool* A, bool*B, int len){
     return union_array;
 }
 
-// Chnage 51
 bool* computeFirst(g_RHS* head){
 	
 	g_RHS* iter = head; 
@@ -116,7 +119,6 @@ bool* computeFirst(g_RHS* head){
 
 }
 
-// Works
 void printFirstArray(bool* array, int n){
 	for(int i=0; i<n; i++){
 		if(array[i]==true)
@@ -127,48 +129,31 @@ void printFirstArray(bool* array, int n){
 	printf("\n");
 }
 
-
-
+// FOR TESTING PURPOSES
 
 // int main(){
-	
 // 	initGrammar(G);
 // 	//printf("Init grammar working fine");
 // 	populateFirstFollow("First.txt",true);
 //     populateFirstFollow("Follow.txt",false);
-
-// 	//bool* f = computeFirst(G[11]->listHead);
-
-
 // 	// int i = 25;
 // 	// ruleHead* list = G[i];
 // 	// while(list!=NULL){
-
 // 	// 	// if(checkEpsiloninRHSFirst(list->listHead->symbol)){
 // 	// 	// 	printf("This rule contains epsilon\n");
 // 	// 	// }
-
 // 	// 	// else{
 // 	// 	// 	printf("This rule does NOT contain epsilon\n");
-			
 // 	// 	// }
-
-// 		// bool* first = computeFirst(G[11]->listHead);
-// 		// printf("The first of RHS is:\n");
-// 		// printFirstArray(first, TERMINALS);
-
-
+// 	// 	bool* first = computeFirst(list->listHead);
+// 	// 	printf("The first of RHS is:\n");
+// 	// 	printFirstArray(first, TERMINALS);
 // 	// 	// printRule(list->listHead);
 // 	// 	list = list->next;
 // 	// }
-
-// 	//computeParseTable();
-// 	segFaultsSuck();
+// 	// computeParseTable();
+// 	computeParseTable();
 // 	for(int i=0; i<NON_TERMINALS; i++){
 // 		printParseTableRow(i);
 // 	}
-	
-
-
-
 //  }

@@ -1,8 +1,16 @@
-#include "stack.h"
-#include <stdio.h>
+/* GROUP 15
+Group Members:
+Pritika Ramu          ID: 2019A7PS1140P
+Preetike Verma        ID: 2019A7PS0088P
+Aadit Deshpande       ID: 2019A7PS0077P
+Sneha                 ID: 2019A7PS0042P
+Nandan B Parikh       ID: 2019A7PS0097P
+*/
+
+#include "parser.h"
 
 bool isTerm(g_Term symbol) {
-	if((symbol >= program && symbol <= eps)||symbol == definetypestmt || symbol == A) {
+	if((symbol >= program && symbol < eps)||symbol == definetypestmt || symbol == A) {
 		return false;
 	}
 	else {
@@ -29,7 +37,6 @@ Stack* initStack() {
 
 void pop(Stack* head) {
     if(!head->next) {
-        //printf("Empty stack, can't pop from stack\n");
         return;
     }
     else {
@@ -60,6 +67,7 @@ void printStack(Stack* head) {
     printf("End of stack\n");
 }
 
+// FOR TESTING PURPOSES
 
 // int main() {
 //     g_Term trial[] = {TK_ASSIGNOP, TK_COMMENT, TK_FIELDID, TK_ID, TK_NUM, TK_RNUM, TK_FUNID, TK_WITH, TK_PARAMETERS, TK_END, TK_WHILE, TK_TYPE, TK_MAIN,
@@ -68,34 +76,25 @@ void printStack(Stack* head) {
 // 	TK_THEN, TK_ENDIF, TK_READ, TK_WRITE, TK_RETURN, TK_PLUS, TK_MINUS, TK_MUL, TK_DIV,
 // 	TK_CALL, TK_RECORD, TK_ENDRECORD, TK_ELSE, TK_AND, TK_OR, TK_NOT, TK_LT, TK_LE, TK_AS,
 // 	TK_EQ, TK_GT, TK_GE, TK_NE, SENTINEL, LEX_ERROR, TK_RUID, TK_UNION, TK_ENDUNION, TK_DEFINETYPE};
-
 //     int size = sizeof(trial)/sizeof(g_Term);
-
 //     Stack *head = initStack();
-
 //     for(int i=0; i<size; i++) {
 //         push(head, trial[i]);
 //     }
-
 //     //printf("%d\n", head->next->data);
 //     printStack(head);
 //     //printf("%d\n", head->next->data);
-
 //     g_Term t1 = top(head);
 //     pop(head);
 //     printf("%d\n", t1);
-
 //     g_Term t2 = top(head);
 //     pop(head);
 //     printf("%d\n", t2);
-
 //     printf("While started\n");
-
 //     while(head->next) {
 //         g_Term temp = top(head);
 //         pop(head);
 //         printf("%d\n", temp);
 //     }
-
 //     return 0;
 // }

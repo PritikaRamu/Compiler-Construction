@@ -1,8 +1,12 @@
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <stdbool.h>
-#include <stdlib.h>
+/* GROUP 15
+Group Members:
+Pritika Ramu          ID: 2019A7PS1140P
+Preetike Verma        ID: 2019A7PS0088P
+Aadit Deshpande       ID: 2019A7PS0077P
+Sneha                 ID: 2019A7PS0042P
+Nandan B Parikh       ID: 2019A7PS0097P
+*/
+
 #include "lexer.h"
 
 twinBuffer buffers;
@@ -51,11 +55,6 @@ FILE *startLexer(char *inputFile)
 		return NULL;
 	}
 
-	// else
-	// {
-	// 	printf("\n Successfully opened the code file\n");
-	// }
-
 	int size1 = fread(buffers.buff1, sizeof(char), BUFFER_SIZE, fp);
 	buffers.buff1[size1] = EOF;
 	lexemeBegin = buffers.buff1;
@@ -92,7 +91,6 @@ FILE *getStream(FILE *fp)
 		readBuff1 = true;
 		readBuff2 = true;
 		startedReading = true;
-		//printf("check %c check",*forward);
 	}
 
 	else if (forward == buffers.buff1 + BUFFER_SIZE - 1)
@@ -121,7 +119,6 @@ FILE *getStream(FILE *fp)
 
 	else
 	{
-		//normal case where we have space in the buffer
 		forward++;
 	}
 	return fp;
@@ -129,7 +126,6 @@ FILE *getStream(FILE *fp)
 
 char getNextChar(FILE *fp)
 {
-
 	if (!startedReading)
 	{
 		char curr = *forward;
@@ -137,13 +133,9 @@ char getNextChar(FILE *fp)
 		forward++;
 		return curr;
 	}
-
-	//printf("buffer 1: %s buffer 2: %s forward: %c \n", buffers.buff1, buffers.buff2, *forward);
-
 	char curr = *forward;
 	fp = getStream(fp);
 	++charCount;
-	//printf("\n check %c check\n",curr);
 	return curr;
 }
 
@@ -1104,15 +1096,8 @@ tokenInfo getNextToken()
 
 		case 100:
 		{
-			g_Term token = getToken(lexeme);
-					// if(token==-1)
-					// 	{
-					// 		t.tid = SENTINEL;
-					// 	}
-					// else
-					// 	{
-					// 		t.tid = token;
-					// 	}
+		
+			t.lineNo = line;
 			t.tid = SENTINEL;
 			return t;
 		}
@@ -1263,9 +1248,8 @@ char *strip(char *str)
 }
 
 void removeComments(char* testcaseFile, char* cleanFile){
-    //printf("%s\n",testcaseFile);
     FILE *inp = fopen(testcaseFile,"r");
-    //FILE *out = fopen(cleanFile,"w");
+    FILE *out = fopen(cleanFile,"w");
 
     if(!inp){
         printf("Error opening testcaseFile\n");
@@ -1284,76 +1268,31 @@ void removeComments(char* testcaseFile, char* cleanFile){
         if(strlen(mod)>0){
             if(mod[0]!='%'){
                 printf("%s",line);
+				fprintf(out,"%s",line);
             }
         }
     }
+	fclose(inp);
+	fclose(out);
 }
+
+// FOR TESTING PURPOSES
 
 // int main()
 // {
-
-
-// 	fp = startLexer("t1.txt");
+// 	fp = startLexer("t6.txt");
 // 	initTable();
-// 	/*
-// 	printf("\nSIZE OF TWIN BUFFER %lu %lu %lu \n",sizeof(buffers), sizeof(buffers.buff1), sizeof(buffers.buff2));
-	
-// 	printf("Checking if twin buffers have been initialized or not \n %d %c %c %c \n", buffers.buff1[0],buffers.buff1[BUFFER_SIZE], buffers.buff2[0], buffers.buff2[BUFFER_SIZE]);	
-
-// 	printf("Startlexer working fine\n");
-
-	
-		
-// // 	for(int i = 0; i < 40; i++)
-// // 		{
-// // 		char c = getNextChar(fp);
-// // 		printf("%c %d\n",c,c);
-// // 		}
-	
-// // 	printf("Retraction\n");
-// // 	retract(4);
-	
-// // 	for(int i = 0; i < 20; i++)
-// // 		{
-// // 		char c = getNextChar(fp);
-// // 		printf("%c %d\n",c, c);
-// // 		}
-// // 	*/
 // 	while (1)
 // 	{
 // 		tokenInfo pleasework = getNextToken();
-// 		if (pleasework.tid == SENTINEL)
-// 			break;
 // 		if(pleasework.tid!=LEX_ERROR && pleasework.tid!=TK_COMMENT)
 // 		{
-// 		printf("Line no. %d\t\tLexeme %s\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
+// 		printf("Line no. %d\t\tLexeme %s\t\t\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
 // 		printToken(pleasework.tid);
 // 		printf("\n");
+// 		if (pleasework.tid == SENTINEL)
+// 			break;
 // 		}
 // 	}
-// 	// 	/*
-// 	// 	printf("\nFirst call to getStream function\n");
-
-// 	// 	printf("\nContents of buffer 1\n");
-
-// 	// 	printf("\n%s", buffers.buff1);
-
-// 	// 	printf("\nContents of buffer 2\n");
-
-// 	// 	printf("\n%s", buffers.buff2);
-
-// 	// 	printf("\nSecond call to getStream function\n");
-
-// 	//  	fp = getStream(fp);
-
-// 	// 	printf("\nContents of buffer 1\n");
-
-// 	// 	printf("\n%s", buffers.buff1);
-
-// 	// 	printf("\nContents of buffer 2\n");
-
-// 	// 	printf("\n%s", buffers.buff2);
-// 	// 	*/
-
-// 	// 	return 0;
+// 	return 0;
 // }

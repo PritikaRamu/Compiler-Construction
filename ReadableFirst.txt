@@ -1,0 +1,111 @@
+<program>  TK_FUNID TK_MAIN 
+<mainFunction>  TK_MAIN 
+<otherFunctions>  <eps> TK_FUNID 
+<function>  TK_FUNID 
+<input_par>  TK_INPUT 
+<output_par>  <eps> TK_OUTPUT 
+<parameter_list>  TK_INT TK_REAL TK_RECORD TK_RUID TK_UNION 
+<dataType>  TK_INT TK_REAL TK_RECORD TK_RUID TK_UNION 
+<primitiveDatatype>  TK_INT TK_REAL 
+<constructedDatatype>  TK_RECORD TK_RUID TK_UNION 
+<remaining_list>  <eps> TK_COMMA 
+<stmts>  TK_ID TK_WHILE TK_TYPE TK_SQL TK_IF TK_READ TK_WRITE TK_RETURN TK_CALL TK_RECORD TK_UNION TK_DEFINETYPE 
+<typeDefinitions>  <eps> TK_RECORD TK_UNION TK_DEFINETYPE 
+<typeDefinition>  TK_RECORD TK_UNION 
+<fieldDefinitions>  TK_TYPE 
+<fieldDefinition>  TK_TYPE 
+<moreFields>  <eps> TK_TYPE 
+<declarations>  <eps> TK_TYPE 
+<declaration>  TK_TYPE 
+<global_or_not>  <eps> TK_COLON 
+<otherStmts>  <eps> TK_ID TK_WHILE TK_SQL TK_IF TK_READ TK_WRITE TK_CALL 
+<stmt>  TK_ID TK_WHILE TK_SQL TK_IF TK_READ TK_WRITE TK_CALL 
+<assignmentStmt>  TK_ID 
+<singleOrRecId>  TK_ID 
+<actualOrRedefined>  TK_RECORD TK_UNION TK_DEFINETYPE 
+<funCallStmt>  TK_SQL TK_CALL 
+<outputParameters>  <eps> TK_SQL 
+<inputParameters>  TK_SQL 
+<iterativeStmt>  TK_WHILE 
+<conditionalStmt>  TK_IF 
+<elsePart>  TK_ENDIF TK_ELSE 
+<ioStmt>  TK_READ TK_WRITE 
+<fieldtype>  TK_INT TK_REAL TK_RUID 
+<option_single_constructed>  <eps> TK_DOT 
+<arithmeticExpression>  TK_ID TK_NUM TK_RNUM TK_OP 
+<expPrime>  <eps> TK_PLUS TK_MINUS 
+<term>  TK_ID TK_NUM TK_RNUM TK_OP 
+<termPrime>  <eps> TK_MUL TK_DIV 
+<factor>  TK_ID TK_NUM TK_RNUM TK_OP 
+<highPrecedenceOperators>  TK_MUL TK_DIV 
+<lowPrecedenceOperators>  TK_PLUS TK_MINUS 
+<oneExpansion>  TK_DOT 
+<moreExpansions>  <eps> TK_DOT 
+<booleanExpression>  TK_ID TK_NUM TK_RNUM TK_OP TK_NOT 
+<var>  TK_ID TK_NUM TK_RNUM 
+<logicalOp>  TK_AND TK_OR 
+<relationalOp>  TK_LT TK_LE TK_EQ TK_GT TK_GE TK_NE 
+<returnStmt>  TK_RETURN 
+<optionalReturn>  <eps> TK_SQL 
+<idList>  TK_ID 
+<more_ids>  <eps> TK_COMMA 
+<definetypestmt>  TK_DEFINETYPE 
+<A>  TK_RECORD TK_UNION 
+<eps>  
+TK_ASSIGNOP  TK_ASSIGNOP 
+TK_COMMENT  
+TK_FIELDID  TK_FIELDID 
+TK_ID  TK_ID 
+TK_NUM  TK_NUM 
+TK_RNUM  TK_RNUM 
+TK_FUNID  TK_FUNID 
+TK_WITH  TK_WITH 
+TK_PARAMETERS  TK_PARAMETERS 
+TK_END  TK_END 
+TK_WHILE  TK_WHILE 
+TK_TYPE  TK_TYPE 
+TK_MAIN  TK_MAIN 
+TK_GLOBAL  TK_GLOBAL 
+TK_PARAMETER  TK_PARAMETER 
+TK_LIST  TK_LIST 
+TK_SQL  TK_SQL 
+TK_SQR  TK_SQR 
+TK_INPUT  TK_INPUT 
+TK_OUTPUT  TK_OUTPUT 
+TK_INT  TK_INT 
+TK_REAL  TK_REAL 
+TK_COMMA  TK_COMMA 
+TK_SEM  TK_SEM 
+TK_COLON  TK_COLON 
+TK_DOT  TK_DOT 
+TK_ENDWHILE  TK_ENDWHILE 
+TK_OP  TK_OP 
+TK_CL  TK_CL 
+TK_IF  TK_IF 
+TK_THEN  TK_THEN 
+TK_ENDIF  TK_ENDIF 
+TK_READ  TK_READ 
+TK_WRITE  TK_WRITE 
+TK_RETURN  TK_RETURN 
+TK_PLUS  TK_PLUS 
+TK_MINUS  TK_MINUS 
+TK_MUL  TK_MUL 
+TK_DIV  TK_DIV 
+TK_CALL  TK_CALL 
+TK_RECORD  TK_RECORD 
+TK_ENDRECORD  TK_ENDRECORD 
+TK_ELSE  TK_ELSE 
+TK_AND  TK_AND 
+TK_OR  TK_OR 
+TK_NOT  TK_NOT 
+TK_LT  TK_LT 
+TK_LE  TK_LE 
+TK_AS  TK_AS 
+TK_EQ  TK_EQ 
+TK_GT  TK_GT 
+TK_GE  TK_GE 
+TK_NE  TK_NE 
+TK_RUID  TK_RUID 
+TK_UNION  TK_UNION 
+TK_ENDUNION  TK_ENDUNION 
+TK_DEFINETYPE  TK_DEFINETYPE 

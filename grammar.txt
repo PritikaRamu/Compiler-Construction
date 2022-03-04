@@ -1,0 +1,55 @@
+<program> -> <otherFunctions> <mainFunction>
+<mainFunction> -> TK_MAIN <stmts> TK_END
+<otherFunctions> -> <function> <otherFunctions> | EPSILON
+<function> -> TK_FUNID <input_par> <output_par> TK_SEM <stmts> TK_END
+<input_par> -> TK_INPUT TK_PARAMETER TK_LIST TK_SQL <parameter_list> TK_SQR
+<output_par> -> TK_OUTPUT TK_PARAMETER TK_LIST TK_SQL <parameter_list> TK_SQR | EPSILON
+<parameter_list> -> <dataType> TK_ID <remaining_list>
+<dataType> -> <primitiveDatatype> | <constructedDatatype>
+<primitiveDatatype> -> TK_INT | TK_REAL
+<constructedDatatype> -> TK_RECORD TK_RUID | TK_UNION TK_RUID | TK_RUID
+<remaining_list> -> TK_COMMA <parameter_list> | EPSILON
+<stmts> -> <typeDefinitions> <declarations> <otherStmts> <returnStmt>
+<typeDefinitions> -> <actualOrRedefined> <typeDefinitions> | EPSILON
+<actualOrRedefined> -> <typeDefinition> | <definetypestmt>
+<typeDefinition> -> TK_RECORD TK_RUID <fieldDefinitions> TK_ENDRECORD
+<typeDefinition> -> TK_UNION TK_RUID <fieldDefinitions> TK_ENDUNION 
+<fieldDefinitions> -> <fieldDefinition> <fieldDefinition> <moreFields>
+<fieldDefinition> -> TK_TYPE <fieldType> TK_COLON TK_FIELDID TK_SEM
+<fieldtype> -> <primitiveDatatype> | TK_RUID
+<moreFields> -> <fieldDefinition> <moreFields> | EPSILON
+<declarations> -> <declaration> <declarations> | EPSILON
+<declaration> -> TK_TYPE <dataType> TK_COLON TK_ID <global_or_not> TK_SEM
+<global_or_not> -> TK_COLON TK_GLOBAL| EPSILON
+<otherStmts> -> <stmt> <otherStmts> | EPSILON
+<stmt> -> <assignmentStmt> | <iterativeStmt> | <conditionalStmt> | <ioStmt> | <funCallStmt>
+<assignmentStmt> -> <SingleOrRecId> TK_ASSIGNOP <arithmeticExpression> TK_SEM
+<singleOrRecId> -> TK_ID | <constructedVariable>
+<constructedVariable> -> TK_ID <oneExpansion> <moreExpansions>
+<oneExpansion> -> TK_DOT TK_FIELDID
+<moreExpansions> -> <oneExpansion> <moreExpansions> | EPSILON
+<funCallStmt> -> <outputParameters> TK_CALL TK_FUNID TK_WITH TK_PARAMETERS <inputParameters> TK_SEM
+<outputParameters> -> TK_SQL <idList> TK_SQR TK_ASSIGNOP | EPSILON
+<inputParameters> -> TK_SQL <idList> TK_SQR
+<iterativeStmt> -> TK_WHILE TK_OP <booleanExpression> TK_CL <stmt> <otherStmts> TK_ENDWHILE
+<conditionalStmt> -> TK_IF TK_OP <booleanExpression> TK_CL TK_THEN <stmt> <otherStmts> <elsePart>
+<elsePart> -> TK_ELSE <stmt> <otherStmts> TK_ENDIF | TK_ENDIF
+<ioStmt> -> TK_READ TK_OP <var> TK_CL TK_SEM | TK_WRITE TK_OP <var> TK_CL TK_SEM
+<arithmeticExpression> -> <term> <expPrime>
+<expPrime> -> <lowPrecedenceOperators> <term> <expPrime> | EPSILON
+<term> -> <factor> <termPrime>
+<termPrime> -> <highPrecedenceOperators> <factor> <termPrime> | EPSILON
+<factor> -> TK_OP <arithmeticExpression> TK_CL | <var>
+<highPrecedenceOperators> -> TK_MUL | TK_DIV
+<lowPrecedenceOperators> -> TK_PLUS | TK_MINUS
+<booleanExpression> -> TK_OP <booleanExpression> TK_CL <logicalOp> TK_OP <booleanExpression> TK_CL
+<booleanExpression> -> <var> <relationalOp> <var>
+<booleanExpression> -> TK_NOT TK_OP <booleanExpression> TK_CL
+<var> -> <singleOrRecId> | TK_NUM | TK_RNUM
+<logicalOp> -> TK_AND | TK_OR
+<relationalOp> -> TK_LT | TK_LE | TK_EQ |TK_GT | TK_GE | TK_NE
+<returnStmt> -> TK_RETURN <optionalReturn> TK_SEM
+<optionalReturn> -> TK_SQL <idList> TK_SQR | EPSILON
+<idList> -> TK_ID <more_ids>
+<more_ids> -> TK_COMMA <idList> | EPSILON
+

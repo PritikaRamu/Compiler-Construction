@@ -1,55 +1,27 @@
+/* GROUP 15
+Group Members:
+Pritika Ramu          ID: 2019A7PS1140P
+Preetike Verma        ID: 2019A7PS0088P
+Aadit Deshpande       ID: 2019A7PS0077P
+Sneha                 ID: 2019A7PS0042P
+Nandan B Parikh       ID: 2019A7PS0097P
+*/
+
 #ifndef _DRIVERDEF_
 #define _DRIVERDEF_
-#include <stdio.h>
-#include <stdbool.h>
 #include "parser.h"
-#include <time.h>
-
-
-// char *strip(char *str)
-// {
-//     while(*str==' ' || *str=='\t') str++;
-//     return str;
-// }
-
-// void removeComments(char* testcaseFile, char* cleanFile){
-//     //printf("%s\n",testcaseFile);
-//     FILE *inp = fopen(testcaseFile,"r");
-//     //FILE *out = fopen(cleanFile,"w");
-
-//     if(!inp){
-//         printf("Error opening testcaseFile\n");
-//         return;
-//     }
-
-//     char *line = NULL;
-//     size_t len = 0;
-//     size_t sizeRead;
-
-//     while(1){
-//         sizeRead = getline(&line, &len, inp);
-//         if(sizeRead==-1)
-//             break;
-//         char *mod = strip(line);
-//         if(strlen(mod)>0){
-//             if(mod[0]!='%'){
-//                 printf("%s",line);
-//             }
-//         }
-//     }
-// }
 
 int main(int argc, char* argv[]){
 
-	if(argc<2){
-		printf("Wrong command. Type: ./compiler testcaseX.txt\n");
+	if(argc<3){
+		printf("Wrong command. Type: ./stage1exe testcase.txt \n");
 		return 0;
 	}
 
     printf("GROUP 15:\nAadit Deshpande\nNandan Bharatkumar Parikh\nPreetika Verma\nPritika Ramu\nSneha\n");
 	printf("\n\nIMPLEMENTATION DETAILS OF STAGE 1\n");
 	printf("1. Initialized grammar\n");
-	printf("2. Automated computation of FIRST and FOLLOW sets\n");
+	printf("2. Automated computation of FIRST\n");
 	printf("3. Implemented lexical analyser\n");
 	printf("4. Implemented syntax analyser\n");
 	printf("5. Implemented PANIC MODE error recovery\n");
@@ -80,26 +52,71 @@ int main(int argc, char* argv[]){
 			}break;
 
 			case 1:{
-				removeComments(argv[1],"dummyname");		
+				removeComments(argv[1],argv[2]);		
 			}break;
 
             case 2:{
                 //print tokens from lexer
+
+				FILE * fp = startLexer(argv[1]);
+				initTable();
+				while (1)
+					{
+						tokenInfo pleasework = getNextToken();
+						if (pleasework.tid == SENTINEL)
+							break;
+						if(pleasework.tid!=LEX_ERROR)
+						{
+						if(pleasework.tid==TK_COMMENT)
+							printf("Line no. %d\tLexeme \t\t\t%%\t\tTK_COMMENT", pleasework.lineNo);
+						else
+							printf("Line no. %d\tLexeme %20s", pleasework.lineNo, pleasework.lexeme);
+						}
+						printf("\t\t");
+						if(pleasework.tid!=TK_COMMENT)
+							printToken(pleasework.tid);
+						printf("\n");
+						
+					}
+				fclose(fp);
+				break;
             }
 
             case 3:{
                 //parser
+				char *testFile = argv[1];
+				char *outfile = argv[2];
+				initGrammar(G);
+				populateFirstFollow("First.txt", true);
+				populateFirstFollow("Follow.txt", false);
+				computeParseTable();
+				parseTree ptree = parseInputSourceCode(testFile);
+				int numNodes = printParseTree(ptree, outfile);
+				break;
             }
             case 4:{
                 clock_t start_time, end_time;
                 double total_CPU_time, total_CPU_time_in_seconds;
                 start_time = clock();
                 // invoke your lexer and parser here
+
+				printf("A\n");
+
+				char *testFile = argv[1];
+				char *outfile = argv[2];
+				initGrammar(G);
+				populateFirstFollow("First.txt", true);
+				populateFirstFollow("Follow.txt", false);
+				computeParseTable();
+				parseTree ptree = parseInputSourceCode(testFile);
+
+
                 end_time = clock();
                 total_CPU_time = (double) (end_time - start_time);
                 total_CPU_time_in_seconds = total_CPU_time / CLOCKS_PER_SEC;
                 printf("\nTotal CPU time = %lf\nTotal CPU time in seconds = %lf\n",total_CPU_time,total_CPU_time_in_seconds);
                 // Print both total_CPU_time and total_CPU_time_in_seconds
+				break;
             }
         }
 
