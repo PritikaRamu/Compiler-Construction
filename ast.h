@@ -5,3 +5,5 @@
 
 ast* initASt(parseTree root);
 ast* makeAST(parseTree node, ast* parent);
+
+#endif

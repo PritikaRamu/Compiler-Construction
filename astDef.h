@@ -1,5 +1,5 @@
 #ifndef _ASTDEF_
-#define __ASTDEF_
+#define _ASTDEF_
 
 #include "parser.h"
 
@@ -11,23 +11,25 @@ typedef enum {
     OUTPUT_PARAMETERS,
     INTEGER,
     REAL,
-    RECORD,
-    UNION,
+    RECORD_OR_UNION,
     ID,
     FIELDID,
     TYPE_DEFINITIONS,
+    DEFINETYPE,
     DECLARATIONS,
     OTHERSTMTS,
+    GLOBAL, 
+    ASSIGNOP
 }NodeType;
 
 typedef struct astNode {
     NodeType nodeType;
 
-    struct ast* parent;
+    struct astNode* parent;
 
-    struct ast* firstChild;
+    struct astNode* firstChild;
 
-    struct ast* nextSibling;
+    struct astNode* nextSibling;
     
     g_Term symbol;
 
@@ -35,3 +37,5 @@ typedef struct astNode {
     
     int line;
 }ast;
+
+#endif
