@@ -1,5 +1,49 @@
 #include "ast.h"
 
+char nodeTypeStr[][50] = {
+    "PROGRAM",
+    "MAIN_FUNCTION", 
+    "FUNCTION_SEQ", 
+    "INPUT_PARAMETERS",
+    "OUTPUT_PARAMETERS",
+    "INTEGER",
+    "REAL",
+    "RECORD_OR_UNION",
+    "ID",
+    "FIELDID",
+    "TYPE_DEFINITIONS",
+    "DEFINETYPE",
+    "DECLARATIONS",
+    "OTHERSTMTS",
+    "GLOBAL", 
+    "ASSIGNOP",
+    "CALL", 
+    "FUNCTION_CALL",
+    "OUTPUT_PARAMETERS_CALL",
+    "INPUT_PARAMETERS_CALL",
+    "ITERATIVE",
+    "CONDITIONAL",
+    "ELSE",
+    "IOREAD", 
+    "IOWRITE",
+    "MULTIPLY",
+    "DIVIDE",
+    "PLUS", 
+    "MINUS",
+    "NOT_BOOL",
+    "NUM", 
+    "RNUM",
+    "AND",
+    "OR",
+    "LESS_THAN",
+    "LESS_EQUAL",
+    "EQUAL",
+    "GREATER_THAN",
+    "GREATER_EQUAL",
+    "NOT_EQUAL",
+    "RETURN"
+};
+
 ast* mkNode(NodeType nodeType, ast* parent, ast* firstChild, ast* nextSibling, parseTree ptNode) {
     ast* node = (ast*)malloc(sizeof(ast));
     node->nodeType = nodeType;
@@ -565,6 +609,49 @@ ast* makeAST(parseTree node, ast* parent) {
         curr->parent = parent;
     }
     return curr;
+}
+
+char* nodeTypeToStr(NodeType type) {
+    return nodeTypeStr[type];
+}
+
+void inorderAST(ast* curr, int *numNodes, FILE *fp)
+{
+    if (curr == NULL)
+        return;
+    ast* temp = (ast*)malloc(sizeof(ast));
+    temp = curr->firstChild;
+    if (temp != NULL)
+    {
+        while (temp->nextSibling)
+        {
+            inorderAST(temp, numNodes, fp);
+            temp = temp->nextSibling;
+        }
+    }
+    char* valueStr, *lex1, *parentStr, *isLeaf, *nodeSymbol;
+    if(curr->nodeType == NUM || curr->nodeType == RNUM)
+        valueStr = curr->lex;
+    else
+        valueStr = "Not a number ";
+    if(curr->symbol >= eps)
+        lex1 = curr->lex;
+    else
+        lex1 = "------";
+    if(curr->parent!=NULL)
+        parentStr = nodeTypeToStr((curr->parent)->nodeType);
+    else
+        parentStr = "ROOT ";
+    if(curr->firstChild!=NULL)
+        {isLeaf = "NO "; nodeSymbol = nodeTypeToStr(curr->nodeType);}
+    else 
+        {isLeaf = "YES "; nodeSymbol = "Leaf node ";}
+    if(curr->symbol == eps)
+        lex1 = "------";
+    printf("\n%25s %15d %30s %20s %25s %10s %25s", lex1, curr->line, nodeTypeToStr(curr->symbol), valueStr, parentStr, isLeaf, nodeSymbol);
+    fprintf(fp, "\n%25s %15d %30s %20s %25s %10s %25s", lex1, curr->line, nodeTypeToStr(curr->symbol), valueStr, parentStr, isLeaf, nodeSymbol);
+    *numNodes = *numNodes + 1;
+    inorderAST(temp, numNodes, fp);
 }
 
 ast* initASt(parseTree root) {
