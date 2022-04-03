@@ -246,9 +246,325 @@ ast* makeAST(parseTree node, ast* parent) {
             //stmt ==> iterativeStmt
             case iterativeStmt:
                 curr = makeAST(node->firstChild, parent);
+                break;
             //stmt ==> conditionalStmt
+            case conditionalStmt:
+                curr = makeAST(node->firstChild, parent);
+                break;
+            //stmt ==> ioStmt
+            case ioStmt:
+                curr = makeAST(node->firstChild, parent);
+                break;
+            //stmt ==> funCallStmt
+            case funCallStmt:
+                curr = makeAST(node->firstChild, parent);
+                break;
         }
     }
+
+    //assignmentStmt ==> <SingleOrRecId> TK_ASSIGNOP <arithmeticExpression> TK_SEM
+    if(node->symbol == assignmentStmt) {
+        curr = mkNode(ASSIGNOP, parent, NULL, NULL, node->firstChild->nextSibling);
+        curr->firstChild = makeAST(node->firstChild, curr);
+        curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+    }
+
+    //<SingleOrRecId> ==> TK_ID <option_single_constructed>
+    if(node->symbol == singleOrRecId) {
+        //of the form:-
+        /*
+                    ID
+                   /
+                  /
+                FIELID-->FIELDID-->FIELDID....--FIELDID 
+        */
+        curr = mkNode(ID, parent, NULL, NULL, node->firstChild);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+    } 
+
+    //<option_single_constructed> ==> <oneExpansion> <moreExpansions>
+    if(node->symbol == option_single_constructed) {
+        curr = makeAST(oneExpansion, parent);
+        curr->nextSibling = makeAST(moreExpansions, parent);
+    }
+
+    //oneExpansion ==> TK_DOT TK_FIELDID
+    if(node->symbol == oneExpansion) {
+        curr = mkNode(FIELDID, parent, NULL, NULL, node->firstChild->nextSibling);
+    }
+
+    //moreExpansions ==> oneExpansion moreExpansions
+    if(node->symbol == moreExpansions) {
+        curr = makeAST(node->firstChild, parent);
+        curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
+    }
+
+    //<funCallStmt> ==> <outputParameters> TK_CALL TK_FUNID TK_WITH TK_PARAMETERS <inputParameters> TK_SEM
+    if(node->symbol == funCallStmt) {
+        curr = mkNode(CALL, parent, NULL, NULL, node->firstChild->nextSibling);
+        curr->firstChild = makeAST(node->firstChild, curr);
+        curr->firstChild->nextSibling = mkNode(FUNCTION_CALL, curr, NULL, NULL, node->firstChild->nextSibling->nextSibling);
+        curr->firstChild->nextSibling->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+    }
+
+    //<outputParameters> ==> TK_SQL <idList> TK_SQR TK_ASSIGNOP
+    if(node->symbol == outputParameters) {
+        curr = mkNode(OUTPUT_PARAMETERS_CALL, parent, NULL, NULL, node);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+    }
+
+    //<inputParameters> ==> TK_SQL <idList> TK_SQR
+    if(node->symbol == inputParameters) {
+        curr = mkNode(INPUT_PARAMETERS_CALL, parent, NULL, NULL, node);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+    }
+
+    //<iterativeStmt> ==> TK_WHILE TK_OP <booleanExpression> TK_CL <stmt> <otherStmts> TK_ENDWHILE
+    if(node->symbol == iterativeStmt) {
+        curr = mkNode(ITERATIVE, parent, NULL, NULL, node->firstChild);
+        curr->firstChild = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+        curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+        curr->firstChild->nextSibling->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+    }
+
+    //<conditionalStmt>-> TK_IF TK_OP <booleanExpression> TK_CL TK_THEN <stmt> <otherStmts> <elsePart>
+    if(node->symbol == conditionalStmt) {
+        curr = mkNode(CONDITIONAL, parent, NULL, NULL, node->firstChild);
+        curr->firstChild = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+        curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+        curr->firstChild->nextSibling->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+        temp1 = curr->firstChild->nextSibling;
+        temp1 = lastNode(temp1);
+        temp1->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+    }
+
+    if(node->symbol == elsePart) {
+        switch(node->firstChild->symbol) {
+            //<elsePart> ==> TK_ENDIF
+            case TK_ENDIF:
+                return NULL;
+                break;
+            //<elsePart> ==> TK_ELSE <stmt> <otherStmts> TK_ENDIF 
+            case TK_ELSE:
+                curr = mkNode(ELSE, parent, NULL, NULL, node->firstChild);
+                curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+                curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+        }
+    }
+
+    if(node->symbol == ioStmt) {
+        switch(node->firstChild->symbol) {
+            //<ioStmt> ==> TK_READ TK_OP <var> TK_CL TK_SEM 
+            case TK_READ:
+                curr = mkNode(IOREAD, parent, NULL, NULL, node->firstChild);
+                curr->firstChild = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+                break;
+            //<ioStmt> ==> TK_WRITE TK_OP <var> TK_CL TK_SEM
+            case TK_WRITE:
+                curr = mkNode(IOWRITE, parent, NULL, NULL, node->firstChild);
+                curr->firstChild = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+                break;
+        }
+    }
+
+    //<arithmeticExpression> ==> <term> <expPrime>
+    if(node->symbol == arithmeticExpression) {
+        curr = makeAST(node->firstChild, parent);
+        temp1 = makeAST(node->firstChild->nextSibling, parent);
+        if(temp1) {
+            ast* temp2 = temp1->firstChild;
+            temp1->firstChild = curr;
+            temp1->firstChild->parent = temp1;
+            temp1->firstChild->nextSibling = temp2;
+            temp1->firstChild->nextSibling->parent = temp1;
+            while(temp1->parent) {
+                temp1 = temp1->parent;
+            }
+            curr = temp1;
+        }
+    }
+
+    //<term> ==> <factor> <termPrime>
+    if(node->symbol == term) {
+        curr = makeAST(node->firstChild, parent);
+        temp1 = makeAST(node->firstChild->nextSibling, parent);
+        if(temp1) {
+            ast* temp2 = temp1->firstChild;
+            temp1->firstChild = curr;
+            temp1->firstChild->parent = temp1;
+            temp1->firstChild->nextSibling = temp2;
+            temp1->firstChild->nextSibling->parent = temp1;
+            while(temp1->parent) {
+                temp1 = temp1->parent;
+            }
+            curr = temp1;
+        }
+    }
+
+    //<expPrime> ==> <lowPrecedenceOperators> <term> <expPrime>_1 
+    if(node->symbol == expPrime) {
+        curr = makeAST(node->firstChild, parent);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+        temp1 = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+        if(temp1) {
+            ast* temp2 = temp1->firstChild;
+            temp1->firstChild = curr;
+            curr->parent = temp1;
+            curr->nextSibling = temp2;
+            temp2->parent = temp1;
+            curr = temp1->firstChild;
+            return curr;
+        }
+    }
+
+    //<termPrime> ==> <highPrecedenceOperators> <factor> <termPrime>
+    if(node->symbol == highPrecedenceOperators) {
+        curr = makeAST(node->firstChild, parent);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+        temp1 = makeAST(node->firstChild->nextSibling->nextSibling, parent);
+        if(temp1) {
+            ast* temp2 = temp1->firstChild;
+            temp1->firstChild = curr;
+            curr->parent = temp1;
+            curr->nextSibling = temp2;
+            temp2->parent = temp1;
+            curr = temp1->firstChild;
+            return curr;
+        }
+    } 
+
+    if(node->symbol == factor) {
+        switch(node->firstChild->symbol) {
+            //<factor> ==> TK_OP <arithmeticExpression> TK_CL
+            case TK_OP:
+                curr = makeAST(node->firstChild, parent);
+                break;
+            //<factor> ==> <var>
+            case var:
+                curr = makeAST(node->firstChild, parent);
+                break;
+        }
+    }
+
+    //<highPrecedenceOperator> ==> TK_MUL | TK_DIV
+    if(node->symbol == highPrecedenceOperators) {
+        switch(node->firstChild->symbol) {
+            case TK_MUL:
+                curr = mkNode(MULTIPLY, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_DIV:
+                curr = mkNode(DIVIDE, parent, NULL, NULL, node->firstChild);
+                break;
+        }
+    }
+
+    //lowPrecedenceOperators ==> TK_PLUS | TK_MINUS
+    if(node->symbol == lowPrecedenceOperators) {
+        switch(node->firstChild->symbol) {
+            case TK_PLUS:
+                curr = mkNode(PLUS, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_MINUS:
+                curr = mkNode(MINUS, parent, NULL, NULL, node->firstChild);
+                break;
+        }
+    }
+
+    if(node->symbol == booleanExpression) {
+        switch(node->firstChild->symbol) {
+            //<booleanExpression> ==>TK_OP <booleanExpression> TK_CL <logicalOp> TK_OP <booleanExpression> TK_CL
+            case TK_OP:
+                curr = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling, parent);
+                curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+                curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+                break;
+            //<booleanExpression> ==> <var> <relationalOp> <var>
+            case var:
+                curr = makeAST(node->firstChild->nextSibling, parent);
+                curr->firstChild = makeAST(node->firstChild, curr);
+                curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+                break;
+            //<booleanExpression> ==> TK_NOT TK_OP <booleanExpression> TK_CL
+            case TK_NOT:
+                curr = mkNode(NOT_BOOL, parent, NULL, NULL, node->firstChild);
+                curr->firstChild = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+        }
+    }
+
+    if(node->symbol == var) {
+        switch(node->firstChild->symbol) {
+            case singleOrRecId:
+                curr = makeAST(node->firstChild, parent);
+                break;
+            case TK_NUM:
+                curr = mkNode(NUM, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_RNUM:
+                curr = mkNode(RNUM, parent, NULL, NULL, node->firstChild);
+                break;
+        }
+    }
+
+    if(node->symbol == logicalOp) {
+        switch(node->firstChild->symbol) {
+            case TK_AND:
+                curr = mkNode(AND, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_OR:
+                curr = mkNode(OR, parent, NULL, NULL, node->firstChild);
+                break;
+        }
+    }
+
+    if(node->symbol == relationalOp) {
+        switch(node->firstChild->symbol) {
+            case TK_LT:
+                curr = mkNode(LESS_THAN, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_LE:
+                curr = mkNode(LESS_EQUAL, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_EQ:
+                curr = mkNode(EQUAL, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_GT:
+                curr = mkNode(GREATER_THAN, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_GE:
+                curr = mkNode(GREATER_EQUAL, parent, NULL, NULL, node->firstChild);
+                break;
+            case TK_NE:
+                curr = mkNode(NOT_EQUAL, parent, NULL, NULL, node->firstChild);
+                break;
+        }
+    }
+
+    //<returnStmt> ==>TK_RETURN <optionalReturn> TK_SEM
+    if(node->symbol == returnStmt) {
+        curr = mkNode(RETURN, parent, NULL, NULL, node->firstChild);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+    }
+
+    //<optionalReturn> ==> TK_SQL <idList> TK_SQR 
+    if(node->symbol == optionalReturn) {
+        curr = makeAST(node->firstChild->nextSibling, parent);
+    }
+
+    //idList ==> TK_ID more_ids
+    if(node->symbol == idList) {
+        curr = mkNode(ID, parent, NULL, NULL, node->firstChild);
+        curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
+    }
+
+    //<more_ids> ==> TK_COMMA <idList>
+    if(node->symbol == more_ids) {
+        curr = makeAST(node->firstChild->nextSibling, parent);
+    }
+
+    if(curr) {
+        curr->parent = parent;
+    }
+    return curr;
 }
 
 ast* initASt(parseTree root) {
