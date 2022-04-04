@@ -76,7 +76,8 @@ ast* makeAST(parseTree node, ast* parent) {
 
     //program ==> otherFunctions mainFunction
     if(node->symbol == program) {
-        curr = mkNode(PROGRAM, parent, NULL, NULL, node->symbol);
+        curr = mkNode(PROGRAM, parent, NULL, NULL, node);
+        printf("%d\n", node->firstChild->symbol);
         curr->firstChild = makeAST(node->firstChild, curr);
         if(curr->firstChild == NULL) {
             curr->firstChild = makeAST(node->firstChild->nextSibling, parent);
@@ -91,7 +92,7 @@ ast* makeAST(parseTree node, ast* parent) {
     //create a leaf node for TK_MAIN and ignore TK_END
     if(node->symbol == mainFunction) {
         curr = mkNode(MAIN_FUNCTION, parent, NULL, NULL, node->firstChild);
-        curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, parent);
     }
 
     //otherFunctions ==> function otherFunctions
@@ -125,7 +126,7 @@ ast* makeAST(parseTree node, ast* parent) {
     //parameter_list ==> dataType TK_ID remaining_list
     if(node->symbol == parameter_list) {
         curr = makeAST(node->firstChild, parent);
-        curr->firstChild = mkNode(ID, curr, NULL, NULL, curr->firstChild);
+        curr->firstChild = mkNode(ID, curr, NULL, NULL, node->firstChild->nextSibling);
         curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
     }
 
@@ -173,19 +174,20 @@ ast* makeAST(parseTree node, ast* parent) {
 
         temp1 = curr;
         curr = lastNode(curr);
+        printf("After Typedefinitons\n");
 
         curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
 
-        if(curr == NULL) {
-            curr = mkNode(DECLARATIONS, parent, NULL, NULL, node->firstChild->nextSibling);
+        if(curr->nextSibling == NULL) {
+            curr->nextSibling = mkNode(DECLARATIONS, parent, NULL, NULL, node->firstChild->nextSibling);
         }
 
         curr = lastNode(curr);
 
         curr->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling, parent);
 
-        if(curr==NULL) {
-            curr = mkNode(OTHERSTMTS, parent, NULL, NULL, node->firstChild->nextSibling->nextSibling);
+        if(curr->nextSibling == NULL) {
+            curr->nextSibling = mkNode(OTHERSTMTS, parent, NULL, NULL, node->firstChild->nextSibling->nextSibling);
         }
 
         curr = lastNode(curr);
@@ -328,8 +330,8 @@ ast* makeAST(parseTree node, ast* parent) {
 
     //<option_single_constructed> ==> <oneExpansion> <moreExpansions>
     if(node->symbol == option_single_constructed) {
-        curr = makeAST(oneExpansion, parent);
-        curr->nextSibling = makeAST(moreExpansions, parent);
+        curr = makeAST(node->firstChild, parent);
+        curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
     }
 
     //oneExpansion ==> TK_DOT TK_FIELDID
@@ -607,6 +609,7 @@ ast* makeAST(parseTree node, ast* parent) {
 
     if(curr) {
         curr->parent = parent;
+        printf("%s\n", nodeTypeStr[curr->nodeType]);
     }
     return curr;
 }
@@ -648,12 +651,20 @@ void inorderAST(ast* curr, int *numNodes, FILE *fp)
         {isLeaf = "YES "; nodeSymbol = "Leaf node ";}
     if(curr->symbol == eps)
         lex1 = "------";
-    printf("\n%25s %15d %30s %20s %25s %10s %25s", lex1, curr->line, nodeTypeToStr(curr->symbol), valueStr, parentStr, isLeaf, nodeSymbol);
-    fprintf(fp, "\n%25s %15d %30s %20s %25s %10s %25s", lex1, curr->line, nodeTypeToStr(curr->symbol), valueStr, parentStr, isLeaf, nodeSymbol);
+    printf("\n%25s %15d %30s %20s %25s %10s %25s", lex1, curr->line, nodeTypeToStr(curr->nodeType), valueStr, parentStr, isLeaf, nodeSymbol);
+    fprintf(fp, "\n%25s %15d %30s %20s %25s %10s %25s", lex1, curr->line, nodeTypeToStr(curr->nodeType), valueStr, parentStr, isLeaf, nodeSymbol);
     *numNodes = *numNodes + 1;
     inorderAST(temp, numNodes, fp);
 }
 
-ast* initASt(parseTree root) {
+int printAST(ast* root, char* outfile) {
+    FILE* fp2 = fopen(outfile, "w");
+    int numNodes = 0;
+    inorderAST(root, &numNodes, fp2);
+    fclose(fp2);
+    return numNodes;
+}
+
+ast* initAST(parseTree root) {
     return makeAST(root, NULL);
 }
