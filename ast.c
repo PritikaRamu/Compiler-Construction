@@ -44,6 +44,10 @@ char nodeTypeStr[][50] = {
     "RETURN"
 };
 
+char* nodeTypeToStr(NodeType type) {
+    return nodeTypeStr[type];
+}
+
 ast* mkNode(NodeType nodeType, ast* parent, ast* firstChild, ast* nextSibling, parseTree ptNode) {
     ast* node = (ast*)malloc(sizeof(ast));
     node->nodeType = nodeType;
@@ -66,6 +70,7 @@ ast* lastNode(ast* head) {
 
 ast* makeAST(parseTree node, ast* parent) {
     ast* curr, *temp1;
+    printf("\nCurrent parseTree node: %d\n", node->symbol);
 
     //if the LHS produces epsilon then the rule is useless
     //remove the node
@@ -77,14 +82,16 @@ ast* makeAST(parseTree node, ast* parent) {
     //program ==> otherFunctions mainFunction
     if(node->symbol == program) {
         curr = mkNode(PROGRAM, parent, NULL, NULL, node);
-        printf("%d\n", node->firstChild->symbol);
+        //printf("%d\n", node->firstChild->symbol);
+        printf("Before otherFunctions\n");
         curr->firstChild = makeAST(node->firstChild, curr);
         if(curr->firstChild == NULL) {
-            curr->firstChild = makeAST(node->firstChild->nextSibling, parent);
+            curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
         }
         else {
             ast* last = lastNode(curr->firstChild);
-            last->nextSibling = makeAST(node->firstChild->nextSibling, parent);
+            printf("After otherFunctions\n");
+            last->nextSibling = makeAST(node->firstChild->nextSibling, curr);
         }
     }
 
@@ -106,7 +113,9 @@ ast* makeAST(parseTree node, ast* parent) {
     //function ==> TK_FUNID <input_par> <output_par> TK_SEM <stmts> TK_END
     if(node->symbol == function) {
         curr = mkNode(FUNCTION_SEQ, parent, NULL, NULL, node->firstChild);
+        printf("Before input_par\n");
         curr->firstChild = makeAST(node->firstChild->nextSibling, curr); //for input_par
+        printf("Before output_par\n");
         curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling, curr); //for output_par
         curr->firstChild->nextSibling->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling, curr); //for stmts
     }
@@ -114,7 +123,9 @@ ast* makeAST(parseTree node, ast* parent) {
     //input_par ==> TK_INPUT TK_PARAMETER TK_LIST TK_SQL <parameter_list> TK_SQR
     if(node->symbol == input_par) {
         curr = mkNode(INPUT_PARAMETERS, parent, NULL, NULL, node->firstChild);
+        printf("Before parameter_list\n");
         curr->firstChild = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+        printf("After parameter_list\n");
     }
 
     //output_par ==> TK_OUTPUT TK_PARAMETER TK_LIST TK_SQL <parameter_list> TK_SQR
@@ -125,14 +136,20 @@ ast* makeAST(parseTree node, ast* parent) {
 
     //parameter_list ==> dataType TK_ID remaining_list
     if(node->symbol == parameter_list) {
+        printf("Before dataType\n");
         curr = makeAST(node->firstChild, parent);
+        printf("After data type\n");
         curr->firstChild = mkNode(ID, curr, NULL, NULL, node->firstChild->nextSibling);
-        curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
+        printf("Before remlist\n");
+        curr->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling, parent);
+        printf("After remlist\n");
     }
 
     //remaining_list ==> TK_COMMA <parameter_list>
     if(node->symbol == remaining_list) {
+        printf("Start remlist\n");
         curr = makeAST(node->firstChild->nextSibling, parent);
+        printf("Inside remlist\n");
     }
 
     //dataType ==> primitiveDatatype | constructedDatatype
@@ -177,10 +194,12 @@ ast* makeAST(parseTree node, ast* parent) {
         printf("After Typedefinitons\n");
 
         curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
+        printf("Here1\n");
 
         if(curr->nextSibling == NULL) {
             curr->nextSibling = mkNode(DECLARATIONS, parent, NULL, NULL, node->firstChild->nextSibling);
         }
+        printf("After Declarations\n");
 
         curr = lastNode(curr);
 
@@ -261,13 +280,15 @@ ast* makeAST(parseTree node, ast* parent) {
 
     //declarations ==> <declaration> <declarations>
     if(node->symbol == declarations) {
+        printf("In declarations\n");
         curr = makeAST(node->firstChild, parent);
+        printf("After declaration\n");
         curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
     }
 
     //declaration ==>TK_TYPE <dataType> TK_COLON TK_ID <global_or_not> TK_SEM
     if(node->symbol == declaration) {
-        curr = makeAST(node->firstChild, parent);
+        curr = makeAST(node->firstChild->nextSibling, parent);
         curr->firstChild = mkNode(ID, curr, NULL, NULL, node->firstChild->nextSibling->nextSibling->nextSibling);
         curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling, curr);
     }
@@ -368,9 +389,13 @@ ast* makeAST(parseTree node, ast* parent) {
     //<iterativeStmt> ==> TK_WHILE TK_OP <booleanExpression> TK_CL <stmt> <otherStmts> TK_ENDWHILE
     if(node->symbol == iterativeStmt) {
         curr = mkNode(ITERATIVE, parent, NULL, NULL, node->firstChild);
+        printf("\nBefore boolexpr\n");
         curr->firstChild = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+        printf("\nAfter boolexpr\n");
         curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+        printf("\nAfter stmt\n");
         curr->firstChild->nextSibling->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling, curr);
+        printf("\nAfter otherStmts\n");
     }
 
     //<conditionalStmt>-> TK_IF TK_OP <booleanExpression> TK_CL TK_THEN <stmt> <otherStmts> <elsePart>
@@ -416,24 +441,27 @@ ast* makeAST(parseTree node, ast* parent) {
     //<arithmeticExpression> ==> <term> <expPrime>
     if(node->symbol == arithmeticExpression) {
         curr = makeAST(node->firstChild, parent);
-        temp1 = makeAST(node->firstChild->nextSibling, parent);
+        temp1 = makeAST(node->firstChild->nextSibling, NULL);
         if(temp1) {
             ast* temp2 = temp1->firstChild;
             temp1->firstChild = curr;
             temp1->firstChild->parent = temp1;
             temp1->firstChild->nextSibling = temp2;
             temp1->firstChild->nextSibling->parent = temp1;
-            while(temp1->parent) {
+            while(temp1->parent != NULL) {
+                printf("\nParent NodeType: %s, Current Nodetype: %s\n", nodeTypeToStr(temp1->parent->nodeType), nodeTypeToStr(temp1->nodeType));
                 temp1 = temp1->parent;
+                printf("In the loop? 1\n");
             }
             curr = temp1;
+            printf("Out of the loop 1\n");
         }
     }
 
     //<term> ==> <factor> <termPrime>
     if(node->symbol == term) {
         curr = makeAST(node->firstChild, parent);
-        temp1 = makeAST(node->firstChild->nextSibling, parent);
+        temp1 = makeAST(node->firstChild->nextSibling, NULL);
         if(temp1) {
             ast* temp2 = temp1->firstChild;
             temp1->firstChild = curr;
@@ -442,8 +470,10 @@ ast* makeAST(parseTree node, ast* parent) {
             temp1->firstChild->nextSibling->parent = temp1;
             while(temp1->parent) {
                 temp1 = temp1->parent;
+                printf("In the loop?\n");
             }
             curr = temp1;
+            printf("Out of the loop\n");
         }
     }
 
@@ -464,7 +494,8 @@ ast* makeAST(parseTree node, ast* parent) {
     }
 
     //<termPrime> ==> <highPrecedenceOperators> <factor> <termPrime>
-    if(node->symbol == highPrecedenceOperators) {
+    if(node->symbol == termPrime) {
+        printf("\nIn termPrime\n");
         curr = makeAST(node->firstChild, parent);
         curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
         temp1 = makeAST(node->firstChild->nextSibling->nextSibling, parent);
@@ -475,8 +506,10 @@ ast* makeAST(parseTree node, ast* parent) {
             curr->nextSibling = temp2;
             temp2->parent = temp1;
             curr = temp1->firstChild;
+            printf("End of termPrime\n");
             return curr;
         }
+        printf("End of termPrime temp1 NULL\n");
     } 
 
     if(node->symbol == factor) {
@@ -609,13 +642,29 @@ ast* makeAST(parseTree node, ast* parent) {
 
     if(curr) {
         curr->parent = parent;
-        printf("%s\n", nodeTypeStr[curr->nodeType]);
+        /*char* valueStr, *lex1, *parentStr, *isLeaf, *nodeSymbol;
+        if(curr->nodeType == NUM || curr->nodeType == RNUM)
+            valueStr = curr->lex;
+        else
+            valueStr = "Not a number ";
+        if(curr->symbol >= eps)
+            lex1 = curr->lex;
+        else
+            lex1 = "------";
+        if(curr->parent!=NULL)
+            parentStr = nodeTypeToStr((curr->parent)->nodeType);
+        else
+            parentStr = "ROOT ";
+        if(curr->firstChild!=NULL)
+            {isLeaf = "NO "; nodeSymbol = nodeTypeToStr(curr->nodeType);}
+        else 
+            {isLeaf = "YES "; nodeSymbol = "Leaf node ";}
+        if(curr->symbol == eps)
+            lex1 = "------";
+        printf("\n%25s %15d %30s %20s %25s %10s %25s", lex1, curr->line, nodeTypeToStr(curr->nodeType), valueStr, parentStr, isLeaf, nodeSymbol);*/
+        //fprintf(fp, "\n%25s %15d %30s %20s %25s %10s %25s", lex1, curr->line, nodeTypeToStr(curr->nodeType), valueStr, parentStr, isLeaf, nodeSymbol);
     }
     return curr;
-}
-
-char* nodeTypeToStr(NodeType type) {
-    return nodeTypeStr[type];
 }
 
 void inorderAST(ast* curr, int *numNodes, FILE *fp)
