@@ -21,10 +21,15 @@ typedef struct Entry {
 	void* node; 
 }Entry;
 
-typedef struct symbolTable{
+typedef struct subTable{
 	struct entry* table;
-}symbolTable;
+}subTable;
 
+typedef struct symbol_table{
+    subTable* IdentifierTable;
+    subTable* FunctionTable;
+    subTable* RecordUnionTable; 
+}symbolTable;
 
 typedef struct recordField{
     int width;
@@ -75,7 +80,4 @@ typedef struct function_list{
     struct function_list* next;
 }funList;
 
-symbolTable* IdentifierTable;
-symbolTable* FunctionTable;
-symbolTable* RecordTable;
-symbolTable* UnionTable;
+symbolTable* SymbolTable;
