@@ -351,8 +351,10 @@ ast* makeAST(parseTree node, ast* parent) {
 
     //<option_single_constructed> ==> <oneExpansion> <moreExpansions>
     if(node->symbol == option_single_constructed) {
+        printf("Entering option_single_constructed\n");
         curr = makeAST(node->firstChild, parent);
         curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
+        printf("Exiting option_single_constructed\n");
     }
 
     //oneExpansion ==> TK_DOT TK_FIELDID
@@ -481,7 +483,7 @@ ast* makeAST(parseTree node, ast* parent) {
     if(node->symbol == expPrime) {
         curr = makeAST(node->firstChild, parent);
         curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
-        temp1 = makeAST(node->firstChild->nextSibling->nextSibling, curr);
+        temp1 = makeAST(node->firstChild->nextSibling->nextSibling, parent);
         if(temp1) {
             ast* temp2 = temp1->firstChild;
             temp1->firstChild = curr;
