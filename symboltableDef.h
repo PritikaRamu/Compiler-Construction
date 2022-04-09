@@ -15,14 +15,14 @@ typedef enum Type{
     UNION_TYPE
 }Type;
 
-typedef struct Entry {
-	struct entry* next;
+typedef struct entry{
     int key;
 	void* node; 
+    struct entry* next;
 }Entry;
 
 typedef struct subTable{
-	struct entry* table;
+	Entry* table;
 }subTable;
 
 typedef struct symbol_table{
