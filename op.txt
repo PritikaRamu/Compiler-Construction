@@ -1,0 +1,54 @@
+
+                    input               4               INPUT_PARAMETERS        Not a number               FUNCTION_SEQ        NO           INPUT_PARAMETERS
+                      int               4                        INTEGER        Not a number           INPUT_PARAMETERS        NO                    INTEGER
+                   d5cc34               4                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                   output               5              OUTPUT_PARAMETERS        Not a number               FUNCTION_SEQ        NO          OUTPUT_PARAMETERS
+                     real               5                           REAL        Not a number          OUTPUT_PARAMETERS        NO                       REAL
+                       d3               5                             ID        Not a number                       REAL       YES                 Leaf node 
+                   ------               0               TYPE_DEFINITIONS        Not a number               FUNCTION_SEQ       YES                 Leaf node 
+                      int               6                        INTEGER        Not a number               FUNCTION_SEQ        NO                    INTEGER
+                   b5b567               6                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                   b5b567               7                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---               7                       ASSIGNOP        Not a number               FUNCTION_SEQ        NO                   ASSIGNOP
+                        1               7                            NUM                    1                  ASSIGNOP       YES                 Leaf node 
+                       d3               8                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---               8                       ASSIGNOP        Not a number               FUNCTION_SEQ        NO                   ASSIGNOP
+                     0.00               8                           RNUM                 0.00                  ASSIGNOP       YES                 Leaf node 
+                   b5b567               9                             ID        Not a number                 LESS_EQUAL       YES                 Leaf node 
+                       <=               9                     LESS_EQUAL        Not a number                  ITERATIVE        NO                 LESS_EQUAL
+                   d5cc34               9                             ID        Not a number                 LESS_EQUAL       YES                 Leaf node 
+                     read              10                         IOREAD        Not a number                  ITERATIVE        NO                     IOREAD
+                     c3bd              10                             ID        Not a number                     IOREAD       YES                 Leaf node 
+                       d3              11                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              11                       ASSIGNOP        Not a number                  ITERATIVE        NO                   ASSIGNOP
+                       d3              11                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +              11                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                     c3bd              11                             ID        Not a number                       PLUS       YES                 Leaf node 
+                    while               9                      ITERATIVE        Not a number               FUNCTION_SEQ        NO                  ITERATIVE
+                   b5b567              12                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              12                       ASSIGNOP        Not a number                  ITERATIVE        NO                   ASSIGNOP
+                   b5b567              12                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +              12                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                        1              12                            NUM                    1                      PLUS       YES                 Leaf node 
+                    _sumN               4                   FUNCTION_SEQ        Not a number                    PROGRAM        NO               FUNCTION_SEQ
+                   return              14                         RETURN        Not a number               FUNCTION_SEQ        NO                     RETURN
+                       d3              14                             ID        Not a number                     RETURN       YES                 Leaf node 
+                   ------               1                        PROGRAM        Not a number                      ROOT         NO                    PROGRAM
+                   ------               0               TYPE_DEFINITIONS        Not a number                    PROGRAM       YES                 Leaf node 
+                      int              18                        INTEGER        Not a number                    PROGRAM        NO                    INTEGER
+                       b3              18                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                     real              19                           REAL        Not a number                    PROGRAM        NO                       REAL
+                   c4bd56              19                             ID        Not a number                       REAL       YES                 Leaf node 
+                       b3              20                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              20                       ASSIGNOP        Not a number                    PROGRAM        NO                   ASSIGNOP
+                        7              20                            NUM                    7                  ASSIGNOP       YES                 Leaf node 
+                   ------               0         OUTPUT_PARAMETERS_CALL        Not a number                       CALL        NO     OUTPUT_PARAMETERS_CALL
+                   c4bd56              21                             ID        Not a number     OUTPUT_PARAMETERS_CALL       YES                 Leaf node 
+                    _sumN              21                  FUNCTION_CALL        Not a number                       CALL       YES                 Leaf node 
+                     call              21                           CALL        Not a number                    PROGRAM        NO                       CALL
+                   ------               0          INPUT_PARAMETERS_CALL        Not a number                       CALL        NO      INPUT_PARAMETERS_CALL
+                       b3              21                             ID        Not a number      INPUT_PARAMETERS_CALL       YES                 Leaf node 
+                    write              22                        IOWRITE        Not a number                    PROGRAM        NO                    IOWRITE
+                   c4bd56              22                             ID        Not a number                    IOWRITE       YES                 Leaf node 
+                    _main              17                  MAIN_FUNCTION        Not a number                    PROGRAM        NO              MAIN_FUNCTION
+                   return              23                         RETURN        Not a number                    PROGRAM       YES                 Leaf node 
