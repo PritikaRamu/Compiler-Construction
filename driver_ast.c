@@ -9,7 +9,7 @@ Nandan B Parikh       ID: 2019A7PS0097P
 
 #ifndef _DRIVERDEF_
 #define _DRIVERDEF_
-#include "ast.h"
+#include "symbolTable.h"
 
 int main(int argc, char* argv[]){
 
@@ -138,6 +138,8 @@ int main(int argc, char* argv[]){
                     temp = temp->nextSibling;
                 }
                 printf("\n");
+				initializeSymbolTable(astree);
+				printRecordTable(SymbolTable->RecordUnionTable);
             }
         }
 
