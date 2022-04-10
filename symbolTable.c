@@ -6,7 +6,7 @@ funList* functionList = NULL;
 int GLOBAL_WIDTH = 0;
 int FUNCTION_RANK = 0;
 
-int hashcode(char* key){
+int hash(char* key){
     int len = strlen(key);
     unsigned long hashed=7;
     for(int i=0; i<len; i++){
@@ -15,21 +15,23 @@ int hashcode(char* key){
     return hashed%TABLE_SLOTS;
 }
 
-recordField* createFieldList(ast* ast, int offset){
+recordField* createFieldList(ast* ast, int* offset){
     recordField* fields = (recordField*)malloc(sizeof(recordField));
     if(ast->nodeType == INTEGER){
-        fields->offset = offset;
-        offset += INT_WIDTH;
+        fields->offset = *offset;
+        (*offset) += INT_WIDTH;
         fields->width = INT_WIDTH;
+        fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
         fields->token->tid = ast->symbol;
         fields->token->lexeme = ast->lex;
         fields->token->lineNo = ast->line;
         fields->type = INT_TYPE;
     }
     else{
-        fields->offset = offset;
-        offset += REAL_WIDTH;
+        fields->offset = *offset;
+        (*offset) += REAL_WIDTH;
         fields->width = REAL_WIDTH;
+        fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
         fields->token->tid = ast->symbol;
         fields->token->lexeme = ast->lex;
         fields->token->lineNo = ast->line;
@@ -44,7 +46,7 @@ recordUnionNode* createRUNode(ast* ast, recordField* fields){
     ru->fieldList = fields;
     recordField* head = fields;
     ru->token->tid = ast->symbol;
-    ru->token->lexeme = ast->lex;
+    ru->token->lexeme = ast->nextSibling->lex;
     ru->token->lineNo = ast->line;
     ru->fieldList = NULL;
 
@@ -64,23 +66,23 @@ bool runode_check(void* node1, void* node2){
     }
 }
 
-void* retrieve(symbolTable* st, void* node, NodeType type){
+void* retrieve(symbol_Table* st, void* node, NodeType type){
     if(!node) return NULL;
     int key;
     subTable* t;
     switch(type){
         case ID:{
-            key = hashcode(((identifierNode*)node)->token->lexeme);
+            key = hash(((identifierNode*)node)->token->lexeme);
             t = st->IdentifierTable;
             break;
         }
         case RECORD_OR_UNION:{
-            key = hashcode(((recordUnionNode*)node)->token->lexeme);
+            key = hash(((recordUnionNode*)node)->token->lexeme);
             t = st->RecordUnionTable;
             break;
         }
         case FUNCTION_SEQ:{
-            key = hashcode(((functionNode*)node)->token->lexeme);
+            key = hash(((functionNode*)node)->token->lexeme);
             t = st->FunctionTable;
             break;
         }
@@ -90,9 +92,9 @@ void* retrieve(symbolTable* st, void* node, NodeType type){
         switch(type){
             case ID:{
                 while(entry){
-                    if(inode_check(entry->node, node)){
-                        return entry->node;
-                    }
+                    // if(inode_check(entry->node, node)){
+                    //     return entry->node;
+                    // }
                     entry = entry->next;
                 }
                 break;
@@ -107,10 +109,10 @@ void* retrieve(symbolTable* st, void* node, NodeType type){
             }
             case FUNCTION_SEQ:{
                 while(entry){
-                    if(fnode_check(entry->node, node)){
-                        return entry->node;
-                    }
-                    entry = entry->next;
+                    // if(fnode_check(entry->node, node)){
+                    //     return entry->node;
+                    // }
+                    // entry = entry->next;
                 }
             }
         }
@@ -118,22 +120,22 @@ void* retrieve(symbolTable* st, void* node, NodeType type){
     }
 }
 
-void insert(symbolTable* st, void* node, NodeType type){
+void insert(symbol_Table* st, void* node, NodeType type){
     int key;
     subTable* t;
     switch(type){
         case ID:{
-            key = hashcode(((identifierNode*)node)->token->lexeme);
+            key = hash(((identifierNode*)node)->token->lexeme);
             t = st->IdentifierTable;
             break;
         }
         case RECORD_OR_UNION:{
-            key = hashcode(((recordUnionNode*)node)->token->lexeme);
+            key = hash(((recordUnionNode*)node)->token->lexeme);
             t = st->RecordUnionTable;
             break;
         }
         case FUNCTION_SEQ:{
-            key = hashcode(((functionNode*)node)->token->lexeme);
+            key = hash(((functionNode*)node)->token->lexeme);
             t = st->FunctionTable;
             break;
         }
@@ -166,16 +168,20 @@ void createRUtable(ast* root){
     recordField* fields = NULL;
     ast* curr_ast = NULL;
     while(root){
+        //printf("inside root while %s\n",root->lex);
         ast* child = root->firstChild;
         while(child){
+            //printf("inside child while %s\n",child->lex);
             int offset = 0;
-            if(child->nodeType == RECORD_OR_UNION && child->firstChild!=ID){
+            if(child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType!=ID){
+                printf("inside if %s\n",child->lex);
                 curr_ast = child->firstChild;
-                fields = createFieldList(curr_ast, offset);
+                //printf("inside if %s",curr_ast->lex);
+                fields = createFieldList(curr_ast, &offset);
                 curr_ast = curr_ast->nextSibling;
                 curr_field = fields;
                 while(curr_ast){
-                    curr_field->next = createFieldList(curr_ast, offset);
+                    curr_field->next = createFieldList(curr_ast, &offset);
                     curr_ast = curr_ast->nextSibling;
                     curr_field = curr_field->next;
                 }
@@ -203,14 +209,47 @@ subTable* initSubTable(){
 }
 
 void initializeSymbolTable(ast* ast) {
-    SymbolTable = (symbolTable*)malloc(sizeof(symbolTable));
+    SymbolTable = (symbol_Table*)malloc(sizeof(symbolTable));
     SymbolTable->IdentifierTable = initSubTable();
     SymbolTable->FunctionTable = initSubTable();
     SymbolTable->RecordUnionTable = initSubTable();
-	generate_R_table(ast, NULL);
+	createRUtable(ast);
 	printf("record table done\n");
 	// generate_F_table(ast, NULL);
 	// printf("function table done\n");
 	// generate_I_table(ast, NULL);
 	// printf("identifier table done\n");
+}
+
+void printRecordTable(subTable* rec_table){
+    int i;
+    Entry* entry;
+    recordUnionNode* record;
+	printf("#%-30s %-30s %-30s\n", "Lexeme", "Type", "Width");
+	for(i=0; i<TABLE_SLOTS; i++){
+		entry = &(rec_table->table[i]);
+		while(entry != NULL){
+			record = (recordUnionNode*)(entry->node);
+			if(record != NULL) {
+                printf("%-30s",record->token->lexeme);
+                recordField* fields = record->fieldList;
+				char fieldsstring[100] = "";
+				while (fields != NULL) {
+					if(fields->width/2 == 2)
+					{
+						strcat(fieldsstring,"int,");
+					}
+					else
+					{
+						strcat(fieldsstring,"real,");
+					}
+                    fields = fields -> next;
+                }
+				printf("%-30s",fieldsstring);
+				printf("%d\n",record->width/2);
+                printf("-------------------------------\n");
+			}
+			entry = entry->next;
+		}
+	}
 }

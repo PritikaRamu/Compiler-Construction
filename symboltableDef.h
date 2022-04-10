@@ -29,21 +29,21 @@ typedef struct symbol_table{
     subTable* IdentifierTable;
     subTable* FunctionTable;
     subTable* RecordUnionTable; 
-}symbolTable;
+}symbol_Table;
 
 typedef struct recordField{
     int width;
     int offset;
     Type type;
     tokenInfo* token;
-    struct record_field* next; 
+    struct recordField* next; 
 }recordField;
 
 typedef struct record_or_union_node{
     bool isRecord;
     int width;
     tokenInfo* token;
-    struct record_field* fieldList;
+    struct recordField* fieldList;
 }recordUnionNode;
 
 typedef struct identifierNode{
@@ -80,4 +80,4 @@ typedef struct function_list{
     struct function_list* next;
 }funList;
 
-symbolTable* SymbolTable;
+symbol_Table* SymbolTable;
