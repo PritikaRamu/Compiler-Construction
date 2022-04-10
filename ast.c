@@ -57,6 +57,7 @@ ast* mkNode(NodeType nodeType, ast* parent, ast* firstChild, ast* nextSibling, p
     node->symbol = ptNode->symbol;
     node->lex = ptNode->lex;
     node->line = ptNode->lineNo;
+    node->is_union = false;
     return node;
 }
 
@@ -222,6 +223,7 @@ ast* makeAST(parseTree node, ast* parent) {
         //linearizing all the type definitions
         //child can either be a definetype node or RECORD_OR_UNION node 
         curr = makeAST(node->firstChild, parent);
+        curr->nextSibling = makeAST(node->firstChild->nextSibling, parent);
     }
 
     //actualOrRedefined ==> definetypestmt | typeDefinition
@@ -232,9 +234,11 @@ ast* makeAST(parseTree node, ast* parent) {
     //definetypestmt ==> TK_DEFINETYPE <A> TK_RUID TK_AS TK_RUID TK_SEM
     if(node->symbol == definetypestmt) {
         curr = mkNode(DEFINETYPE, parent, NULL, NULL, node->firstChild);
-        curr->firstChild = makeAST(node->firstChild, curr);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
         curr->firstChild->nextSibling = mkNode(RECORD_OR_UNION, curr, NULL, NULL, node->firstChild->nextSibling->nextSibling);
+        //curr->firstChild->nextSibling->is_union = (curr->firstChild->symbol == TK_UNION);
         curr->firstChild->nextSibling->nextSibling = mkNode(RECORD_OR_UNION, curr, NULL, NULL, node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling);
+        //curr->firstChild->nextSibling->nextSibling->is_union = curr->firstChild->nextSibling->is_union;
     }
 
     //A ==> TK_RECORD | TK_UNION
@@ -244,7 +248,8 @@ ast* makeAST(parseTree node, ast* parent) {
 
     //typeDefinition ==> TK_RECORD TK_RUID <fieldDefinitions> TK_ENDRECORD | TK_UNION TK_RUID <fieldDefinitions> TK_ENDUNION
     if(node->symbol == typeDefinition) {
-        curr = mkNode(RECORD_OR_UNION, parent, NULL, NULL, node->firstChild);
+        curr = mkNode(RECORD_OR_UNION, parent, NULL, NULL, node->firstChild->nextSibling);
+        curr->is_union = (node->firstChild->symbol == TK_UNION) ? true : false;
         curr->firstChild = makeAST(node->firstChild->nextSibling->nextSibling, curr);
     }
 

@@ -61,6 +61,8 @@ typedef struct astNode {
     char* lex;
     
     int line;
+
+    bool is_union;
 }ast;
 
 #endif
