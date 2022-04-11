@@ -42,8 +42,25 @@ void validateFunction(ast* curr){
         }
     }
     free(opAssigned);
+
+    ast* ip = curr->firstChild;
+    if(ip->nodeType == INPUT_PARAMETERS)
+        validateIP(ip);
+    
+    ast* op = curr->firstChild->firstChild;
+    if(op->nodeType == OUTPUT_PARAMETERS)
+        validateOP(op);
+
+    ast* child = curr->firstChild->firstChild->firstChild;
+
+    while(child != NULL){
+        int local_offset = 0;
+        NodeType type = child->nodeType;
+        
+        
+    }
 }
 
-void validateStmts(ast* curr, functionNode* currNode, bool* opAssigned){
+// void validateStmts(ast* curr, functionNode* currNode, bool* opAssigned){
 
-}
+// }
