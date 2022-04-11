@@ -25,12 +25,12 @@ void validateFunction(ast* curr){
     int n = currNode->numOp;
     bool* opAssigned = (bool*)malloc(sizeof(bool)*n);
 
-    //check for otherstmts
-    ast* currNext = curr->firstChild->nextSibling->nextSibling->nextSibling;
-    if(currNext->nodeType == OTHERSTMTS){
-        validateStmts(currNext, currNode, opAssigned);
-    }
-    else return;
+    // //check for otherstmts
+    // ast* currNext = curr->firstChild->nextSibling->nextSibling->nextSibling;
+    // if(currNext->nodeType == OTHERSTMTS){
+    //     validateStmts(currNext, currNode, opAssigned);
+    // }
+    // else return;
 
 
     for(int i = 0; i < n; i++){
