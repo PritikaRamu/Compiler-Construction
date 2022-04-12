@@ -523,7 +523,7 @@ ast* makeAST(parseTree node, ast* parent) {
         switch(node->firstChild->symbol) {
             //<factor> ==> TK_OP <arithmeticExpression> TK_CL
             case TK_OP:
-                curr = makeAST(node->firstChild, parent);
+                curr = makeAST(node->firstChild->nextSibling, parent);
                 break;
             //<factor> ==> <var>
             case var:
