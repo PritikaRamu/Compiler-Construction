@@ -110,8 +110,47 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
     int localOffset = 0;
     //int numTempVar = 0;
 
+    //identifier node
+    if(isOperator(curr) == false){
+        identifierNode* currNode = createINode(curr, func, curr->nodeType, false, &localOffset);
+        identifierNode* notGlobalCurr = currNode;
+        notGlobalCurr->global = false;
+        notGlobalCurr = retrieve(notGlobalCurr);
+        identifierNode* globalCurr = currNode;
+        globalCurr->global = true;
+        globalCurr = retrieve(globalCurr);
+        if (globalCurr)
+        {
+            currNode = globalCurr;
+        }
+        else if (notGlobalCurr){
+            currNode = notGlobalCurr;
+        }
+        else {
+            free(notGlobalCurr);
+            free(globalCurr);
+            //semanticErrors ++;
+            printf("Undeclred Variable\n");
+            return NULL;
+        }
+        
+        free(notGlobalCurr);
+        free(globalCurr);
+        
+        ast* attribute = NULL;
+        if(!curr->firstChild) {
+            attribute = curr->firstChild;
+        }
+        if(currNode->type != RECORD_TYPE && attribute != NULL){
+            printf("Variable not of type record.\n");
+            //semanticErrors++;
+        }
+        else if (currNode)
 
-    if(isOperator(curr) == true) {
+    }
+
+    //operator node
+    else if(isOperator(curr) == true) {
 
         ast* fChild, *sChild;
         fChild = curr->firstChild;
@@ -121,25 +160,33 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
             return;
         }
 
+        identifierNode *fNode, *sNode;
+        fNode = retrieve(fChild);
+        sNode = retrieve(sChild);
+        //node(s) not found in symbol table
+        if(fNode==NULL || sNode == NULL) {
+            return;
+        }
+        Type fType = fNode->type;
+        Type sType = sNode->type;
+
+        if(isOperator(fChild) == true){
+            fNode = validateArithmetic(fChild, func);
+            fType = fNode->type;
+        }
+        else if (isOperator(sChild) == true){
+            sNode = validateArithmetic(sChild, func);
+            sType = sNode->type;
+        }
+
         //both are identifiers
-        if(isOperator(fChild) == false && isOperator(sChild) == false) {
+        else if(isOperator(fChild) == false && isOperator(sChild) == false) {
 
             //both int/real
             if(isIntReal(fChild) == true && isIntReal(sChild) == true){
-
-                identifierNode *fNode, *sNode;
-                fNode = retrieve(fChild);
-                sNode = retrieve(sChild);
-                //node(s) not found in symbol table
-                if(fNode==NULL || sNode == NULL) {
-                    return;
-                }
-                Type fType = fNode->type;
-                Type sType = sNode->type;
-
                 //both int, both real;
                 if(fType == sType) {
-                    return createINode(fNode, func, fType, false, &localOffset);
+                    return createINode(fChild, func, fChild->nodeType, false, &localOffset);
                 }
                 //int with real operations  
                 else {
@@ -149,26 +196,61 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
 
             //both records/unions
             else if(fChild->nodeType == RECORD_OR_UNION && sChild->nodeType == RECORD_OR_UNION) {
-                //both records
-                recordUnionNode *fNode, *sNode;
-                fNode = retrieve(fChild);
-                sNode = retrieve(sChild);
-                //node(s) not found in symbol table
-                if(fNode==NULL || sNode == NULL) {
-                    return;
+                if(fType == sType){
+                    //record
+                    if(fType == RECORD_TYPE && fNode->recordList == sNode->recordList) {
+                        return fNode;
+                    }
+                    //union
+                    if(fType == UNION_TYPE && fNode->recordList == sNode->recordList){
+                        return fNode;
+                    }
                 }
-                
+                //operations bw rec and union
+                else {
+                    return NULL;
+                }
             }
 
+            //record/union and int/real
+            else {
+                if(curr->nodeType != DIVIDE){
+                    if(fType == RECORD_TYPE) {
+                        return fNode;
+                    }
+                    else if (fType == UNION_TYPE) {
+                        return fNode;
+                    }
+                    else if(sType == RECORD_TYPE) {
+                        return sNode;
+                    }
+                    else if (sType == UNION_TYPE) {
+                        return sNode;
+                    }
+                }
+                else{
+                    if(sChild->nodeType == RECORD_OR_UNION){
+                        printf("Can't divide scalar by record/union");
+                        //semantic_errors++;
+                        return NULL;
+                    }
+                    else{
+                        if(fType == RECORD_TYPE) {
+                            return fNode;
+                        }
+                        else if (fType == UNION_TYPE) {
+                            return fNode;
+                    }
+                }
+            }   
         }
-        //one record, one identifier
-        
-        //                       
-            // switch(fNode->type){
-            //     case (INT_TYPE):
-            //     {          
-            //                                                                        
-            //     }
-            // }
+
+        // end of both identifiers
+    }
+
+    }
+
+    else {
+        return NULL;
     }
 }
