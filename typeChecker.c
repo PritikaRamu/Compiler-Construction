@@ -72,22 +72,103 @@ void validateFunction(ast* curr){
 // void validateStmts(ast* curr, functionNode* currNode, bool* opAssigned){
 
 // }
-int isOperator(ast* curr) {
+bool isOperator(ast* curr) {
     NodeType nType = curr->nodeType;
     if(nType == DIVIDE || nType == MULTIPLY || nType == PLUS || nType == MINUS) {
-        return 1;
+        return true;
     }
     else {
-        return 0;
+        return false;
     }
 }
-void validateArithmetic(ast* curr) {
-    if(isOperator(curr) == 1) {
+
+bool isIntReal(ast* curr) {
+    NodeType nType = curr->nodeType;
+    if(nType == INTEGER || nType == REAL) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+// bool isRecUnion(identifierNode* currNode) {
+//     Type nType = currNode->type;
+//     if(nType == RECORD_TYPE || nType == UNION_TYPE) {
+//         return true;
+//     }
+//     else {
+//         return false;
+//     }
+// }
+
+identifierNode* validateArithmetic(ast* curr, ast* func) {
+    if (curr == NULL)
+    {
+        return;
+    }
+    int localOffset = 0;
+    //int numTempVar = 0;
+
+
+    if(isOperator(curr) == true) {
+
         ast* fChild, *sChild;
         fChild = curr->firstChild;
         sChild = fChild->nextSibling;
-        if(isOperator(fChild) == 1 && isOperator(sChild) == 1) {
-            
+        //ast has 1 or no children
+        if(fChild==NULL || sChild == NULL) {
+            return;
         }
+
+        //both are identifiers
+        if(isOperator(fChild) == false && isOperator(sChild) == false) {
+
+            //both int/real
+            if(isIntReal(fChild) == true && isIntReal(sChild) == true){
+
+                identifierNode *fNode, *sNode;
+                fNode = retrieve(fChild);
+                sNode = retrieve(sChild);
+                //node(s) not found in symbol table
+                if(fNode==NULL || sNode == NULL) {
+                    return;
+                }
+                Type fType = fNode->type;
+                Type sType = sNode->type;
+
+                //both int, both real;
+                if(fType == sType) {
+                    return createINode(fNode, func, fType, false, &localOffset);
+                }
+                //int with real operations  
+                else {
+                    return NULL;
+                }
+            }
+
+            //both records/unions
+            else if(fChild->nodeType == RECORD_OR_UNION && sChild->nodeType == RECORD_OR_UNION) {
+                //both records
+                recordUnionNode *fNode, *sNode;
+                fNode = retrieve(fChild);
+                sNode = retrieve(sChild);
+                //node(s) not found in symbol table
+                if(fNode==NULL || sNode == NULL) {
+                    return;
+                }
+                
+            }
+
+        }
+        //one record, one identifier
+        
+        //                       
+            // switch(fNode->type){
+            //     case (INT_TYPE):
+            //     {          
+            //                                                                        
+            //     }
+            // }
     }
 }
