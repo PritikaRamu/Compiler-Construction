@@ -219,7 +219,10 @@ identifierNode* createINode(ast* id, ast* func, NodeType type, bool is_global, i
     iden->type = type;
     iden->offset = *offset;
     if(iden->type == RECORD_TYPE || iden->type == UNION_TYPE){
-        //iden->recordList = (recordUnionNode*)retrieve(SymbolTable, iden, RECORD_OR_UNION);
+        recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
+        temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+        temp->token->lexeme = id->parent->lex;
+        iden->recordList = (recordUnionNode*)retrieve(SymbolTable, temp, RECORD_OR_UNION);
         if(iden->recordList){
             iden->width = iden->recordList->width;
             printf("record width: %d",iden->width);
