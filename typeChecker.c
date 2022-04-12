@@ -47,20 +47,47 @@ void validateFunction(ast* curr){
     if(ip->nodeType == INPUT_PARAMETERS)
         validateIP(ip);
     
-    ast* op = curr->firstChild->firstChild;
-    if(op->nodeType == OUTPUT_PARAMETERS)
+    ast* nextKid = curr->firstChild->nextSibling;
+    ast* child = NULL;
+    if(nextKid->nodeType == OUTPUT_PARAMETERS) {
+        ast* op = nextKid;
         validateOP(op);
+    }
+    else {
+        child = nextKid;
+    }
 
-    ast* child = curr->firstChild->firstChild->firstChild;
+    if(child == NULL) {
+        child = curr->firstChild->nextSibling->nextSibling;
+    }
 
-    while(child != NULL){
-        int local_offset = 0;
-        NodeType type = child->nodeType;
-        
-        
+    for(; child != NULL; child = child->nextSibling) {
+        int localOffset = 0;
+        NodeType nType = child->nodeType;
+        //validateStmts(ast* curr, functionNode* currNode, bool* opAssigned);
+
     }
 }
 
 // void validateStmts(ast* curr, functionNode* currNode, bool* opAssigned){
 
 // }
+int isOperator(ast* curr) {
+    NodeType nType = curr->nodeType;
+    if(nType == DIVIDE || nType == MULTIPLY || nType == PLUS || nType == MINUS) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+void validateArithmetic(ast* curr) {
+    if(isOperator(curr) == 1) {
+        ast* fChild, *sChild;
+        fChild = curr->firstChild;
+        sChild = fChild->nextSibling;
+        if(isOperator(fChild) == 1 && isOperator(sChild) == 1) {
+            
+        }
+    }
+}
