@@ -40,7 +40,7 @@ typedef struct recordField{
 }recordField;
 
 typedef struct record_or_union_node{
-    bool isRecord;
+    bool is_union;
     int width;
     tokenInfo* token;
     struct recordField* fieldList;
