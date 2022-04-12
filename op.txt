@@ -24,9 +24,14 @@
                     maths              22                        FIELDID        Not a number                       REAL       YES                 Leaf node 
                      real              23                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
                   physics              23                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                   record              21                RECORD_OR_UNION        Not a number                    PROGRAM        NO            RECORD_OR_UNION
+                   #marks              21                RECORD_OR_UNION        Not a number                    PROGRAM        NO            RECORD_OR_UNION
                      real              24                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
                 chemistry              24                        FIELDID        Not a number                       REAL       YES                 Leaf node 
+                      int              28                        INTEGER        Not a number            RECORD_OR_UNION        NO                    INTEGER
+                     mths              28                        FIELDID        Not a number                    INTEGER       YES                 Leaf node 
+                   #marks              27                RECORD_OR_UNION        Not a number                    PROGRAM        NO            RECORD_OR_UNION
+                     real              29                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
+                   phyics              29                        FIELDID        Not a number                       REAL       YES                 Leaf node 
                    #marks              33                RECORD_OR_UNION        Not a number                    PROGRAM        NO            RECORD_OR_UNION
                        d4              33                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
                       int              36                        INTEGER        Not a number                    PROGRAM        NO                    INTEGER

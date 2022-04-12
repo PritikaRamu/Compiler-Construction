@@ -5,5 +5,6 @@
 
 void initializeSymbolTable(ast* ast);
 void printRecordTable(subTable* rec_table);
+void printFunctionTable(subTable* fun_table);
 
 #endif

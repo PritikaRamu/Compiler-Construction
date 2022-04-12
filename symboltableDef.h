@@ -62,7 +62,7 @@ typedef struct identifierNode{
 typedef struct parameters{
     tokenInfo* token;
     NodeType nodeType;
-    struct params* next;
+    struct parameters* next;
 }parameters;
 
 typedef struct function_node{
@@ -72,6 +72,7 @@ typedef struct function_node{
     int width;
     int tmpVars; //keep track of no. of temp vars needed for code gen
     int rank;
+    int numOp;
 }functionNode;
 
 typedef struct function_list{
