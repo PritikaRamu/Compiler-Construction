@@ -140,6 +140,7 @@ int main(int argc, char* argv[]){
                 printf("\n");
 				initializeSymbolTable(astree);
 				printRecordTable(SymbolTable->RecordUnionTable);
+				printFunctionTable(SymbolTable->FunctionTable);
             }
         }
 
