@@ -64,6 +64,10 @@ identifierNode* createINode(ast* id, ast* func, NodeType type, bool is_global, i
     iden->function->lexeme = func->lex;
     iden->function->lineNo = func->line;
     iden->function->tid = func->symbol;
+    iden->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+    iden->token->lexeme = id->lex;
+    iden->token->lineNo = id->line;
+    iden->token->tid = id->symbol;
     iden->type = type;
     if(iden->type == RECORD_TYPE || iden->type == UNION_TYPE){
         iden->offset = *offset;
@@ -107,10 +111,41 @@ bool runode_check(void* node1, void* node2){
     }
 }
 
+bool fnode_check(void* node1, void* node2){
+    if(strcmp(((functionNode*)node1)->token->lexeme,((functionNode*)node2)->token->lexeme)==0){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool inode_check(void* node1, void* node2){
+    identifierNode* temp1 = (identifierNode*)node1;
+    identifierNode* temp2 = (identifierNode*)node2;
+    // if(temp2->global && temp1->global){
+    //     if(strcmp(temp2->token->lexeme, temp1->token->lexeme)==0){
+    //         return true;
+    //     }
+    // }
+    // else if(!(temp2->global)&&(temp1->global)){
+    //     if(strcmp(temp1->token->lexeme, temp2->token->lexeme)){
+    //         return false;
+    //     }
+    // }
+    // else if(temp1->function == temp2->function){ //CHECK IF NEEDED
+    //     if(strcmp(temp1->token->lexeme,temp2->token->lexeme)==0){
+    //         return true;
+    //     }
+    // }
+    return false;
+}
+
 void* retrieve(symbol_Table* st, void* node, NodeType type){
     if(!node) return NULL;
     int key;
     subTable* t;
+    printf("inside retrv %d\n",type);
     switch(type){
         case ID:{
             key = hash(((identifierNode*)node)->token->lexeme);
@@ -123,6 +158,7 @@ void* retrieve(symbol_Table* st, void* node, NodeType type){
             break;
         }
         case FUNCTION_SEQ:{
+            printf("here 1\n");
             key = hash(((functionNode*)node)->token->lexeme);
             t = st->FunctionTable;
             break;
@@ -133,10 +169,10 @@ void* retrieve(symbol_Table* st, void* node, NodeType type){
         switch(type){
             case ID:{
                 while(entry){
-                    // if(inode_check(entry->node, node)){
-                    //     return entry->node;
-                    // }
-                    printf("TODO in retrv fun\n");
+                    printf("in here\n");
+                    if(inode_check(entry->node, node)){
+                        return entry->node;
+                    }
                     entry = entry->next;
                 }
                 break;
@@ -150,11 +186,12 @@ void* retrieve(symbol_Table* st, void* node, NodeType type){
                 }
             }
             case FUNCTION_SEQ:{
+                printf("here 2\n");
                 while(entry){
-                    // if(fnode_check(entry->node, node)){
-                    //     return entry->node;
-                    // }
-                    // entry = entry->next;
+                    if(fnode_check(entry->node, node)){
+                        return entry->node;
+                    }
+                    entry = entry->next;
                 }
             }
         }
