@@ -15,41 +15,113 @@ int hash(char* key){
     return hashed%TABLE_SLOTS;
 }
 
-recordField* createFieldList(ast* ast, int* offset){
-    recordField* fields = (recordField*)malloc(sizeof(recordField));
-    if(ast->nodeType == INTEGER){
-        fields->offset = *offset;
-        (*offset) += INT_WIDTH;
-        fields->width = INT_WIDTH;
-        fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-        fields->token->tid = ast->symbol;
-        fields->token->lexeme = ast->lex;
-        fields->token->lineNo = ast->line;
-        fields->type = INT_TYPE;
+recordField* createFieldList(ast* curr_ast, int* offset){
+    // recordField* fields = (recordField*)malloc(sizeof(recordField));
+    // if(ast->nodeType == INTEGER){
+    //     fields->offset = *offset;
+    //     (*offset) += INT_WIDTH;
+    //     fields->width = INT_WIDTH;
+    //     fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+    //     fields->token->tid = ast->symbol;
+    //     fields->token->lexeme = ast->lex;
+    //     fields->token->lineNo = ast->line;
+    //     fields->type = INT_TYPE;
+    // }
+    // else{
+    //     fields->offset = *offset;
+    //     (*offset) += REAL_WIDTH;
+    //     fields->width = REAL_WIDTH;
+    //     fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+    //     fields->token->tid = ast->symbol;
+    //     fields->token->lexeme = ast->lex;
+    //     fields->token->lineNo = ast->line;
+    //     fields->type = REAL_TYPE;
+    // }
+    // return fields;
+
+
+    ast* iterator = curr_ast;
+    recordField* head = NULL;
+    recordField* tail = NULL;
+
+    while(iterator!=NULL)
+    {
+
+        recordField* fields = (recordField*)malloc(sizeof(recordField));
+        if(iterator->nodeType==INTEGER){
+
+            fields->offset = *offset;
+            (*offset) += INT_WIDTH;
+            fields->width = INT_WIDTH;
+            fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+            fields->token->tid = curr_ast->symbol;
+            fields->token->lexeme = curr_ast->lex;
+            fields->token->lineNo = curr_ast->line;
+            fields->type = INT_TYPE;
+        }
+        else if(iterator->nodeType==REAL){
+            fields->offset = *offset;
+            (*offset) += REAL_WIDTH;
+            fields->width = REAL_WIDTH;
+            fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+            fields->token->tid = curr_ast->symbol;
+            fields->token->lexeme = curr_ast->lex;
+            fields->token->lineNo = curr_ast->line;
+            fields->type = REAL_TYPE;
+        }
+        else if(iterator->nodeType == RECORD_OR_UNION) {
+            fields->offset = *offset;
+            //check if record has already been declared, handle error, get offset
+            recordUnionNode* ru = (recordUnionNode*)malloc(sizeof(recordUnionNode));
+            ru->width = 0;
+            ru->fieldList = NULL;
+            //recordField* head = NULL;
+            ru->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+            ru->token->tid = -1;
+            ru->token->lexeme = iterator->lex;
+            //ru->token->lineNo = ast->line;
+            ru->fieldList = NULL;
+            recordUnionNode* x = (recordUnionNode*)retrieve(SymbolTable,ru,iterator->nodeType);
+            if(x==NULL)
+            {
+                printf("Using a record as field that has not been declared on line no. %d\n", iterator->line);
+            }
+            else {
+                (*offset) += x->width;
+                fields->width = x->width;
+                fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                fields->token->tid = x->token->tid;
+                fields->token->lexeme = x->token->lexeme;
+                fields->token->lineNo = x->token->lineNo;
+                fields->type = (x->is_union) ? UNION_TYPE : RECORD_TYPE;
+            }
+
+        }
+        if(head) {
+            tail->next = fields;
+            tail = tail->next;
+        }
+        else {
+            head = fields;
+            tail = head;
+        }
+        iterator = iterator->nextSibling;
     }
-    else{
-        fields->offset = *offset;
-        (*offset) += REAL_WIDTH;
-        fields->width = REAL_WIDTH;
-        fields->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-        fields->token->tid = ast->symbol;
-        fields->token->lexeme = ast->lex;
-        fields->token->lineNo = ast->line;
-        fields->type = REAL_TYPE;
-    }
-    return fields;
+
+
 }
 
-recordUnionNode* createRUNode(ast* ast, recordField* fields){
+recordUnionNode* createRUNode(ast* curr_ast, recordField* fields){
     recordUnionNode* ru = (recordUnionNode*)malloc(sizeof(recordUnionNode));
     ru->width = 0;
     ru->fieldList = fields;
     recordField* head = fields;
     ru->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-    ru->token->tid = ast->symbol;
-    ru->token->lexeme = ast->nextSibling->lex;
-    ru->token->lineNo = ast->line;
+    ru->token->tid = curr_ast->symbol;
+    ru->token->lexeme = curr_ast->nextSibling->lex;
+    ru->token->lineNo = curr_ast->line;
     ru->fieldList = NULL;
+    ru->is_union = curr_ast->is_union;
 
     while(head){
         ru->width += head->width;
@@ -113,6 +185,7 @@ void* retrieve(symbol_Table* st, void* node, NodeType type){
     if(!node) return NULL;
     int key;
     subTable* t;
+    //printf("inside retrv %d\n",type);
     switch(type){
         case ID:{
             key = hash(((identifierNode*)node)->token->lexeme);
@@ -125,6 +198,7 @@ void* retrieve(symbol_Table* st, void* node, NodeType type){
             break;
         }
         case FUNCTION_SEQ:{
+            printf("here 1\n");
             key = hash(((functionNode*)node)->token->lexeme);
             t = st->FunctionTable;
             break;
@@ -151,6 +225,7 @@ void* retrieve(symbol_Table* st, void* node, NodeType type){
                 }
             }
             case FUNCTION_SEQ:{
+                printf("here 2\n");
                 while(entry){
                     if(fnode_check(entry->node, node)){
                         return entry->node;
@@ -253,29 +328,191 @@ void createRUtable(ast* root){
         ast* child = root->firstChild;
         while(child){
             //printf("inside child while %s\n",child->lex);
+
             int offset = 0;
             if(child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType!=ID){
+                printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
+                // curr_ast = child->firstChild;
+                // fields = createFieldList(curr_ast, &offset);
+                // curr_ast = curr_ast->nextSibling;
+                // curr_field = fields;
+                // while(curr_ast){
+                //     curr_field->next = createFieldList(curr_ast, &offset);
+                //     curr_ast = curr_ast->nextSibling;
+                //     curr_field = curr_field->next;
+                // }
+                // curr_field->next = NULL;
+                // recordUnionNode* new = createRUNode(child, fields);
+                // recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
+                // if(check){
+                //     printf("redeclaration\n");
+                //     //TODO FILE STUFF
+
                 curr_ast = child->firstChild;
-                fields = createFieldList(curr_ast, &offset);
-                curr_ast = curr_ast->nextSibling;
-                curr_field = fields;
-                while(curr_ast){
-                    curr_field->next = createFieldList(curr_ast, &offset);
-                    curr_ast = curr_ast->nextSibling;
-                    curr_field = curr_field->next;
-                }
-                curr_field->next = NULL;
+                fields = createFieldList(curr_ast, &offset);    //iterates and returns a linked list of field nodes
                 recordUnionNode* new = createRUNode(child, fields);
                 recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
-                if(check){
-                    printf("redeclaration\n");
-                    //TODO FILE STUFF
+                if(check)
+                {
+                    printf("Redeclaration of Record on line %d\n", curr_ast->line);
                 }
-                else{
+
+                else
+                {
                     insert(SymbolTable, new, RECORD_OR_UNION);
                 }
             }
+            else if(child->nodeType == DEFINETYPE) {
+                printf("In definetype, Child node is %s and type is %d\n", child->lex, child->nodeType);
+                recordUnionNode* ru = (recordUnionNode*)malloc(sizeof(recordUnionNode));
+                ru->width = 0;
+                ru->fieldList = NULL;
+                ru->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                ru->token->tid = -1;
+                ru->token->lexeme = child->firstChild->nextSibling->lex;
+                //ru->token->lineNo = ast->line;
+                ru->fieldList = NULL;
+                recordUnionNode* existing = (recordUnionNode*)retrieve(SymbolTable, ru, RECORD_OR_UNION);
+                if(existing == NULL) {
+                    printf("Implicit declaration of %s on line no. %d\n",child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
+                } 
+                else {
+                    if((existing->is_union == true && child->firstChild->symbol == TK_RECORD) || (existing->is_union == false && child->firstChild->symbol == TK_UNION)) {
+                        printf("Type Mismatch on line no. %d\n", child->firstChild->line);
+                    }
+                    else {
+                        recordUnionNode* tdefNode = (recordUnionNode*)malloc(sizeof(recordUnionNode));
+                        tdefNode->is_union = existing->is_union;
+                        tdefNode->width = existing->width;
+                        tdefNode->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                        tdefNode->token->tid = existing->token->tid;
+                        tdefNode->token->numVal = existing->token->numVal;
+                        tdefNode->token->lineNo = existing->token->lineNo;
+                        tdefNode->token->lexeme = child->firstChild->nextSibling->nextSibling->lex;
+                        insert(SymbolTable, tdefNode, RECORD_OR_UNION);
+                    }
+                }
+            }
             child = child->nextSibling;
+        }
+        root = root->nextSibling;
+    }
+}
+
+void createFTable(ast* root){
+    root = root->firstChild;
+    while(root){
+        int offset = 0;
+        functionNode* func = (functionNode*)malloc(sizeof(functionNode));
+        ast* child = root->firstChild;
+        func->rank = FUNCTION_RANK;
+        FUNCTION_RANK++;
+        func->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+        func->token->lexeme = root->lex;
+        func->token->lineNo = root->line;
+        func->token->tid = root->symbol;    
+        parameters* curr_ip = NULL;
+        parameters* curr_op = NULL;
+        ast* pars = NULL;
+        int width = 0;
+        while(child){
+            if(child->nodeType == INPUT_PARAMETERS){
+                printf("inside if\n");
+                pars = child->firstChild;
+                while(pars){
+                    identifierNode* id;
+                    switch(pars->symbol){
+                        case TK_INT:{
+                            id = createINode(pars->firstChild, child->parent, INT_TYPE, false, &offset); //TODO
+                            printf("IN TK INT\n");
+                            break;
+                        }
+                        case TK_REAL:{
+                            id = createINode(pars->firstChild, child->parent, REAL_TYPE, false, &offset); //TODO
+                            printf("IN TK REAL\n");
+                            break;
+                        }
+                        case TK_RECORD:{
+                            id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); //TODO
+                            printf("IN TK RECORD\n");
+                            break;
+                        }
+                        case TK_UNION:{
+                            id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); //TODO
+                            printf("IN TK UNION\n");
+                            break;
+                        }
+                    }
+                    identifierNode* check = (identifierNode*)retrieve(SymbolTable,id,ID);
+                    // if(check){
+                    //     printf("redeclaration");
+                    // }
+                    // else{
+                    //     printf("insert\n");
+                    //     insert(SymbolTable, id, ID);
+                    // }
+        //             if(!curr_ip){
+        //                 func->ipParams = createIPParams(pars->firstChild,pars->nodeType); //TODO
+        //                 curr_ip = func->ipParams;
+        //             }
+        //             else{
+        //                 curr_ip->next = createIPParams(pars->firstChild,pars->nodeType);
+        //                 curr_ip = curr_ip->next;
+        //             }
+        //             width +=id->width;
+                    pars = pars->nextSibling;                 
+                }
+            }
+        //     else if(child->nodeType == OUTPUT_PARAMETERS){
+        //         pars = child->firstChild;
+        //         while(pars){
+        //             identifierNode* id;
+        //             switch(pars->symbol){
+        //                 case TK_INT:{
+        //                     id = createINode(pars->firstChild, child->parent, INT_TYPE, false, &offset); //TODO
+        //                     break;
+        //                 }
+        //                 case TK_REAL:{
+        //                     id = createINode(pars->firstChild, child->parent, REAL_TYPE, false, &offset); //TODO
+        //                     break;
+        //                 }
+        //                 case TK_RECORD:{
+        //                     id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); //TODO
+        //                     break;
+        //                 }
+        //                 case TK_UNION:{
+        //                     id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); //TODO
+        //                     break;
+        //                 }
+        //             }
+        //             identifierNode* check = (identifierNode*)retrieve(SymbolTable,id,ID);
+        //             if(check){
+        //                 printf("redeclaration");
+        //             }
+        //             else{
+        //                 insert(SymbolTable, id, ID);
+        //             }
+        //             if(!curr_op){
+        //                 func->opParams = createIPParams(pars->firstChild,pars->nodeType); //TODO
+        //                 curr_ip = func->opParams;
+        //             }
+        //             else{
+        //                 curr_op->next = createIPParams(pars->firstChild,pars->nodeType);
+        //                 curr_op = curr_op->next;
+        //             }
+        //             width +=id->width;
+        //             pars = pars->nextSibling;
+        //         }
+        //     }
+            child = child->nextSibling;
+        //     functionNode* check = (functionNode*)retrieve(SymbolTable, func, FUNCTION_SEQ);
+        //     if(check){
+        //         printf("redecl");
+        //     }
+        //     else{
+        //         func->tmpVars = 0;
+        //         insert(SymbolTable, func, FUNCTION_SEQ);
+        //     }
         }
         root = root->nextSibling;
     }

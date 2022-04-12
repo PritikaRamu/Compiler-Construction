@@ -1,4 +1,4 @@
-#include "symboltable.h" 
+#include "symbolTable.h" 
 
 void validateFunction(ast* curr);
 void semanticAnalyser(ast* root);
