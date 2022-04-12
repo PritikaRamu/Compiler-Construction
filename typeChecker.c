@@ -137,16 +137,40 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         free(notGlobalCurr);
         free(globalCurr);
         
+        //attribute from AST
         ast* attribute = NULL;
         if(!curr->firstChild) {
             attribute = curr->firstChild;
         }
-        if(currNode->type != RECORD_TYPE && attribute != NULL){
-            printf("Variable not of type record.\n");
+
+        //record/union from symbol table
+        recordField * fieldList = NULL;
+        if(currNode->type == RECORD_TYPE){
+            fieldList = currNode->recordList->fieldList;
+        }
+        else if (currNode->type == UNION_TYPE){
+            fieldList = currNode->unionList->fieldList;
+        }
+    
+        if(curr->nodeType != RECORD_OR_UNION && attribute != NULL){
+            printf("Variable not of type record or union.\n");
             //semanticErrors++;
         }
-        else if (currNode)
-
+        else if (curr->nodeType == RECORD_OR_UNION && attribute != NULL) {
+            for(;fieldList!=NULL;fieldList->next){
+                if(strcmp(attribute->lex, fieldList->token->lexeme) == 0){
+                    return createINode(NULL,func,fieldList->type,false,&localOffset);
+                }
+            }
+            if(fieldList == NULL) {
+                printf("Field not present in the record.\n");
+                // semanticErrors++;
+                return NULL;
+            }
+        }
+        else if (curr->nodeType != RECORD_OR_UNION && attribute == NULL){
+            return currNode;
+        }
     }
 
     //operator node
