@@ -118,7 +118,7 @@ recordUnionNode* createRUNode(ast* curr_ast, recordField* fields){
     recordField* head = fields;
     ru->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     ru->token->tid = curr_ast->symbol;
-    ru->token->lexeme = curr_ast->nextSibling->lex;
+    ru->token->lexeme = curr_ast->lex;
     ru->token->lineNo = curr_ast->line;
     ru->fieldList = NULL;
     ru->is_union = curr_ast->is_union;
@@ -332,23 +332,8 @@ void createRUtable(ast* root){
             int offset = 0;
             if(child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType!=ID){
                 printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
-                // curr_ast = child->firstChild;
-                // fields = createFieldList(curr_ast, &offset);
-                // curr_ast = curr_ast->nextSibling;
-                // curr_field = fields;
-                // while(curr_ast){
-                //     curr_field->next = createFieldList(curr_ast, &offset);
-                //     curr_ast = curr_ast->nextSibling;
-                //     curr_field = curr_field->next;
-                // }
-                // curr_field->next = NULL;
-                // recordUnionNode* new = createRUNode(child, fields);
-                // recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
-                // if(check){
-                //     printf("redeclaration\n");
-                //     //TODO FILE STUFF
-
                 curr_ast = child->firstChild;
+                printf("current node's lexeme: %s\n", curr_ast->lex);
                 fields = createFieldList(curr_ast, &offset);    //iterates and returns a linked list of field nodes
                 recordUnionNode* new = createRUNode(child, fields);
                 recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
@@ -359,6 +344,7 @@ void createRUtable(ast* root){
 
                 else
                 {
+                    printf("lexeme being inserted: %s\n", new->token->lexeme);
                     insert(SymbolTable, new, RECORD_OR_UNION);
                 }
             }
@@ -389,6 +375,7 @@ void createRUtable(ast* root){
                         tdefNode->token->numVal = existing->token->numVal;
                         tdefNode->token->lineNo = existing->token->lineNo;
                         tdefNode->token->lexeme = child->firstChild->nextSibling->nextSibling->lex;
+                        printf("In definetype, lexeme being inserted: %s\n", tdefNode->token->lexeme);
                         insert(SymbolTable, tdefNode, RECORD_OR_UNION);
                     }
                 }
