@@ -62,7 +62,7 @@
                definetype              33                     DEFINETYPE        Not a number              MAIN_FUNCTION        NO                 DEFINETYPE
                     #line              33                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
                    record              34                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-                     #one              34                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+                   #pooop              34                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
                definetype              34                     DEFINETYPE        Not a number              MAIN_FUNCTION        NO                 DEFINETYPE
                     #line              34                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
                     #line              36                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION

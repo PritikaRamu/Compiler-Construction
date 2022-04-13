@@ -253,12 +253,10 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
             {
                 if (runode_check(entry->node, node))
                 {   
-                    printf("%s\n",((recordUnionNode*)(entry->node))->token->lexeme);
                     if(((recordUnionNode*)(entry->node))->fieldList){
                         printf("%d\n",((recordUnionNode*)(entry->node))->fieldList->width);
                     }
                     else{
-                        printf("bruhhhhhh\n");
                     }
                     return entry->node;
                 }
@@ -487,6 +485,7 @@ identifierNode* retrieveFake(subTable* st, identifierNode* id, bool token, bool 
                         entry = entry->next;
                     }
             }
+            return NULL;
         }
     }
     else{
@@ -514,6 +513,7 @@ identifierNode* retrieveFake(subTable* st, identifierNode* id, bool token, bool 
                     {
                         if (first_check(((identifierNode*)(entry->node))->function->lexeme, id->function->lexeme))
                         {   
+                            printf("I am here\n");
                             return entry->node;
                         }
                         entry = entry->next;
@@ -537,7 +537,7 @@ void insertFake(subTable* st, identifierNode* id, bool token){
     }
     
     void* check = st->table[key].node;
-    if (!check)
+    if (check==NULL)
     {
         st->table[key].next = NULL;
         st->table[key].key = key;
@@ -546,9 +546,10 @@ void insertFake(subTable* st, identifierNode* id, bool token){
     else
     {
         Entry *entry = &(st->table[key]);
-        while (entry->next)
+        while (entry->next!=NULL)
         {
             entry = entry->next;
+            
         }
         
         Entry* temp = (Entry *)malloc(sizeof(Entry));
@@ -611,24 +612,24 @@ void createAliasTable(ast* root){
                 ru->function = (tokenInfo *)malloc(sizeof(tokenInfo));
                 ru->function->lexeme = child->firstChild->nextSibling->nextSibling->lex;
 
-                identifierNode *existing = retrieveFake(firstPass, ru, true, false); //original with original
+                identifierNode *existing = (identifierNode*)retrieveFake(firstPass, ru, true, false); //check if record exists
                 if (existing == NULL)
                 {
                     printf("Record %s does not exist on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
                 }
                 else
                 {   
-                    identifierNode* check = retrieveFake(aliasTable, ru, false, true);
+                    identifierNode* check =(identifierNode*) retrieveFake(aliasTable, ru, false, true); //check if alias exists
                     if(check){
-                        printf("Redeclaration of alias on line %d\n", curr_ast->line);
+                        printf("Redeclaration of alias on line %d\n", child->firstChild->nextSibling->line);
                     }
                     else{
-                        identifierNode* check1 = retrieveFake(firstPass, ru, true, false);
+                        identifierNode* check1 = (identifierNode*)retrieveFake(firstPass, ru, false, false);//check if alias is record name
                         if(check1){
-                            printf("Redeclaration of record name as alias on line %d\n", curr_ast->line);
+                            printf("Redeclaration of record name as alias on line %d\n", child->firstChild->nextSibling->line);
                         }
                         else{
-                            //insertFake(aliasTable, ru, false);
+                            insertFake(aliasTable, ru, false);
                         }
                     }
                 }
