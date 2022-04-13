@@ -41,6 +41,6 @@ void resetTemps();
 
 void getTemp(char *buff, int width);
 
-void initAsm() ;
+void initAsm();
 
 #endif
