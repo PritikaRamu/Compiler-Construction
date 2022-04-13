@@ -817,3 +817,28 @@ void printFunctionTable(subTable *fun_table)
         }
     }
 }
+
+void printIDTable(subTable *fun_table)
+{
+    int i;
+    Entry * entry;
+    identifierNode *fun_node;
+    printf("#%-30s %-30s\n", "Lexeme", "Width");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(fun_table->table[i]);
+        while (entry != NULL)
+        {
+            printf("%d\n",i);
+            fun_node = (identifierNode *)(entry->node);
+            //printf("%s\n",fun_node->token->lexeme);
+            // if (fun_node != NULL)
+            // {
+            //     printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+            //     printf("-------------------------------\n");
+            // }
+            entry = entry->next;
+        }
+    }
+}
+

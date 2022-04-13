@@ -141,6 +141,7 @@ int main(int argc, char* argv[]){
 				initializeSymbolTable(astree);
 				printRecordTable(SymbolTable->RecordUnionTable);
 				printFunctionTable(SymbolTable->FunctionTable);
+				printIDTable(SymbolTable->IdentifierTable);
             }
         }
 
