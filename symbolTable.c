@@ -324,10 +324,10 @@ void insert(symbol_Table *st, void *node, NodeType type)
     }
 }
 
-identifierNode *createINode(ast *id, ast *func, NodeType type, bool is_global, int *offset)
-{
-    identifierNode *iden = (identifierNode *)malloc(sizeof(identifierNode));
-    iden->function = (tokenInfo *)malloc(sizeof(tokenInfo));
+
+identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*offset){
+    identifierNode* iden = (identifierNode*)malloc(sizeof(identifierNode));
+    iden->function = (tokenInfo*)malloc(sizeof(tokenInfo));
     iden->function->lexeme = func->lex;
     iden->function->lineNo = func->line;
     iden->function->tid = func->symbol;
