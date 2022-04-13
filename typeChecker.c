@@ -1,5 +1,21 @@
 #include "typeChecker.h"
 
+identifierNode* validateBoolean(ast* curr, ast* func);
+void handleStmt(ast* curr);
+void validateConditional(ast* curr);
+recordField* searchInFieldList(ast* curr, recordField* fieldList);
+
+recordField* searchInFieldList(ast* curr, recordField* fieldList) {
+    recordField* temp = fieldList;
+    while(temp) {
+        if(strcmp(curr->lex, temp->token->lexeme) == 0 && curr->symbol == temp->token->tid) {
+            return temp;
+        }
+        temp = temp->next;
+    }
+    return NULL;
+}
+
 void semanticAnalyser(ast* root){
     //populate symbol tables
     ast * curr = root->firstChild;
