@@ -100,7 +100,7 @@ ast* makeAST(parseTree node, ast* parent) {
     //create a leaf node for TK_MAIN and ignore TK_END
     if(node->symbol == mainFunction) {
         curr = mkNode(MAIN_FUNCTION, parent, NULL, NULL, node->firstChild);
-        curr->firstChild = makeAST(node->firstChild->nextSibling, parent);
+        curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
     }
 
     //otherFunctions ==> function otherFunctions
