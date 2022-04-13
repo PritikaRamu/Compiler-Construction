@@ -142,9 +142,9 @@ bool runode_check(void *node1, void *node2)
     }
 }
 
-bool first_check(identifierNode *node1, identifierNode *node2)
+bool first_check(char *node1, char *node2)
 {
-    if (strcmp(node1->token->lexeme, node2->token->lexeme) == 0)
+    if (strcmp(node1,node2) == 0)
     {
         return true;
     }
@@ -312,7 +312,7 @@ void insert(symbol_Table *st, void *node, NodeType type)
         return;
     }
     void *e = t->table->node;
-    void *check = t->table->node;
+    void* check = t->table[key].node;
     if (!check)
     {
         t->table[key].next = NULL;
@@ -326,10 +326,11 @@ void insert(symbol_Table *st, void *node, NodeType type)
         {
             entry = entry->next;
         }
-        entry->next = (Entry *)malloc(sizeof(Entry));
-        entry->next->key = key;
-        entry->next->node = node;
-        entry->next->next = NULL;
+        Entry* temp = (Entry *)malloc(sizeof(Entry));
+        temp->key = key;
+        temp->node = node;
+        temp->next = NULL;
+        entry->next = temp;
     }
 }
 
@@ -454,26 +455,88 @@ void createRUtable(ast *root)
     }
 }
 
-identifierNode* retrieveFake(subTable* st, identifierNode* id){
-    int key = hash(id->token->lexeme);
-    if (st->table[key].node)
-    {
-        Entry *entry = &(st->table[key]);
-        while (entry)
+identifierNode* retrieveFake(subTable* st, identifierNode* id, bool token, bool alias){
+
+    if(!alias){
+        if(token){
+            int key = hash(id->token->lexeme);
+            if (st->table[key].node)
             {
-                if (first_check(entry->node, id))
-                {   
-                    return entry->node;
-                }
-                entry = entry->next;
+                Entry *entry = &(st->table[key]);
+                while (entry)
+                    {
+                        if (first_check(((identifierNode*)(entry->node))->token->lexeme, id->token->lexeme))
+                        {   
+                            return entry->node;
+                        }
+                        entry = entry->next;
+                    }
             }
+        }
+        else{
+            int key = hash(id->function->lexeme);
+            if (st->table[key].node)
+            {
+                Entry *entry = &(st->table[key]);
+                while (entry)
+                    {
+                        if (first_check(((identifierNode*)(entry->node))->token->lexeme, id->function->lexeme))
+                        {   
+                            return entry->node;
+                        }
+                        entry = entry->next;
+                    }
+            }
+        }
     }
+    else{
+        if(token){
+            int key = hash(id->token->lexeme);
+            if (st->table[key].node)
+            {
+                Entry *entry = &(st->table[key]);
+                while (entry)
+                    {
+                        if (first_check(((identifierNode*)(entry->node))->function->lexeme, id->token->lexeme))
+                        {   
+                            return entry->node;
+                        }
+                        entry = entry->next;
+                    }
+            }
+        }
+        else{
+            int key = hash(id->function->lexeme);
+            if (st->table[key].node)
+            {
+                Entry *entry = &(st->table[key]);
+                while (entry)
+                    {
+                        if (first_check(((identifierNode*)(entry->node))->function->lexeme, id->function->lexeme))
+                        {   
+                            return entry->node;
+                        }
+                        entry = entry->next;
+                    }
+            }
+        }
+    }
+
+    
+    
     return NULL;
 }
 
-void insertFake(subTable* st, identifierNode* id){
-    int key = hash(id->token->lexeme);
-    void *check = st->table->node;
+void insertFake(subTable* st, identifierNode* id, bool token){
+    int key;
+    if(token){
+        key = hash(id->token->lexeme);
+    }
+    else{
+        key = hash(id->function->lexeme);
+    }
+    
+    void* check = st->table[key].node;
     if (!check)
     {
         st->table[key].next = NULL;
@@ -487,10 +550,12 @@ void insertFake(subTable* st, identifierNode* id){
         {
             entry = entry->next;
         }
-        entry->next = (Entry *)malloc(sizeof(Entry));
-        entry->next->key = key;
-        entry->next->node = id;
-        entry->next->next = NULL;
+        
+        Entry* temp = (Entry *)malloc(sizeof(Entry));
+        temp->key = key;
+        temp->node = id;
+        temp->next = NULL;
+        entry->next = temp;
     }
 }
 
@@ -505,13 +570,13 @@ void createFirstPass(ast *root)
         {
             if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType != ID)
             {
-                printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
+                //printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
                 curr_ast = child->firstChild;
-                printf("current node's lexeme: %s\n", curr_ast->lex);
+                //printf("current node's lexeme: %s\n", curr_ast->lex);
                 identifierNode* new = (identifierNode*)malloc(sizeof(identifierNode));
                 new->token = (tokenInfo*)malloc(sizeof(tokenInfo));
                 new->token->lexeme = child->lex;
-                identifierNode* check = retrieveFake(firstPass, new);
+                identifierNode* check = retrieveFake(firstPass, new, true, false);
                 if(check)
                 {
                     printf("Redeclaration of Record on line %d\n", curr_ast->line);
@@ -520,7 +585,52 @@ void createFirstPass(ast *root)
                 else
                 {
                     printf("lexeme being inserted: %s\n", new->token->lexeme);
-                    insertFake(firstPass, new);
+                    insertFake(firstPass, new, true);
+                }
+            }
+            child = child->nextSibling;
+        }
+        root = root->nextSibling;
+    }
+}
+
+void createAliasTable(ast* root){
+    root = root->firstChild;
+    ast *curr_ast = NULL;
+    while (root)
+    {
+        ast *child = root->firstChild;
+        while (child)
+        {
+            if (child->nodeType == DEFINETYPE)
+            {
+                //printf("In definetype, Child node is %s and type is %d\n", child->lex, child->nodeType);
+                identifierNode *ru = (identifierNode *)malloc(sizeof(identifierNode));
+                ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+                ru->token->lexeme = child->firstChild->nextSibling->lex;
+                ru->function = (tokenInfo *)malloc(sizeof(tokenInfo));
+                ru->function->lexeme = child->firstChild->nextSibling->nextSibling->lex;
+
+                identifierNode *existing = retrieveFake(firstPass, ru, true, false); //original with original
+                if (existing == NULL)
+                {
+                    printf("Record %s does not exist on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
+                }
+                else
+                {   
+                    identifierNode* check = retrieveFake(aliasTable, ru, false, true);
+                    if(check){
+                        printf("Redeclaration of alias on line %d\n", curr_ast->line);
+                    }
+                    else{
+                        identifierNode* check1 = retrieveFake(firstPass, ru, true, false);
+                        if(check1){
+                            printf("Redeclaration of record name as alias on line %d\n", curr_ast->line);
+                        }
+                        else{
+                            //insertFake(aliasTable, ru, false);
+                        }
+                    }
                 }
             }
             child = child->nextSibling;
@@ -841,6 +951,8 @@ void initializeSymbolTable(ast *ast)
     SymbolTable->RecordUnionTable = initSubTable();
     createFirstPass(ast);
     printFPTable(firstPass);
+    createAliasTable(ast);
+    printAliasTable(aliasTable);
     // createRUtable(ast);
     // printf("record table done\n");
     // createFTable(ast);
@@ -946,6 +1058,28 @@ void printFPTable(subTable *fun_table)
             if (fun_node != NULL)
             {
                 printf("%-30s \n", fun_node->token->lexeme);
+                printf("-------------------------------\n");
+            }
+            entry = entry->next;
+        }
+    }
+}
+
+void printAliasTable(subTable *fun_table)
+{
+    int i;
+    Entry * entry;
+    identifierNode *fun_node;
+    printf("#%-30s\n", "Lexeme");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(fun_table->table[i]);
+        while (entry != NULL)
+        {
+            fun_node = (identifierNode *)(entry->node);
+            if (fun_node != NULL)
+            {
+                printf("%-30s \n", fun_node->function->lexeme);
                 printf("-------------------------------\n");
             }
             entry = entry->next;
