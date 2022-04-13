@@ -432,8 +432,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
 
                     //currently fFieldId and sFieldId are at the end
                     //they have to be INTEGER or REAL 
-
-
+                    //TODO: handle the types of 
                 }
             }
         }
