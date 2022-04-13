@@ -140,12 +140,26 @@ int main(int argc, char* argv[]){
                 printf("\n");
 				initializeSymbolTable(astree);
 				printRecordTable(SymbolTable->RecordUnionTable);
-				printFunctionTable(SymbolTable->FunctionTable);
-				printIDTable(SymbolTable->IdentifierTable);
+				printf("Record table printed above\n");
+				// printFunctionTable(SymbolTable->FunctionTable);
+				// printf("Function table printed above\n");
+				// printIDTable(SymbolTable->IdentifierTable);
+				// printf("Identifier table printed above\n");
+				char* name = "#marks";
+				recordUnionNode* test = (recordUnionNode*)malloc(sizeof(recordUnionNode));
+				test->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+				test->token->lexeme = name;
+				recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,test,RECORD_OR_UNION);
+				recordField* head = ru->fieldList;
+				while(head){
+					printf("%s\n",head->token->lexeme);
+					head = head->next;
+				}
             }
         }
 
 	}
+
 
 	return 0;
 }
