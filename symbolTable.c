@@ -347,7 +347,7 @@ identifierNode *createINode(ast *id, ast *func, NodeType type, bool is_global, i
         if (iden->recordList)
         {
             iden->width = iden->recordList->width;
-            printf("record width: %d", iden->width);
+            printf("record width: %d\n", iden->width);
             (*offset) += iden->recordList->width;
         }
     }
@@ -606,12 +606,7 @@ void createITable(ast *root)
         int localOffset = func->width;
         while (child)
         {
-            // if(child->lex){
-            //     printf("%s\n",child->lex);
-            // }
-            // else{
-            //     printf("missing\n");
-            // }
+            printf("hehehehehe %d %d\n",child->nodeType,child->parent->nodeType);
             if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)
             {
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
@@ -651,7 +646,7 @@ void createITable(ast *root)
                         }
                         else
                         {
-                            printf("redcl\n");
+                            printf("redcl 1\n");
                         }
                     }
                     else
@@ -660,7 +655,7 @@ void createITable(ast *root)
                     }
                 }
             }
-            else if (child->nodeType == INTEGER)
+            else if (child->nodeType == INTEGER && child->firstChild->nodeType == ID)
             {
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
@@ -672,6 +667,7 @@ void createITable(ast *root)
                     id = createINode(child->firstChild, child->parent, INTEGER, false, &localOffset);
                 }
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
+
                     identifierNode *check = (identifierNode *)malloc(sizeof(identifierNode));
                     if (check)
                     {
@@ -682,7 +678,8 @@ void createITable(ast *root)
                         }
                         else
                         {
-                            printf("redcl\n");
+                            printf("redcl 2\n");
+                            printf("%d %d %s",child->nodeType, child->parent->nodeType, child->lex);
                         }
                     }
                     else{
@@ -690,7 +687,7 @@ void createITable(ast *root)
                     }
                 }
             }
-            else
+            else if(child->nodeType == REAL && child->firstChild->nodeType == ID)
             {
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
@@ -712,7 +709,7 @@ void createITable(ast *root)
                         }
                         else
                         {
-                            printf("redcl\n");
+                            printf("redcl 3\n");
                         }
                     }
                     else{
@@ -724,6 +721,9 @@ void createITable(ast *root)
         }
         func->width = localOffset;
         root = root->nextSibling;
+        if(root){
+            printf("here %d\n",root->nodeType);
+        } 
     }
     GLOBAL_WIDTH = globalOffset;
 }
