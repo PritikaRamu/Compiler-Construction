@@ -224,7 +224,6 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
     }
     case FUNCTION_SEQ:
     {
-        printf("here 1\n");
         key = hash(((functionNode *)node)->token->lexeme);
         t = st->FunctionTable;
         break;
@@ -260,7 +259,6 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
         }
         case FUNCTION_SEQ:
         {
-            printf("here 2\n");
             while (entry)
             {
                 if (fnode_check(entry->node, node))
@@ -338,6 +336,7 @@ identifierNode *createINode(ast *id, ast *func, NodeType type, bool is_global, i
     iden->token->lineNo = id->line;
     iden->token->tid = id->symbol;
     iden->type = type;
+    iden->assigned = false;
     iden->offset = *offset;
     if (iden->type == RECORD_TYPE || iden->type == UNION_TYPE)
     {
@@ -607,6 +606,12 @@ void createITable(ast *root)
         int localOffset = func->width;
         while (child)
         {
+            // if(child->lex){
+            //     printf("%s\n",child->lex);
+            // }
+            // else{
+            //     printf("missing\n");
+            // }
             if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)
             {
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
@@ -635,22 +640,24 @@ void createITable(ast *root)
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, false, &localOffset);
                     }
                 }
-                identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
-                if (check)
-                {
-                    if (check->global)
+                if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
+                    identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
+                    if (check)
                     {
-                        printf("redeclr of global var bad\n");
-                        // TODO file stuff
+                        if (check->global)
+                        {
+                            printf("redeclr of global var bad\n");
+                            // TODO file stuff
+                        }
+                        else
+                        {
+                            printf("redcl\n");
+                        }
                     }
                     else
                     {
-                        printf("redcl\n");
+                        insert(SymbolTable, id, ID);
                     }
-                }
-                else
-                {
-                    insert(SymbolTable, id, ID);
                 }
             }
             else if (child->nodeType == INTEGER)
@@ -663,6 +670,8 @@ void createITable(ast *root)
                 else
                 {
                     id = createINode(child->firstChild, child->parent, INTEGER, false, &localOffset);
+                }
+                if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
                     identifierNode *check = (identifierNode *)malloc(sizeof(identifierNode));
                     if (check)
                     {
@@ -676,10 +685,47 @@ void createITable(ast *root)
                             printf("redcl\n");
                         }
                     }
+                    else{
+                        insert(SymbolTable,id,INTEGER);
+                    }
                 }
             }
+            else
+            {
+                identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
+                if (child->firstChild->nextSibling)
+                {
+                    id = createINode(child->firstChild, child->parent, REAL, true, &globalOffset);
+                }
+                else
+                {
+                    id = createINode(child->firstChild, child->parent, REAL, false, &localOffset);
+                }
+                if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
+                    identifierNode *check = (identifierNode *)malloc(sizeof(identifierNode));
+                    if (check)
+                    {
+                        if (check->global)
+                        {
+                            printf("redeclr of global var bad\n");
+                            // TODO file stuff
+                        }
+                        else
+                        {
+                            printf("redcl\n");
+                        }
+                    }
+                    else{
+                        insert(SymbolTable,id,REAL);
+                    }
+                }
+            }
+            child = child->nextSibling;
         }
+        func->width = localOffset;
+        root = root->nextSibling;
     }
+    GLOBAL_WIDTH = globalOffset;
 }
 
 subTable *initSubTable()
@@ -703,8 +749,8 @@ void initializeSymbolTable(ast *ast)
     printf("record table done\n");
     createFTable(ast);
     printf("function table done\n");
-    // generate_I_table(ast, NULL);
-    // printf("identifier table done\n");
+    createITable(ast);
+    printf("identifier table done\n");
 }
 
 void printRecordTable(subTable *rec_table)
