@@ -7,5 +7,6 @@ void initializeSymbolTable(ast* ast);
 void printRecordTable(subTable* rec_table);
 void printFunctionTable(subTable* fun_table);
 void* retrieve(symbol_Table* st, void* node, NodeType type);
+identifierNode* createINode(ast* id, ast* func, NodeType type, bool is_global, int*offset);
 
 #endif
