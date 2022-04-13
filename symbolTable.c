@@ -33,9 +33,9 @@ recordField* createFieldList(ast *curr_ast, int *offset)
             (*offset) += INT_WIDTH;
             fields->width = INT_WIDTH;
             fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-            fields->token->tid = curr_ast->symbol;
-            fields->token->lexeme = curr_ast->lex;
-            fields->token->lineNo = curr_ast->line;
+            fields->token->tid = iterator->symbol;
+            fields->token->lexeme = iterator->firstChild->lex;
+            fields->token->lineNo = iterator->line;
             fields->type = INT_TYPE;
         }
         else if (iterator->nodeType == REAL)
@@ -44,9 +44,9 @@ recordField* createFieldList(ast *curr_ast, int *offset)
             (*offset) += REAL_WIDTH;
             fields->width = REAL_WIDTH;
             fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-            fields->token->tid = curr_ast->symbol;
-            fields->token->lexeme = curr_ast->lex;
-            fields->token->lineNo = curr_ast->line;
+            fields->token->tid = iterator->symbol;
+            fields->token->lexeme = iterator->firstChild->lex;
+            fields->token->lineNo = iterator->line;
             fields->type = REAL_TYPE;
         }
         else if (iterator->nodeType == RECORD_OR_UNION)
@@ -89,6 +89,12 @@ recordField* createFieldList(ast *curr_ast, int *offset)
         }
         iterator = iterator->nextSibling;
     }
+
+    // recordField* x = head;
+    // while(x){
+	// 				printf(" huhu check %s\n",x->token->lexeme);
+	// 				x = x->next;
+	// 			}
     return head;
 }
 
@@ -102,7 +108,6 @@ recordUnionNode *createRUNode(ast *curr_ast, recordField *fields)
     ru->token->tid = curr_ast->symbol;
     ru->token->lexeme = curr_ast->lex;
     ru->token->lineNo = curr_ast->line;
-    ru->fieldList = NULL;
     ru->is_union = curr_ast->is_union;
 
     while (head)
@@ -128,6 +133,18 @@ parameters *createIPParams(ast *ast, NodeType type)
 bool runode_check(void *node1, void *node2)
 {
     if (strcmp(((recordUnionNode *)node1)->token->lexeme, ((recordUnionNode *)node2)->token->lexeme) == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool first_check(identifierNode *node1, identifierNode *node2)
+{
+    if (strcmp(node1->token->lexeme, node2->token->lexeme) == 0)
     {
         return true;
     }
@@ -200,7 +217,7 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
     case RECORD_OR_UNION:
     {
         key = hash(((recordUnionNode *)node)->token->lexeme);
-        //printf("Lexeme for retrieve is %s\n",((recordUnionNode *)node)->token->lexeme);
+        printf("Lexeme for retrieve is %s\n",((recordUnionNode *)node)->token->lexeme);
         t = st->RecordUnionTable;
         break;
     }
@@ -235,7 +252,14 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
             while (entry)
             {
                 if (runode_check(entry->node, node))
-                {
+                {   
+                    printf("%s\n",((recordUnionNode*)(entry->node))->token->lexeme);
+                    if(((recordUnionNode*)(entry->node))->fieldList){
+                        printf("%d\n",((recordUnionNode*)(entry->node))->fieldList->width);
+                    }
+                    else{
+                        printf("bruhhhhhh\n");
+                    }
                     return entry->node;
                 }
                 entry = entry->next;
@@ -272,6 +296,7 @@ void insert(symbol_Table *st, void *node, NodeType type)
     case RECORD_OR_UNION:
     {
         key = hash(((recordUnionNode *)node)->token->lexeme);
+        printf("key is %d\n",key);
         t = st->RecordUnionTable;
         break;
     }
@@ -421,6 +446,81 @@ void createRUtable(ast *root)
                         printf("In definetype, lexeme being inserted: %s\n", tdefNode->token->lexeme);
                         insert(SymbolTable, tdefNode, RECORD_OR_UNION);
                     }
+                }
+            }
+            child = child->nextSibling;
+        }
+        root = root->nextSibling;
+    }
+}
+
+identifierNode* retrieveFake(subTable* st, identifierNode* id){
+    int key = hash(id->token->lexeme);
+    if (st->table[key].node)
+    {
+        Entry *entry = &(st->table[key]);
+        while (entry)
+            {
+                if (first_check(entry->node, id))
+                {   
+                    return entry->node;
+                }
+                entry = entry->next;
+            }
+    }
+    return NULL;
+}
+
+void insertFake(subTable* st, identifierNode* id){
+    int key = hash(id->token->lexeme);
+    void *check = st->table->node;
+    if (!check)
+    {
+        st->table[key].next = NULL;
+        st->table[key].key = key;
+        st->table[key].node = id;
+    }
+    else
+    {
+        Entry *entry = &(st->table[key]);
+        while (entry->next)
+        {
+            entry = entry->next;
+        }
+        entry->next = (Entry *)malloc(sizeof(Entry));
+        entry->next->key = key;
+        entry->next->node = id;
+        entry->next->next = NULL;
+    }
+}
+
+void createFirstPass(ast *root)
+{
+    root = root->firstChild;
+    ast *curr_ast = NULL;
+    while (root)
+    {
+        ast *child = root->firstChild;
+        while (child)
+        {
+            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType != ID)
+            {
+                printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
+                curr_ast = child->firstChild;
+                printf("current node's lexeme: %s\n", curr_ast->lex);
+                identifierNode* new = (identifierNode*)malloc(sizeof(identifierNode));
+                new->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                new->token->lexeme = child->lex;
+                identifierNode* check = retrieveFake(firstPass, new);
+                if(check)
+                {
+                    printf("Redeclaration of Record on line %d\n", curr_ast->line);
+                }
+
+                else
+                {
+                    printf("lexeme being inserted: %s\n", new->token->lexeme);
+                    insertFake(firstPass, new);
                 }
             }
             child = child->nextSibling;
@@ -734,15 +834,19 @@ subTable *initSubTable()
 void initializeSymbolTable(ast *ast)
 {
     SymbolTable = (symbol_Table *)malloc(sizeof(symbolTable));
+    firstPass = initSubTable();
+    aliasTable = initSubTable();
     SymbolTable->IdentifierTable = initSubTable();
     SymbolTable->FunctionTable = initSubTable();
     SymbolTable->RecordUnionTable = initSubTable();
-    createRUtable(ast);
-    printf("record table done\n");
-    createFTable(ast);
-    printf("function table done\n");
-    //createITable(ast);
-    printf("identifier table done\n");
+    createFirstPass(ast);
+    printFPTable(firstPass);
+    // createRUtable(ast);
+    // printf("record table done\n");
+    // createFTable(ast);
+    // printf("function table done\n");
+    // //createITable(ast);
+    // printf("identifier table done\n");
 }
 
 void printRecordTable(subTable *rec_table)
@@ -820,6 +924,28 @@ void printIDTable(subTable *fun_table)
             if (fun_node != NULL)
             {
                 printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+                printf("-------------------------------\n");
+            }
+            entry = entry->next;
+        }
+    }
+}
+
+void printFPTable(subTable *fun_table)
+{
+    int i;
+    Entry * entry;
+    identifierNode *fun_node;
+    printf("#%-30s\n", "Lexeme");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(fun_table->table[i]);
+        while (entry != NULL)
+        {
+            fun_node = (identifierNode *)(entry->node);
+            if (fun_node != NULL)
+            {
+                printf("%-30s \n", fun_node->token->lexeme);
                 printf("-------------------------------\n");
             }
             entry = entry->next;

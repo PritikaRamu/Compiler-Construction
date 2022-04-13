@@ -32,6 +32,18 @@ _main
 		type real: chemistry;
 	endrecord
 
+	record #bruh
+		type real : maths; 
+		type real: physics; 
+		type real: chemistry;
+	endrecord
+
+	record #bruh
+		type real : maths; 
+		type real: physics; 
+		type real: chemistry;
+	endrecord
+
     %record #marks
 	%	type int : mths; 
 	%	type real: phyics;
