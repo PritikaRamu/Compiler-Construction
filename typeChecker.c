@@ -432,7 +432,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
 
                     //currently fFieldId and sFieldId are at the end
                     //they have to be INTEGER or REAL 
-                    //TODO: handle the types of 
+                    //TODO: han
                 }
             }
         }
@@ -440,10 +440,6 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
     else if(curr->nodeType == NOT_EQUAL) {
         return validateBoolean(curr->firstChild, func);
     }
-}
-
-void validConditional(ast* curr) {
-
 }
 
 void handleStmt(ast* curr) {

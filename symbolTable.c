@@ -606,9 +606,10 @@ void createITable(ast *root)
         int localOffset = func->width;
         while (child)
         {
-            printf("hehehehehe %d %d\n",child->nodeType,child->parent->nodeType);
-            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)
+            
+            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
             {
+                printf("1 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
@@ -647,6 +648,7 @@ void createITable(ast *root)
                         else
                         {
                             printf("redcl 1\n");
+                            printf("%d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
                         }
                     }
                     else
@@ -657,6 +659,7 @@ void createITable(ast *root)
             }
             else if (child->nodeType == INTEGER && child->firstChild->nodeType == ID)
             {
+                printf("2 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
@@ -679,7 +682,7 @@ void createITable(ast *root)
                         else
                         {
                             printf("redcl 2\n");
-                            printf("%d %d %s",child->nodeType, child->parent->nodeType, child->lex);
+                            printf("%d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
                         }
                     }
                     else{
@@ -689,6 +692,7 @@ void createITable(ast *root)
             }
             else if(child->nodeType == REAL && child->firstChild->nodeType == ID)
             {
+                printf("3 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
@@ -710,6 +714,7 @@ void createITable(ast *root)
                         else
                         {
                             printf("redcl 3\n");
+                            printf("%d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
                         }
                     }
                     else{
