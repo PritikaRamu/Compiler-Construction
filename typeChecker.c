@@ -131,10 +131,10 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         identifierNode* currNode = createINode(curr, func, curr->nodeType, false, &localOffset);
         identifierNode* notGlobalCurr = currNode;
         notGlobalCurr->global = false;
-        notGlobalCurr = retrieve(notGlobalCurr);
+        notGlobalCurr = retrieve(SymbolTable, notGlobalCurr, curr->nodeType);
         identifierNode* globalCurr = currNode;
         globalCurr->global = true;
-        globalCurr = retrieve(globalCurr);
+        globalCurr = retrieve(SymbolTable, globalCurr, curr->nodeType);
         if (globalCurr)
         {
             currNode = globalCurr;
@@ -160,6 +160,8 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         }
 
         //record/union from symbol table
+
+        //NESTED RECORDS
         recordField * fieldList = NULL;
         if(currNode->type == RECORD_TYPE){
             fieldList = currNode->recordList->fieldList;
@@ -201,8 +203,8 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         }
 
         identifierNode *fNode, *sNode;
-        fNode = retrieve(fChild);
-        sNode = retrieve(sChild);
+        fNode = retrieve(SymbolTable, fNode, fChild->nodeType);
+        sNode = retrieve(SymbolTable, sNode, sChild->nodeType);
         //node(s) not found in symbol table
         if(fNode==NULL || sNode == NULL) {
             return;
@@ -292,6 +294,56 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
 
     else {
         return NULL;
+    }
+}
+
+void validateFunCall (ast* call, ast* func) {
+    ast* opCall = call->firstChild;
+    ast* funcIdentifier = opCall->nextSibling;
+    ast* ipCall = funcIdentifier->nextSibling;
+    int localOffset = 0;
+    // no output parameters
+    if(opCall->firstChild == NULL) {
+        return NULL;
+    }
+
+    //fetching calling func node from ST
+    functionNode* callingFunctionNode = createFnode(func); //to be modified
+    functionNode* tempCalling = callingFunctionNode;
+    callingFunctionNode = retrieve(SymbolTable, callingFunctionNode, call->nodeType);
+    free(tempCalling);
+
+    //fetching called func node from ST
+    functionNode* calledFunctionNode = createFNode(funcIdentifier); //to be modified
+    functionNode* tempCalled = calledFunctionNode;
+    calledFunctionNode = retrieve(SymbolTable, calledFunctionNode, funcIdentifier->nodeType);
+    free(tempCalled);
+
+    //calling a non-existing function
+    if(calledFunctionNode == NULL){
+        printf("No such function exists.\n");
+        // semanticerrors++;
+        return NULL;
+    }
+
+    //function call inside function call; 
+    if(calledFunctionNode->token == callingFunctionNode->token) {
+        printf("Recusion not allowed in functions.\n");
+        // semanticErrors++;
+        return NULL;
+    }
+
+    //calling before definition
+    if(calledFunctionNode->rank > callingFunctionNode->rank) {
+        printf("Function called before being defined.\n");
+        // semanticErrors++;
+        return NULL;
+    }
+
+    ast* opGivenPars = opCall->firstChild;
+    parameters* opSTpars = calledFunctionNode->opParams;
+    while (opSTpars != NULL && opGivenPars != NULL) {
+        
     }
 }
 
@@ -432,7 +484,8 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
 
                     //currently fFieldId and sFieldId are at the end
                     //they have to be INTEGER or REAL 
-                    //TODO: han
+
+
                 }
             }
         }
@@ -440,6 +493,10 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
     else if(curr->nodeType == NOT_EQUAL) {
         return validateBoolean(curr->firstChild, func);
     }
+}
+
+void validConditional(ast* curr) {
+
 }
 
 void handleStmt(ast* curr) {
