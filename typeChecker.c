@@ -18,6 +18,25 @@ recordField* searchInFieldList(ast* curr, recordField* fieldList) {
     return NULL;
 }
 
+Type TypeUsingAST(ast* curr) {
+
+    NodeType currType = curr->nodeType;
+    if(currType == RECORD_OR_UNION) {
+        if(curr->is_union == true) {
+                return UNION_TYPE;
+        }
+        else {
+            return RECORD_TYPE;
+        }
+    }
+    else if (currType == INTEGER) {
+        return INT_TYPE;
+    }
+    else {
+        return REAL_TYPE;
+    }
+}
+
 void semanticAnalyser(ast* root){
     //populate symbol tables
     ast * curr = root->firstChild;
@@ -64,6 +83,66 @@ bool isIntReal(ast* curr) {
 //         return false;
 //     }
 // }
+
+void validateAssign(ast* curr, ast* func) {
+    int localOffset = 0; 
+    identifierNode* ArithNode = validateArithmetic(curr->firstChild->nextSibling, func);
+    ast* lChild = curr->firstChild;
+    identifierNode* lChildNode = createINode(lChild, func, lChild->nodeType, false, &localOffset);
+    identifierNode* notGlobalCurr = lChildNode;
+    notGlobalCurr->global = false;
+    notGlobalCurr = retrieve(SymbolTable, notGlobalCurr, lChild->nodeType);
+    identifierNode* globalCurr = lChildNode;
+    globalCurr->global = true;
+    globalCurr = retrieve(SymbolTable, globalCurr, lChild->nodeType);
+    if (globalCurr)
+    {
+        lChildNode = globalCurr;
+    }
+    else if (notGlobalCurr)
+    {
+        lChildNode = notGlobalCurr;
+    }
+    else
+    {
+        // semanticErrors ++;
+        printf("Undeclared Variable in Assignment.\n");
+        return NULL;
+    }
+
+    // free(notGlobalCurr);
+    // free(globalCurr);
+
+    // attribute from AST
+    ast *attribute = NULL;
+    if (!lChild->firstChild)
+    {
+        attribute = curr->firstChild;
+    }
+
+    // record/union from symbol table
+
+    if (lChild->nodeType != RECORD_OR_UNION && attribute != NULL)
+    {
+        printf("Identifier not of type record/ union but has fields.\n");
+        // semanticErrors++;
+        return NULL;
+    }
+    else if (lChild->nodeType == RECORD_OR_UNION && attribute != NULL)
+    {
+        // NESTED RECORDS
+    }
+    else
+    {
+        Type lChildType = TypeUsingAST(lChild);
+        if (strcmp(lChildType, ArithNode->type) != 0)
+        {
+            printf("Type mismatch in assign.\n");
+            // semanticErrors++;
+            return NULL;
+        }
+    }
+}
 
 identifierNode* validateArithmetic(ast* curr, ast* func) {
     if (curr == NULL)
@@ -239,25 +318,6 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
 
     else {
         return NULL;
-    }
-}
-
-Type TypeUsingAST(NodeType nt) {
-
-    NodeType currType = nt;
-    if(currType == RECORD_OR_UNION) {
-        if(curr->is_union == true) {
-                return UNION_TYPE;
-        }
-        else {
-            return RECORD_TYPE;
-        }
-    }
-    else if (currType == INTEGER) {
-        return INT_TYPE;
-    }
-    else {
-        return REAL_TYPE;
     }
 }
 
