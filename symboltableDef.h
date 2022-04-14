@@ -57,12 +57,14 @@ typedef struct identifierNode{
     bool global;
     bool assigned;
     struct identifierNode* next;
+    bool isRecordField;
 }identifierNode;
 
 typedef struct parameters{
     tokenInfo* token;
     NodeType nodeType;
     struct parameters* next;
+    bool is_union;
 }parameters;
 
 typedef struct function_node{

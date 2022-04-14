@@ -24,7 +24,6 @@ recordField* createFieldList(ast *curr_ast, int *offset)
 
     while (iterator != NULL)
     {
-        printf("%s\n",iterator->lex);
         recordField *fields = (recordField *)malloc(sizeof(recordField));
         if (iterator->nodeType == INTEGER)
         {
@@ -118,6 +117,18 @@ recordUnionNode *createRUNode(ast *curr_ast, recordField *fields)
     return ru;
 }
 
+functionNode *createFNode(ast* root)
+{
+    functionNode *func = (functionNode *)malloc(sizeof(functionNode));
+    func->rank = FUNCTION_RANK;
+    FUNCTION_RANK++;
+    func->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+    func->token->lexeme = root->lex;
+    func->token->lineNo = root->line;
+    func->token->tid = root->symbol;
+    return func;
+}
+
 parameters *createIPParams(ast *ast, NodeType type)
 {
     parameters *p = (parameters *)malloc(sizeof(parameters));
@@ -127,6 +138,7 @@ parameters *createIPParams(ast *ast, NodeType type)
     p->token->lexeme = ast->lex;
     p->token->lineNo = ast->line;
     p->token->tid = ast->symbol;
+    p->is_union = ast->is_union;
     return p;
 }
 
@@ -253,11 +265,6 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
             {
                 if (runode_check(entry->node, node))
                 {   
-                    if(((recordUnionNode*)(entry->node))->fieldList){
-                        printf("%d\n",((recordUnionNode*)(entry->node))->fieldList->width);
-                    }
-                    else{
-                    }
                     return entry->node;
                 }
                 entry = entry->next;
@@ -346,6 +353,7 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
     iden->type = type;
     iden->assigned = false;
     iden->offset = *offset;
+    iden->isRecordField = false;
     if (iden->type == RECORD_TYPE || iden->type == UNION_TYPE)
     {
         recordUnionNode *temp = (recordUnionNode *)malloc(sizeof(recordUnionNode));
@@ -355,7 +363,6 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
         if (iden->recordList)
         {
             iden->width = iden->recordList->width;
-            printf("record width: %d\n", iden->width);
             (*offset) += iden->recordList->width;
         }
     }
@@ -513,7 +520,6 @@ identifierNode* retrieveFake(subTable* st, identifierNode* id, bool token, bool 
                     {
                         if (first_check(((identifierNode*)(entry->node))->function->lexeme, id->function->lexeme))
                         {   
-                            printf("I am here\n");
                             return entry->node;
                         }
                         entry = entry->next;
@@ -648,14 +654,8 @@ void createFTable(ast *root)
     while (root!=NULL)
     {
         int offset = 0;
-        functionNode *func = (functionNode *)malloc(sizeof(functionNode));
+        functionNode *func = createFNode(root);
         ast *child = root->firstChild;
-        func->rank = FUNCTION_RANK;
-        FUNCTION_RANK++;
-        func->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-        func->token->lexeme = root->lex;
-        func->token->lineNo = root->line;
-        func->token->tid = root->symbol;
         parameters *curr_ip = NULL;
         parameters *curr_op = NULL;
         ast *pars = NULL;
@@ -816,6 +816,12 @@ void createITable(ast *root)
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, true, &globalOffset);
+                        recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,id,RECORD_OR_UNION);
+                        recordField* head = ru->fieldList;
+                        while(head){
+                            printf("%s.%s\n",child->firstChild->lex,head->token->lexeme);
+                            head = head->next;
+                        }
                     }
                     else
                     {
@@ -828,6 +834,19 @@ void createITable(ast *root)
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);
+                        recordUnionNode* temp = createRUNode(child,NULL);
+                        recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
+                        // if(ru!=NULL){
+                        //     recordField* head = ru->fieldList;
+                        //     while(head){
+                        //         printf("%s.%s %d\n",child->firstChild->lex,head->token->lexeme, head->type);
+                        //         head = head->next;
+                        //     }
+                        // }
+                        // else{
+                        //     printf("RU IS NULLLLLLL\n");
+                        // }
+                        
                     }
                     else
                     {
@@ -936,9 +955,6 @@ void createITable(ast *root)
         }
         func->width = localOffset;
         root = root->nextSibling;
-        if(root){
-            printf("here %d\n",root->nodeType);
-        } 
     }
     GLOBAL_WIDTH = globalOffset;
 }
