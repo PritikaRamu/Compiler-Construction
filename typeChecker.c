@@ -2,10 +2,10 @@
 
 identifierNode* validateBoolean(ast* curr, ast* func);
 void handleStmt(ast* curr, ast* func);
-void validateConditional(ast* curr);
+void validateConditional(ast* curr, ast* func);
 recordField* searchInFieldList(ast* curr, recordField* fieldList);
 void validateReturn(ast* curr, ast* func);
-void validateFunction(ast* curr, ast* func);
+void validateFunction(ast* curr);
 
 recordField* searchInFieldList(ast* curr, recordField* fieldList) {
     recordField* temp = fieldList;
@@ -18,11 +18,10 @@ recordField* searchInFieldList(ast* curr, recordField* fieldList) {
     return NULL;
 }
 
-Type TypeUsingAST(ast* curr) {
+Type TypeUsingAST(NodeType currType, bool is_union) {
 
-    NodeType currType = curr->nodeType;
     if(currType == RECORD_OR_UNION) {
-        if(curr->is_union == true) {
+        if(is_union) {
                 return UNION_TYPE;
         }
         else {
@@ -44,11 +43,10 @@ void semanticAnalyser(ast* root){
     if(curr==NULL)
         return;
 
-    while(curr->nodeType == FUNCTION_SEQ){
+    while(curr->nodeType){
         validateFunction(curr);
         curr = curr->nextSibling;
     }
-    validateMain(curr);
 }
 
 // void validateStmts(ast* curr, functionNode* currNode, bool* opAssigned){
@@ -107,7 +105,7 @@ void validateAssign(ast* curr, ast* func) {
     {
         // semanticErrors ++;
         printf("Undeclared Variable in Assignment.\n");
-        return NULL;
+        return;
     }
 
     // free(notGlobalCurr);
@@ -126,20 +124,21 @@ void validateAssign(ast* curr, ast* func) {
     {
         printf("Identifier not of type record/ union but has fields.\n");
         // semanticErrors++;
-        return NULL;
+        return;
     }
     else if (lChild->nodeType == RECORD_OR_UNION && attribute != NULL)
     {
         // NESTED RECORDS
     }
+    //int/real
     else
     {
-        Type lChildType = TypeUsingAST(lChild);
-        if (strcmp(lChildType, ArithNode->type) != 0)
+        Type lChildType = TypeUsingAST(lChild->nodeType, lChild->is_union);
+        if (lChildType == ArithNode->type)
         {
             printf("Type mismatch in assign.\n");
             // semanticErrors++;
-            return NULL;
+            return;
         }
     }
 }
@@ -147,7 +146,7 @@ void validateAssign(ast* curr, ast* func) {
 identifierNode* validateArithmetic(ast* curr, ast* func) {
     if (curr == NULL)
     {
-        return;
+        return NULL;
     }
     int localOffset = 0;
     //int numTempVar = 0;
@@ -223,7 +222,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         sChild = fChild->nextSibling;
         //ast has 1 or no children
         if(fChild==NULL || sChild == NULL) {
-            return;
+            return NULL;
         }
 
         identifierNode *fNode, *sNode;
@@ -231,7 +230,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         sNode = retrieve(SymbolTable, sNode, sChild->nodeType);
         //node(s) not found in symbol table
         if(fNode==NULL || sNode == NULL) {
-            return;
+            return NULL;
         }
         Type fType = fNode->type;
         Type sType = sNode->type;
@@ -328,11 +327,11 @@ void validateFunCall (ast* call, ast* func) {
     int localOffset = 0;
     // no output parameters
     if(opCall->firstChild == NULL) {
-        return NULL;
+        return;
     }
 
     //fetching calling func node from ST
-    functionNode* callingFunctionNode = createFnode(func); //to be modified
+    functionNode* callingFunctionNode = createFNode(func); //to be modified
     functionNode* tempCalling = callingFunctionNode;
     callingFunctionNode = retrieve(SymbolTable, callingFunctionNode, call->nodeType);
     free(tempCalling);
@@ -347,21 +346,21 @@ void validateFunCall (ast* call, ast* func) {
     if(calledFunctionNode == NULL){
         printf("No such function exists.\n");
         // semanticerrors++;
-        return NULL;
+        return;
     }
 
     //function call inside function call; 
     if(calledFunctionNode->token == callingFunctionNode->token) {
         printf("Recusion not allowed in functions.\n");
         // semanticErrors++;
-        return NULL;
+        return;
     }
 
     //calling before definition
     if(calledFunctionNode->rank > callingFunctionNode->rank) {
         printf("Function called before being defined.\n");
         // semanticErrors++;
-        return NULL;
+        return;
     }
 
     ast* opGivenPars = opCall->firstChild;
@@ -371,7 +370,7 @@ void validateFunCall (ast* call, ast* func) {
         //ast* id, ast* func, Type type, bool is_global, int*offset
 
         //retrieve from ST node corresponding to AST
-        Type opGivenType = TypeUsingAST(opGivenPars->nodeType);
+        Type opGivenType = TypeUsingAST(opGivenPars->nodeType, opGivenPars->is_union);
         identifierNode* opGivenNode = createINode(opGivenPars, func, opGivenType, false, &localOffset);
         identifierNode* notGlobalOPgiven = opGivenNode;
         notGlobalOPgiven->global = false;
@@ -393,10 +392,10 @@ void validateFunCall (ast* call, ast* func) {
         if(opGivenNode == NULL) {
             printf("Undeclared Variable\n");
             //semanticErrors++;
-            return NULL;
+            return;
         }
 
-        Type opSTtype = TypeUsingAST(opSTpars->nodeType);
+        Type opSTtype = TypeUsingAST(opSTpars->nodeType, opSTpars->is_union);
         
         //initialising identifier node
         identifierNode* opSTnode;
@@ -423,7 +422,7 @@ void validateFunCall (ast* call, ast* func) {
                     if(opSTnode->recordList != opGivenNode->recordList) {
                         printf("Type mismatch in output of function call.\n");
                         //semanticErrors++;
-                        //return NULL;
+                        //return;
                     }
                     else {
                         //correct match for type
@@ -435,7 +434,7 @@ void validateFunCall (ast* call, ast* func) {
                     if(opSTnode->unionList != opGivenNode->unionList) {
                         printf("Type Mismatch in output of function call.\n");
                         //semanticErrors++;
-                        //return NULL;
+                        //return;
                     }
                     else {
                         //correct type match
@@ -447,7 +446,7 @@ void validateFunCall (ast* call, ast* func) {
         else {
             printf("Type Mismatch in output of function call.\n");
             //semanticErrors++;
-            //return NULL;
+            //return;
         }
 
         opGivenPars = opGivenPars->nextSibling;
@@ -457,13 +456,13 @@ void validateFunCall (ast* call, ast* func) {
     if(opGivenPars != NULL) {
         printf("Function call has extra output parameters\n");
         //semanticErrors++;
-        //return NULL;
+        //return;
     }
 
     if(opSTpars != NULL) {
         printf("Function call has insufficient output parameters.\n");
         //semanticErrors++;
-        //return NULL;
+        //return;
     }
 
     //INPUT PARAMETERS 
@@ -475,7 +474,7 @@ void validateFunCall (ast* call, ast* func) {
         //ast* id, ast* func, Type type, bool is_global, int*offset
 
         //retrieve from ST node corresponding to AST
-        Type ipGivenType = TypeUsingAST(ipGivenPars->nodeType);
+        Type ipGivenType = TypeUsingAST(ipGivenPars->nodeType, ipGivenPars->is_union);
         identifierNode* ipGivenNode = createINode(ipGivenPars, func, ipGivenType, false, &localOffset);
         identifierNode* notGlobalIPgiven = ipGivenNode;
         notGlobalIPgiven->global = false;
@@ -497,10 +496,10 @@ void validateFunCall (ast* call, ast* func) {
         if(ipGivenNode == NULL) {
             printf("Undeclared Variable in function call input\n");
             //semanticErrors++;
-            return NULL;
+            return;
         }
 
-        Type ipSTtype = TypeUsingAST(ipSTpars->nodeType);
+        Type ipSTtype = TypeUsingAST(ipSTpars->nodeType, ipSTpars->is_union);
         
         //initialising identifier node
         identifierNode* ipSTnode;
@@ -527,7 +526,7 @@ void validateFunCall (ast* call, ast* func) {
                     if(ipSTnode->recordList != ipGivenNode->recordList) {
                         printf("Type mismatch in input of function call.\n");
                         //semanticErrors++;
-                        //return NULL;
+                        //return;
                     }
                     else {
                         //correct match for type
@@ -539,7 +538,7 @@ void validateFunCall (ast* call, ast* func) {
                     if(ipSTnode->unionList != ipGivenNode->unionList) {
                         printf("Type Mismatch in input of function call.\n");
                         //semanticErrors++;
-                        //return NULL;
+                        //return;
                     }
                     else {
                         //correct type match
@@ -551,7 +550,7 @@ void validateFunCall (ast* call, ast* func) {
         else {
             printf("Type Mismatch in input of function call.\n");
             //semanticErrors++;
-            //return NULL;
+            //return;
         }
 
         ipGivenPars = ipGivenPars->nextSibling;
@@ -561,13 +560,13 @@ void validateFunCall (ast* call, ast* func) {
     if(ipGivenPars != NULL) {
         printf("Function call has extra input parameters\n");
         //semanticErrors++;
-        //return NULL;
+        //return;
     }
 
     if(ipSTpars != NULL) {
         printf("Function call has insufficient input parameters.\n");
         //semanticErrors++;
-        //return NULL;
+        //return;
     }
 
 }
@@ -575,7 +574,7 @@ void validateFunCall (ast* call, ast* func) {
 void validateRead(ast* curr, ast* func) {
     curr = curr->firstChild;
     int localOffset = 0;
-    Type currType = TypeUsingAST(curr->nodeType);
+    Type currType = TypeUsingAST(curr->nodeType, curr->is_union);
     identifierNode* currNode = createINode(curr, func, currType, false, &localOffset);    
     identifierNode* notGlobalCurr = currNode;
     notGlobalCurr->global = false;
@@ -594,14 +593,14 @@ void validateRead(ast* curr, ast* func) {
         currNode = NULL;
         printf("Undeclared Variable in read.\n");
         //semanticErrors++;
-        return NULL;
+        return;
     }
 
     if(curr->firstChild != NULL) {
         if(curr->nodeType != RECORD_OR_UNION) {
             printf("Variable is not of type record/union.");
             //semanticErrors++:
-            return NULL;
+            return;
         }
         else if (currNode->type == RECORD_TYPE) {
             //check for Nested recods type;
@@ -617,7 +616,7 @@ void validateRead(ast* curr, ast* func) {
 void validateWrite(ast* curr, ast* func) {
     curr = curr->firstChild;
     int localOffset = 0;
-    Type currType = TypeUsingAST(curr->nodeType);
+    Type currType = TypeUsingAST(curr->nodeType, curr->is_union);
     identifierNode* currNode = createINode(curr, func, currType, false, &localOffset);    
     identifierNode* notGlobalCurr = currNode;
     notGlobalCurr->global = false;
@@ -636,14 +635,14 @@ void validateWrite(ast* curr, ast* func) {
         currNode = NULL;
         printf("Undeclared Variable in read.\n");
         //semanticErrors++;
-        return NULL;
+        return;
     }
 
     if(curr->firstChild != NULL) {
         if(curr->nodeType != RECORD_OR_UNION) {
             printf("Variable is not of type record/union.");
             //semanticErrors++:
-            return NULL;
+            return;
         }
         else if (currNode->type == RECORD_TYPE) {
             //check for Nested recods type;
@@ -677,7 +676,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
     int localOffset = 0;
     if(curr->nodeType == AND || curr->nodeType == OR) {
         validateBoolean(curr->firstChild, func);
-        validateBoolean(curr->firstChild->nextSibling, func);
+        return validateBoolean(curr->firstChild->nextSibling, func);
     }
     else if(isRelOp(curr)) {
         //      relop
@@ -850,8 +849,22 @@ void validateReturn(ast* curr, ast* func) {
     }
 }
 
-void validConditional(ast* curr) {
-
+void validateConditional(ast* curr, ast* func) {
+    validateBoolean(curr->firstChild, func);
+    handleStmt(curr->firstChild->nextSibling, func);
+    ast* iter = curr->firstChild->nextSibling->nextSibling;
+    while(iter != NULL && iter->nodeType != ELSE) {
+        handleStmt(iter, func);
+        iter = iter->nextSibling;
+    }
+    if(iter->nodeType == ELSE) {
+        handleStmt(iter->firstChild, func);
+        iter = iter->nextSibling;
+        while(iter != NULL) {
+            handleStmt(iter, func);
+            iter = iter->nextSibling;
+        }
+    }
 }
 
 void handleStmt(ast* curr, ast* func) {
@@ -864,7 +877,7 @@ void handleStmt(ast* curr, ast* func) {
             validateIterative(curr, func);
             break;
         case CONDITIONAL:
-            validateConditional(curr);
+            validateConditional(curr, func);
             break;
         case RETURN:
             validateReturn(curr, func);
@@ -881,14 +894,14 @@ void handleStmt(ast* curr, ast* func) {
     }
 }
 
-void validateFunction(ast* curr, ast* func) {
+void validateFunction(ast* curr) {
     if(!curr) {
-        return NULL;
+        return;
     }
 
     ast* child = curr->firstChild;
     for(; child!=NULL; child=child->nextSibling) {
-        handleStmt(child, func);
-        validateFunction(child, func);
+        handleStmt(child, curr);
+        validateFunction(child);
     }
 }
