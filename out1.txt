@@ -1,0 +1,7 @@
+
+                   ------               1                        PROGRAM        Not a number                      ROOT         NO                    PROGRAM
+                   ------               0               TYPE_DEFINITIONS        Not a number                      ROOT        YES                 Leaf node 
+                   ------               0                   DECLARATIONS        Not a number                      ROOT        YES                 Leaf node 
+                   ------               0                     OTHERSTMTS        Not a number                      ROOT        YES                 Leaf node 
+                    _main               1                  MAIN_FUNCTION        Not a number                      ROOT         NO              MAIN_FUNCTION
+                   return               2                         RETURN        Not a number                      ROOT        YES                 Leaf node 
