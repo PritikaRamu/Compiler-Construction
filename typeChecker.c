@@ -143,15 +143,13 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
             currNode = notGlobalCurr;
         }
         else {
-            free(notGlobalCurr);
-            free(globalCurr);
             //semanticErrors ++;
             printf("Undeclred Variable\n");
             return NULL;
         }
         
-        free(notGlobalCurr);
-        free(globalCurr);
+        // free(notGlobalCurr);
+        // free(globalCurr);
         
         //attribute from AST
         ast* attribute = NULL;
@@ -297,6 +295,25 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
     }
 }
 
+Type TypeUsingAST(NodeType nt) {
+
+    NodeType currType = nt;
+    if(currType == RECORD_OR_UNION) {
+        if(curr->is_union == true) {
+                return UNION_TYPE;
+        }
+        else {
+            return RECORD_TYPE;
+        }
+    }
+    else if (currType == INTEGER) {
+        return INT_TYPE;
+    }
+    else {
+        return REAL_TYPE;
+    }
+}
+
 void validateFunCall (ast* call, ast* func) {
     ast* opCall = call->firstChild;
     ast* funcIdentifier = opCall->nextSibling;
@@ -342,8 +359,293 @@ void validateFunCall (ast* call, ast* func) {
 
     ast* opGivenPars = opCall->firstChild;
     parameters* opSTpars = calledFunctionNode->opParams;
+
     while (opSTpars != NULL && opGivenPars != NULL) {
+        //ast* id, ast* func, Type type, bool is_global, int*offset
+
+        //retrieve from ST node corresponding to AST
+        Type opGivenType = TypeUsingAST(opGivenPars->nodeType);
+        identifierNode* opGivenNode = createINode(opGivenPars, func, opGivenType, false, &localOffset);
+        identifierNode* notGlobalOPgiven = opGivenNode;
+        notGlobalOPgiven->global = false;
+        notGlobalOPgiven = retrieve(SymbolTable, notGlobalOPgiven, opGivenPars->nodeType);
+        identifierNode* globalOPgiven = opGivenNode;
+        globalOPgiven->global = true;
+        globalOPgiven = retrieve(SymbolTable, globalOPgiven, opGivenPars->nodeType);
+
+        if(globalOPgiven){
+            opGivenNode = globalOPgiven;
+        }
+        else if(notGlobalOPgiven){
+            opGivenNode = notGlobalOPgiven;
+        }
+        else {
+            opGivenNode = NULL;
+        }
+
+        if(opGivenNode == NULL) {
+            printf("Undeclared Variable\n");
+            //semanticErrors++;
+            return NULL;
+        }
+
+        Type opSTtype = TypeUsingAST(opSTpars->nodeType);
         
+        //initialising identifier node
+        identifierNode* opSTnode;
+        opSTnode->width = 0;
+        opSTnode->offset = 0;
+        opSTnode->type = opSTtype;
+        opSTnode->token = opSTpars->token;
+        opSTnode->function = calledFunctionNode->token;
+        opSTnode->recordList = NULL;
+        opSTnode->unionList = NULL;
+        opSTnode->global = false;
+        opSTnode->assigned = false;
+        opSTnode->next = NULL; 
+
+        identifierNode* tempOPST = opSTnode;
+        opSTnode = retrieve(SymbolTable, opSTnode, opSTpars->nodeType);
+        free(tempOPST);
+
+        if(opSTnode->type == opGivenNode->type) {
+            Type nType = opSTnode->type;
+            switch(nType) {
+                case RECORD_TYPE:
+                {
+                    if(opSTnode->recordList != opGivenNode->recordList) {
+                        printf("Type mismatch in output of function call.\n");
+                        //semanticErrors++;
+                        //return NULL;
+                    }
+                    else {
+                        //correct match for type
+                    }
+                    break;
+                }
+                case UNION_TYPE:
+                {
+                    if(opSTnode->unionList != opGivenNode->unionList) {
+                        printf("Type Mismatch in output of function call.\n");
+                        //semanticErrors++;
+                        //return NULL;
+                    }
+                    else {
+                        //correct type match
+                    }
+                    break;
+                }
+            }
+        }
+        else {
+            printf("Type Mismatch in output of function call.\n");
+            //semanticErrors++;
+            //return NULL;
+        }
+
+        opGivenPars = opGivenPars->nextSibling;
+        opSTpars = opSTpars->next;
+    }
+
+    if(opGivenPars != NULL) {
+        printf("Function call has extra output parameters\n");
+        //semanticErrors++;
+        //return NULL;
+    }
+
+    if(opSTpars != NULL) {
+        printf("Function call has insufficient output parameters.\n");
+        //semanticErrors++;
+        //return NULL;
+    }
+
+    //INPUT PARAMETERS 
+
+    ast* ipGivenPars = ipCall->firstChild;
+    parameters* ipSTpars = calledFunctionNode->ipParams;
+
+    while (ipSTpars != NULL && ipGivenPars != NULL) {
+        //ast* id, ast* func, Type type, bool is_global, int*offset
+
+        //retrieve from ST node corresponding to AST
+        Type ipGivenType = TypeUsingAST(ipGivenPars->nodeType);
+        identifierNode* ipGivenNode = createINode(ipGivenPars, func, ipGivenType, false, &localOffset);
+        identifierNode* notGlobalIPgiven = ipGivenNode;
+        notGlobalIPgiven->global = false;
+        notGlobalIPgiven = retrieve(SymbolTable, notGlobalIPgiven, ipGivenPars->nodeType);
+        identifierNode* globalIPgiven = ipGivenNode;
+        globalIPgiven->global = true;
+        globalIPgiven = retrieve(SymbolTable, globalIPgiven, ipGivenPars->nodeType);
+
+        if(globalIPgiven){
+            ipGivenNode = globalIPgiven;
+        }
+        else if(notGlobalIPgiven){
+            ipGivenNode = notGlobalIPgiven;
+        }
+        else {
+            ipGivenNode = NULL;
+        }
+
+        if(ipGivenNode == NULL) {
+            printf("Undeclared Variable in function call input\n");
+            //semanticErrors++;
+            return NULL;
+        }
+
+        Type ipSTtype = TypeUsingAST(ipSTpars->nodeType);
+        
+        //initialising identifier node
+        identifierNode* ipSTnode;
+        ipSTnode->width = 0;
+        ipSTnode->offset = 0;
+        ipSTnode->type = ipSTtype;
+        ipSTnode->token = ipSTpars->token;
+        ipSTnode->function = calledFunctionNode->token;
+        ipSTnode->recordList = NULL;
+        ipSTnode->unionList = NULL;
+        ipSTnode->global = false;
+        ipSTnode->assigned = false;
+        ipSTnode->next = NULL; 
+
+        identifierNode* tempIPST = ipSTnode;
+        ipSTnode = retrieve(SymbolTable, ipSTnode, ipSTpars->nodeType);
+        free(tempIPST);
+
+        if(ipSTnode->type == ipGivenNode->type) {
+            Type nType = ipSTnode->type;
+            switch(nType) {
+                case RECORD_TYPE:
+                {
+                    if(ipSTnode->recordList != ipGivenNode->recordList) {
+                        printf("Type mismatch in input of function call.\n");
+                        //semanticErrors++;
+                        //return NULL;
+                    }
+                    else {
+                        //correct match for type
+                    }
+                    break;
+                }
+                case UNION_TYPE:
+                {
+                    if(ipSTnode->unionList != ipGivenNode->unionList) {
+                        printf("Type Mismatch in input of function call.\n");
+                        //semanticErrors++;
+                        //return NULL;
+                    }
+                    else {
+                        //correct type match
+                    }
+                    break;
+                }
+            }
+        }
+        else {
+            printf("Type Mismatch in input of function call.\n");
+            //semanticErrors++;
+            //return NULL;
+        }
+
+        ipGivenPars = ipGivenPars->nextSibling;
+        ipSTpars = ipSTpars->next;
+    }
+
+    if(ipGivenPars != NULL) {
+        printf("Function call has extra input parameters\n");
+        //semanticErrors++;
+        //return NULL;
+    }
+
+    if(ipSTpars != NULL) {
+        printf("Function call has insufficient input parameters.\n");
+        //semanticErrors++;
+        //return NULL;
+    }
+
+}
+
+void validateRead(ast* curr, ast* func) {
+    curr = curr->firstChild;
+    int localOffset = 0;
+    Type currType = TypeUsingAST(curr->nodeType);
+    identifierNode* currNode = createINode(curr, func, currType, false, &localOffset);    
+    identifierNode* notGlobalCurr = currNode;
+    notGlobalCurr->global = false;
+    notGlobalCurr = retrieve(SymbolTable, notGlobalCurr, curr->nodeType);
+    identifierNode* globalCurr = currNode;
+    globalCurr->global = true;
+    globalCurr = retrieve(SymbolTable, globalCurr, curr->nodeType);
+
+    if(globalCurr){
+            currNode = globalCurr;
+        }
+    else if(notGlobalCurr){
+        currNode = notGlobalCurr;
+    }
+    else {
+        currNode = NULL;
+        printf("Undeclared Variable in read.\n");
+        //semanticErrors++;
+        return NULL;
+    }
+
+    if(curr->firstChild != NULL) {
+        if(curr->nodeType != RECORD_OR_UNION) {
+            printf("Variable is not of type record/union.");
+            //semanticErrors++:
+            return NULL;
+        }
+        else if (currNode->type == RECORD_TYPE) {
+            //check for Nested recods type;
+            // if no match-- semnatic error
+        }
+        else if (currNode->type == UNION_TYPE) {
+            // check for nested union type;
+            // if no match, semantic error
+        }
+    }
+}
+
+void validateWrite(ast* curr, ast* func) {
+    curr = curr->firstChild;
+    int localOffset = 0;
+    Type currType = TypeUsingAST(curr->nodeType);
+    identifierNode* currNode = createINode(curr, func, currType, false, &localOffset);    
+    identifierNode* notGlobalCurr = currNode;
+    notGlobalCurr->global = false;
+    notGlobalCurr = retrieve(SymbolTable, notGlobalCurr, curr->nodeType);
+    identifierNode* globalCurr = currNode;
+    globalCurr->global = true;
+    globalCurr = retrieve(SymbolTable, globalCurr, curr->nodeType);
+
+    if(globalCurr){
+            currNode = globalCurr;
+        }
+    else if(notGlobalCurr){
+        currNode = notGlobalCurr;
+    }
+    else {
+        currNode = NULL;
+        printf("Undeclared Variable in read.\n");
+        //semanticErrors++;
+        return NULL;
+    }
+
+    if(curr->firstChild != NULL) {
+        if(curr->nodeType != RECORD_OR_UNION) {
+            printf("Variable is not of type record/union.");
+            //semanticErrors++:
+            return NULL;
+        }
+        else if (currNode->type == RECORD_TYPE) {
+            //check for Nested recods type;
+            // if no match-- semnatic error
+        }
+        else if (currNode->type == UNION_TYPE) {
+            // check for nested union type;
+            // if no match, semantic error
+        }
     }
 }
 
