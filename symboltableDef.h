@@ -1,7 +1,7 @@
 #include "ast.h"
 
-#define REAL_WIDTH 8
-#define INT_WIDTH 4
+#define REAL_WIDTH 4
+#define INT_WIDTH 2
 #define TABLE_SLOTS 100
 
 //TODO IMPLEMENT ERROR HANDLING VIA FILE
@@ -35,8 +35,9 @@ typedef struct recordField{
     int width;
     int offset;
     Type type;
-    tokenInfo* token;
-    struct recordField* next; 
+    tokenInfo* token;  //token->lexeme has identifier name
+    struct recordField* next;
+    char* recordName;   //have the record name here 
 }recordField;
 
 typedef struct record_or_union_node{
@@ -57,12 +58,14 @@ typedef struct identifierNode{
     bool global;
     bool assigned;
     struct identifierNode* next;
+    bool isRecordField;
 }identifierNode;
 
 typedef struct parameters{
     tokenInfo* token;
     NodeType nodeType;
     struct parameters* next;
+    bool is_union;
 }parameters;
 
 typedef struct function_node{
@@ -82,3 +85,6 @@ typedef struct function_list{
 }funList;
 
 symbol_Table* SymbolTable;
+
+subTable* firstPass;
+subTable* aliasTable;

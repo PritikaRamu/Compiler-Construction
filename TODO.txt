@@ -1,0 +1,21 @@
+1. specify traversal order of AST
+2. display amount of allocated memory for parsetree and AST
+
+
+Symbol Table specs
+Variable name
+scope
+type name
+type expression
+width 
+variant record
+isGlobal
+offset
+variable usage
+
+print all global variables
+
+activation record size
+
+record types and size
+

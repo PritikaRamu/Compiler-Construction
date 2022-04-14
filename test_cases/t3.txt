@@ -27,7 +27,8 @@ _main
 
 	record #marks
 		type int : phyics;
-	#endrecord
+		type real: mths;
+	endrecord
 
 	type record #marks : d4;
 	% The variable d4 stores the marks of one student

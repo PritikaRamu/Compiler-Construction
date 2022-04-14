@@ -12,30 +12,67 @@ output parameter list [ record #marks b3c45];
 	read(b3c45.chemistry);
 	return [b3c45];
 end
+
+_helloworld input parameter list[int b7, real b5]
+output parameter list [ record #marks b3c45];
+	read(b3c45.maths);
+	read(b3c45.physics);
+	read(b3c45.chemistry);
+	return [b3c45];
+end
 % Notice here that  your compiler recognizes the type definition of marks even before it is 
 % declared. This will be handled at the semantic analyzer phase.
 
 
 %The following program computes the average of marks of total d5cb34567  students
 _main 
+
+	
 	record #marks
 		type real : maths; 
-		type real: physics; 
+		type real: maths; 
 		type real: chemistry;
+		type #thot: tester;
 	endrecord
 
-    record #marks
-		type int : mths; 
-		type real: phyics;
+	record #bruh
+		type real : abcd; 
+		type real: efgh;
+		type #qwert : asadf; 
+		type real: ijkl;
 	endrecord
+
+	record #test
+		type real : abcd; 
+		type real: efgh; 
+		type real: ijkl;
+	endrecord
+
+	definetype record #laffy as #quirky
+
+	record #laffy
+		type #qwert : quirk;
+		type real : abcd; 
+		type real: efgh; 
+		type real: ijkl;
+	endrecord
+
+	definetype record #bruh as #thot
+	definetype record #test as #qwert
+
+    %record #marks
+	%	type int : mths; 
+	%	type real: phyics;
+	%endrecord
 	% each field above represents the marks obtained in corresponding subject
 
 	type record #marks : d4;
 	% The variable d4 stores the marks of one student
 
-	type int : b5;
-	type int : d5cb34567;
+	type real : b5;
+	type real : d5cb34567;
 	type record #marks : b5c6;
+	type record #laffy : b4c6;
 	%The identifier b5c6 stores the sum of marks
 
 	b5 <--- 1;

@@ -71,7 +71,7 @@ ast* lastNode(ast* head) {
 
 ast* makeAST(parseTree node, ast* parent) {
     ast* curr, *temp1;
-    printf("\nCurrent parseTree node: %d\n", node->symbol);
+    //printf("\nCurrent parseTree node: %d\n", node->symbol);
 
     //if the LHS produces epsilon then the rule is useless
     //remove the node
@@ -118,7 +118,12 @@ ast* makeAST(parseTree node, ast* parent) {
         curr->firstChild = makeAST(node->firstChild->nextSibling, curr); //for input_par
         printf("Before output_par\n");
         curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling, curr); //for output_par
-        curr->firstChild->nextSibling->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling, curr); //for stmts
+        if(curr->firstChild->nextSibling == NULL) {
+            curr->firstChild->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling, curr); //for stmts
+        }
+        else {
+            curr->firstChild->nextSibling->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling, curr); //for stmts
+        }
     }
 
     //input_par ==> TK_INPUT TK_PARAMETER TK_LIST TK_SQL <parameter_list> TK_SQR
@@ -377,6 +382,9 @@ ast* makeAST(parseTree node, ast* parent) {
     if(node->symbol == funCallStmt) {
         curr = mkNode(CALL, parent, NULL, NULL, node->firstChild->nextSibling);
         curr->firstChild = makeAST(node->firstChild, curr);
+        if(curr->firstChild == NULL) {
+            curr->firstChild = mkNode(OUTPUT_PARAMETERS_CALL, parent, NULL, NULL, node->firstChild);
+        }
         curr->firstChild->nextSibling = mkNode(FUNCTION_CALL, curr, NULL, NULL, node->firstChild->nextSibling->nextSibling);
         curr->firstChild->nextSibling->nextSibling = makeAST(node->firstChild->nextSibling->nextSibling->nextSibling->nextSibling->nextSibling, curr);
     }
@@ -456,12 +464,12 @@ ast* makeAST(parseTree node, ast* parent) {
             temp1->firstChild->nextSibling = temp2;
             temp1->firstChild->nextSibling->parent = temp1;
             while(temp1->parent != NULL) {
-                printf("\nParent NodeType: %s, Current Nodetype: %s\n", nodeTypeToStr(temp1->parent->nodeType), nodeTypeToStr(temp1->nodeType));
+               // printf("\nParent NodeType: %s, Current Nodetype: %s\n", nodeTypeToStr(temp1->parent->nodeType), nodeTypeToStr(temp1->nodeType));
                 temp1 = temp1->parent;
-                printf("In the loop? 1\n");
+              //  printf("In the loop? 1\n");
             }
             curr = temp1;
-            printf("Out of the loop 1\n");
+          //  printf("Out of the loop 1\n");
         }
     }
 
@@ -627,8 +635,10 @@ ast* makeAST(parseTree node, ast* parent) {
 
     //<returnStmt> ==>TK_RETURN <optionalReturn> TK_SEM
     if(node->symbol == returnStmt) {
+        printf("Entered returnStmt\n");
         curr = mkNode(RETURN, parent, NULL, NULL, node->firstChild);
         curr->firstChild = makeAST(node->firstChild->nextSibling, curr);
+        printf("Exited returnStmt\n");
     }
 
     //<optionalReturn> ==> TK_SQL <idList> TK_SQR 
