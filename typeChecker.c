@@ -5,6 +5,7 @@ void handleStmt(ast* curr, ast* func);
 void validateConditional(ast* curr);
 recordField* searchInFieldList(ast* curr, recordField* fieldList);
 void validateReturn(ast* curr, ast* func);
+void validateFunction(ast* curr, ast* func);
 
 recordField* searchInFieldList(ast* curr, recordField* fieldList) {
     recordField* temp = fieldList;
@@ -29,61 +30,6 @@ void semanticAnalyser(ast* root){
         curr = curr->nextSibling;
     }
     validateMain(curr);
-}
-
-void validateFunction(ast* curr){
-    if(curr == NULL)
-        return;
-
-    functionNode* currNode = (functionNode*)malloc(sizeof(functionNode));
-    functionNode* discardNode = currNode;
-    currNode = (functionNode*)retrieve(); //update according to retrieve
-    free(discardNode);
-    int n = currNode->numOp;
-    bool* opAssigned = (bool*)malloc(sizeof(bool)*n);
-
-    // //check for otherstmts
-    // ast* currNext = curr->firstChild->nextSibling->nextSibling->nextSibling;
-    // if(currNext->nodeType == OTHERSTMTS){
-    //     validateStmts(currNext, currNode, opAssigned);
-    // }
-    // else return;
-
-
-    for(int i = 0; i < n; i++){
-        if(opAssigned[i] == true)
-            continue;
-        else{
-            //semantic error -- op parameter not assigned, change flag
-            //print semantic error to file
-        }
-    }
-    free(opAssigned);
-
-    ast* ip = curr->firstChild;
-    if(ip->nodeType == INPUT_PARAMETERS)
-        validateIP(ip);
-    
-    ast* nextKid = curr->firstChild->nextSibling;
-    ast* child = NULL;
-    if(nextKid->nodeType == OUTPUT_PARAMETERS) {
-        ast* op = nextKid;
-        validateOP(op);
-    }
-    else {
-        child = nextKid;
-    }
-
-    if(child == NULL) {
-        child = curr->firstChild->nextSibling->nextSibling;
-    }
-
-    for(; child != NULL; child = child->nextSibling) {
-        int localOffset = 0;
-        NodeType nType = child->nodeType;
-        //validateStmts(ast* curr, functionNode* currNode, bool* opAssigned);
-
-    }
 }
 
 // void validateStmts(ast* curr, functionNode* currNode, bool* opAssigned){
@@ -845,7 +791,7 @@ void validateReturn(ast* curr, ast* func) {
 }
 
 void validConditional(ast* curr) {
-    
+
 }
 
 void handleStmt(ast* curr, ast* func) {
@@ -862,5 +808,27 @@ void handleStmt(ast* curr, ast* func) {
             break;
         case RETURN:
             validateReturn(curr, func);
+            break;
+        case IOREAD:
+            validateRead(curr, func);
+            break;
+        case IOWRITE:
+            validateWrite(curr, func);
+            break;
+        case CALL:
+            validateFunCall(curr, func);
+            break;
+    }
+}
+
+void validateFunction(ast* curr, ast* func) {
+    if(!curr) {
+        return NULL;
+    }
+
+    ast* child = curr->firstChild;
+    for(; child!=NULL; child=child->nextSibling) {
+        handleStmt(child, func);
+        validateFunction(child, func);
     }
 }
