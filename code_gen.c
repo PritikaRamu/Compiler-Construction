@@ -3,6 +3,9 @@
 #include <string.h>
 #include "code_gen.h"
 
+
+asmTracker finalAsm; // Global
+
 void generateAsm(ast* root, FILE *fptr){
 
 }
@@ -53,12 +56,60 @@ void getLabel(char *buff){
 
 void resetTemps(){
 
+    for(int i=0;i<MAX_TEMP_WIDTH;i++){
+        finalAsm.currentTempCount[i] = 0; // Set Current Temp Count to zero, but not "Temp Count", it's cummulative
+    }
+
 }
 
-void getTemp(char *buff, int width){
+void getTemp(char *buff, int width) {
+	finalAsm.currentTempCount[width]+=1;
 
+	sprintf(buff, "temp%d + %d", width, (finalAsm.currentTempCount[width] - 1) * width); // Base-Relative Address of the new Temp
+	
+    if (finalAsm.currentTempCount[width] > finalAsm.tempCount[width]) { // Update the TempCount array!
+		finalAsm.tempCount[width]+=1;
+	}
 }
 
+// Sets ASM Tracker fields to Zero
 void initAsm(){
+    for(int i=0;i<MAX_TEMP_WIDTH;i++){
+        finalAsm.tempCount[i] = finalAsm.currentTempCount[i] = 0;
+    }
+
+    finalAsm.labelCount = 0;
+}
+
+// Helper
+void printAsmTracker(){
+    printf("\nASM Tracker:\n");
+    printf("Temp Count: ");
+    for(int i=0;i<MAX_TEMP_WIDTH;i++){
+        printf("%d,",finalAsm.tempCount[i]);
+    }
+    printf("\n");
+
+    printf("Current Temp Count: ");
+    for(int i=0;i<MAX_TEMP_WIDTH;i++){
+        printf("%d,",finalAsm.currentTempCount[i]);
+    }
+    printf("\n");
+
+    printf("Label Count: %d\n",finalAsm.labelCount);   
+    printf("\n");
+
+}
+
+int main(){
+    char* string = (char*)malloc(sizeof(char)*123);
+
+    initAsm();    
+
+
+    printf("\tmov\tr8w, %s\n", "4");
+	getTemp(string, 2);
+	printf("\tmov\t[%s], r8w\n", string);
+    printAsmTracker();
     
 }
