@@ -211,7 +211,6 @@ bool inode_check(void *node1, void *node2)
 
 void *retrieve(symbol_Table *st, void *node, NodeType type)
 {
-    //printf("Entering retrieve\n");
     if (node==NULL)
         return NULL;
     int key;
@@ -241,8 +240,10 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
         break;
     }
     }
+ 
     if (t->table[key].node)
     {
+        
         Entry *entry = &(t->table[key]);
         switch (type)
         {
@@ -284,6 +285,7 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
         }
         return NULL;
     }
+
 }
 
 void insert(symbol_Table *st, void *node, NodeType type)
@@ -292,26 +294,27 @@ void insert(symbol_Table *st, void *node, NodeType type)
     subTable *t;
     switch (type)
     {
-    case ID:
-    {
-        key = hash(((identifierNode *)node)->token->lexeme);
-        t = st->IdentifierTable;
-        break;
+        case ID:
+        {
+            key = hash(((identifierNode *)node)->token->lexeme);            
+            t = st->IdentifierTable;
+            break;
+        }
+        case RECORD_OR_UNION:
+        {
+            key = hash(((recordUnionNode *)node)->token->lexeme);
+            // printf("key is %d\n",key);
+            t = st->RecordUnionTable;
+            break;
+        }
+        case FUNCTION_SEQ:
+        {
+            key = hash(((functionNode *)node)->token->lexeme);
+            t = st->FunctionTable;
+            break;
+        }
     }
-    case RECORD_OR_UNION:
-    {
-        key = hash(((recordUnionNode *)node)->token->lexeme);
-        // printf("key is %d\n",key);
-        t = st->RecordUnionTable;
-        break;
-    }
-    case FUNCTION_SEQ:
-    {
-        key = hash(((functionNode *)node)->token->lexeme);
-        t = st->FunctionTable;
-        break;
-    }
-    }
+    
     if (retrieve(st, node, type))
     {
         return;
@@ -320,6 +323,7 @@ void insert(symbol_Table *st, void *node, NodeType type)
     void* check = t->table[key].node;
     if (!check)
     {
+        //printf("inserting NULL %s\n",((identifierNode *)node)->token->lexeme);
         t->table[key].next = NULL;
         t->table[key].key = key;
         t->table[key].node = node;
@@ -336,6 +340,7 @@ void insert(symbol_Table *st, void *node, NodeType type)
         temp->node = node;
         temp->next = NULL;
         entry->next = temp;
+        //printf("inserting NOT NULL%s\n",((identifierNode *)node)->token->lexeme);
     }
 }
 
@@ -787,9 +792,59 @@ void createFTable(ast *root)
     }
 }
 
+int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
+    recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
+    temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+    temp->token->lexeme = recordName;
+    int width = 0;
+
+    recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
+    recordField* head = ru->fieldList;
+    while(head){
+        // char concatString[100];
+        // strcpy(concatString,dotName);
+        // strcat(concatString,".");
+        // strcat(concatString,head->token->lexeme);
+        int x = strlen(dotName);
+        int y = strlen(head->token->lexeme);
+        int z = x+y+1;
+        char* concatString = (char *)malloc(sizeof(char) * z);
+        for(int i = 0; i < x; i++)
+            concatString[i] = dotName[i];
+        concatString[x] = '.';
+        for(int j = 0; j < y; j++)
+            concatString[j+x+1] = (head->token->lexeme)[j];
+
+        // strcpy(concatString,dotName);
+        // strcat(concatString,".");
+        // strcat(concatString, head->token->lexeme)
+
+        identifierNode* id = (identifierNode*)malloc(sizeof(identifierNode));
+        id->token  = (tokenInfo*)malloc(sizeof(tokenInfo));
+        id->global = global;
+        id->function = (tokenInfo*)malloc(sizeof(tokenInfo));
+        id->function->lexeme = func->lex;
+
+        if(head->type == INT_TYPE || head->type == REAL_TYPE){
+            width += head->width;
+            id->width = head->width;
+        }
+        else{
+            width += GodHelpMe(head->recordName, concatString, false, func);
+            id->width = width;
+        }
+
+        id->token->lexeme = concatString;
+
+        insert(SymbolTable,id,ID);
+        head = head->next;
+    }
+    return width;
+
+}
+
 void createITable(ast *root)
 {
-    printf("Entering the create identifier table function\n");
     int globalOffset = 0;
     root = root->firstChild;    //root points to FUNCTION_SEQ nodes
     while (root)
@@ -805,9 +860,8 @@ void createITable(ast *root)
         while (child)
         {
             
-            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
+           if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
             {
-                printf("1 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
@@ -834,18 +888,8 @@ void createITable(ast *root)
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);
-                        recordUnionNode* temp = createRUNode(child,NULL);
-                        recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
-                        if(ru!=NULL){
-                            recordField* head = ru->fieldList;
-                            while(head){
-                                printf("%s.%s %d\n",child->firstChild->lex,head->token->lexeme, head->type);
-                                head = head->next;
-                            }
-                        }
-                        else{
-                            printf("RU IS NULLLLLLL\n");
-                        }
+                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+                        printf("FINAL WIDTH %s %d\n",child->lex,a);
                         
                     }
                     else
@@ -875,7 +919,7 @@ void createITable(ast *root)
                     }
                 }
             }
-            else if (child->nodeType == INTEGER && child->firstChild->nodeType == ID)
+           else if (child->nodeType == INTEGER && child->firstChild->nodeType == ID)
             {
                printf("%d", child->parent->nodeType);
                 //printf("here 2 %d %d  %d\n",child->nodeType,child->parent->nodeType, child->line);
