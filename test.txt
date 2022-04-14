@@ -30,19 +30,35 @@ _main
 	
 	record #marks
 		type real : maths; 
-		type real: physics; 
+		type real: maths; 
 		type real: chemistry;
 		type #thot: tester;
 	endrecord
 
 	record #bruh
 		type real : abcd; 
+		type real: efgh;
+		type #qwert : asadf; 
+		type real: ijkl;
+	endrecord
+
+	record #test
+		type real : abcd; 
 		type real: efgh; 
 		type real: ijkl;
 	endrecord
 
+	definetype record #laffy as #quirky
+
+	record #laffy
+		type #qwert : quirk;
+		type real : abcd; 
+		type real: efgh; 
+		type real: ijkl;
+	endrecord
 
 	definetype record #bruh as #thot
+	definetype record #test as #qwert
 
     %record #marks
 	%	type int : mths; 
@@ -56,6 +72,7 @@ _main
 	type real : b5;
 	type real : d5cb34567;
 	type record #marks : b5c6;
+	type record #laffy : b4c6;
 	%The identifier b5c6 stores the sum of marks
 
 	b5 <--- 1;
