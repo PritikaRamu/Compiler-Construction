@@ -53,8 +53,8 @@ _main
 	type record #marks : d4;
 	% The variable d4 stores the marks of one student
 
-	type int : b5;
-	type int : d5cb34567;
+	type real : b5;
+	type real : d5cb34567;
 	type record #marks : b5c6;
 	%The identifier b5c6 stores the sum of marks
 

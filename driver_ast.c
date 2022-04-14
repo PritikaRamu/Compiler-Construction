@@ -37,6 +37,7 @@ int main(int argc, char* argv[]){
 		printf("3: For parsing to verify the syntactic correctness of the input source code and printing the parse tree\n");
 		printf("4: For printing the total time taken (on the console)\n");
         printf("5: For printing the AST on the console\n");
+		printf("6: For printing the symbol table on the console\n");
 
 
 		printf("\n\nEnter your choice: ");
@@ -138,11 +139,12 @@ int main(int argc, char* argv[]){
                     temp = temp->nextSibling;
                 }
                 printf("\n");
-				initializeSymbolTable(astree);
-				printRecordTable(SymbolTable->RecordUnionTable);
-				printf("\nRecord table printed above\n");
-				printFunctionTable(SymbolTable->FunctionTable);
-				printf("Function table printed above\n");
+				break;
+				// initializeSymbolTable(astree);
+				// printRecordTable(SymbolTable->RecordUnionTable);
+				// printf("\nRecord table printed above\n");
+				// printFunctionTable(SymbolTable->FunctionTable);
+				// printf("Function table printed above\n");
 				// printIDTable(SymbolTable->IdentifierTable);
 				// printf("Identifier table printed above\n");
 
@@ -163,6 +165,33 @@ int main(int argc, char* argv[]){
 				// 	printf("null\n");
 				// }
             }
+		case 6:
+		{
+			char* testFile = argv[1];
+                char* outfile = argv[2];
+                initGrammar(G);
+				populateFirstFollow("First.txt", true);
+				populateFirstFollow("Follow.txt", false);
+				computeParseTable();
+				parseTree ptree = parseInputSourceCode(testFile);
+                ast* astree = initAST(ptree);
+				// int numNodes = printAST(astree, outfile);
+                // printf("Number of Nodes\n");
+                // printf("Number of Children of the root:\n");
+                // ast* temp = astree->firstChild;
+                // while(temp) {
+                //     printf("%d->", temp->nodeType);
+                //     temp = temp->nextSibling;
+                // }
+                // printf("\n");
+				initializeSymbolTable(astree);
+				printRecordTable(SymbolTable->RecordUnionTable);
+				printf("\nRecord table printed above\n");
+				printFunctionTable(SymbolTable->FunctionTable);
+				printf("Function table printed above\n");
+				printIDTable(SymbolTable->IdentifierTable);
+				printf("Identifier table printed above\n");
+		}
         }
 
 	}

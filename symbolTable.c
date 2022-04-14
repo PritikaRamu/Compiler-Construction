@@ -789,11 +789,12 @@ void createFTable(ast *root)
 
 void createITable(ast *root)
 {
+    printf("Entering the create identifier table function\n");
     int globalOffset = 0;
-    root = root->firstChild;
+    root = root->firstChild;    //root points to FUNCTION_SEQ nodes
     while (root)
     {
-        ast *child = root->firstChild;
+        ast *child = root->firstChild;  //first child of the function
         functionNode *func = (functionNode *)malloc(sizeof(functionNode));
         func->token = (tokenInfo *)malloc(sizeof(tokenInfo));
         func->token->lexeme = root->lex;
@@ -856,21 +857,32 @@ void createITable(ast *root)
             }
             else if (child->nodeType == INTEGER && child->firstChild->nodeType == ID)
             {
-                printf("2 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
+               printf("um");
+               printf("%d", child->parent->nodeType);
+                //printf("here 2 %d %d  %d\n",child->nodeType,child->parent->nodeType, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
+                
+               // identifierNode* id;
+                
                 if (child->firstChild->nextSibling)
                 {
                     id = createINode(child->firstChild, child->parent, INT_TYPE, true, &globalOffset);
                 }
                 else
                 {
+                    
                     id = createINode(child->firstChild, child->parent, INT_TYPE, false, &localOffset);
                 }
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
 
+                    
+                    printf("%d %d %d %s %s %d",id->width, id->offset,id->type,id->token->lexeme,id->function->lexeme,id->global);
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
-                    if (check)
+                    //seg fault here
+
+                    if (check!=NULL)
                     {
+                        printf("huhu\n");
                         if (check->global)
                         {
                             printf("redeclr of global var bad\n");
@@ -878,12 +890,13 @@ void createITable(ast *root)
                         }
                         else
                         {
+                            
                             printf("redcl 2\n");
                             printf("%d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
                         }
                     }
                     else{
-                        insert(SymbolTable,id,INTEGER);
+                        insert(SymbolTable,id,ID);
                     }
                 }
             }
@@ -915,7 +928,7 @@ void createITable(ast *root)
                         }
                     }
                     else{
-                        insert(SymbolTable,id,REAL);
+                        insert(SymbolTable,id,ID);
                     }
                 }
             }
@@ -958,8 +971,8 @@ void initializeSymbolTable(ast *ast)
     printf("record table done\n");
     createFTable(ast);
     printf("function table done\n");
-    //createITable(ast);
-    // printf("identifier table done\n");
+    createITable(ast);
+    printf("identifier table done\n");
 }
 
 void printRecordTable(subTable *rec_table)

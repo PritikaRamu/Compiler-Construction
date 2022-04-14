@@ -71,7 +71,7 @@ ast* lastNode(ast* head) {
 
 ast* makeAST(parseTree node, ast* parent) {
     ast* curr, *temp1;
-    printf("\nCurrent parseTree node: %d\n", node->symbol);
+    //printf("\nCurrent parseTree node: %d\n", node->symbol);
 
     //if the LHS produces epsilon then the rule is useless
     //remove the node
@@ -456,12 +456,12 @@ ast* makeAST(parseTree node, ast* parent) {
             temp1->firstChild->nextSibling = temp2;
             temp1->firstChild->nextSibling->parent = temp1;
             while(temp1->parent != NULL) {
-                printf("\nParent NodeType: %s, Current Nodetype: %s\n", nodeTypeToStr(temp1->parent->nodeType), nodeTypeToStr(temp1->nodeType));
+               // printf("\nParent NodeType: %s, Current Nodetype: %s\n", nodeTypeToStr(temp1->parent->nodeType), nodeTypeToStr(temp1->nodeType));
                 temp1 = temp1->parent;
-                printf("In the loop? 1\n");
+              //  printf("In the loop? 1\n");
             }
             curr = temp1;
-            printf("Out of the loop 1\n");
+          //  printf("Out of the loop 1\n");
         }
     }
 
