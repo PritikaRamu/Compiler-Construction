@@ -75,7 +75,7 @@ recordField* createFieldList(ast *curr_ast, int *offset)
                 fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
                 fields->token->tid = iterator->symbol;
                 fields->token->lexeme = iterator->firstChild->lex;
-                fields->token->lineNo = iterator->line;
+                fields->token->lineNo = iterator->firstChild->line;
                 fields->type = (iterator->is_union) ? UNION_TYPE : RECORD_TYPE;
                 fields->recordName = x->token->lexeme;
                 printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
@@ -836,6 +836,10 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
 
         id->token->lexeme = concatString;
 
+        identifierNode* check = (identifierNode*)retrieve(SymbolTable,id,ID);
+        if(check!=NULL){
+            printf("Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
+        }
         insert(SymbolTable,id,ID);
         head = head->next;
     }

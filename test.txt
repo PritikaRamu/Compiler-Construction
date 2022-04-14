@@ -30,7 +30,7 @@ _main
 	
 	record #marks
 		type real : maths; 
-		type real: physics; 
+		type real: maths; 
 		type real: chemistry;
 		type #thot: tester;
 	endrecord
@@ -51,7 +51,7 @@ _main
 	definetype record #laffy as #quirky
 
 	record #laffy
-		type #quirky : quirk;
+		type #qwert : quirk;
 		type real : abcd; 
 		type real: efgh; 
 		type real: ijkl;
