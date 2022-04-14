@@ -138,6 +138,7 @@ parameters *createIPParams(ast *ast, NodeType type)
     p->token->lexeme = ast->lex;
     p->token->lineNo = ast->line;
     p->token->tid = ast->symbol;
+    p->is_union = ast->is_union;
     return p;
 }
 

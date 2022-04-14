@@ -64,6 +64,7 @@ typedef struct parameters{
     tokenInfo* token;
     NodeType nodeType;
     struct parameters* next;
+    bool is_union;
 }parameters;
 
 typedef struct function_node{
