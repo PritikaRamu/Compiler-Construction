@@ -1,9 +1,10 @@
 #include "typeChecker.h"
 
 identifierNode* validateBoolean(ast* curr, ast* func);
-void handleStmt(ast* curr);
+void handleStmt(ast* curr, ast* func);
 void validateConditional(ast* curr);
 recordField* searchInFieldList(ast* curr, recordField* fieldList);
+void validateReturn(ast* curr, ast* func);
 
 recordField* searchInFieldList(ast* curr, recordField* fieldList) {
     recordField* temp = fieldList;
@@ -347,11 +348,11 @@ void validateFunCall (ast* call, ast* func) {
     }
 }
 
-void validateIterative(ast* curr) {
-    validateBoolean(curr->firstChild);
+void validateIterative(ast* curr, ast* func) {
+    validateBoolean(curr->firstChild, func);
     ast* temp = curr->firstChild->nextSibling;
     for(; temp != NULL; temp = temp->nextSibling) {
-        handleStmt(temp);
+        handleStmt(temp, func);
     }
 }
 
@@ -445,15 +446,19 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         if(currField == NULL) {
                             printf("Line no. %d: No such field identifier %s\n", fFieldId->line, fFieldId->lex);
                         }
+                        
                         identifierNode* retNode = (identifierNode*)malloc(sizeof(identifierNode));
                         retNode->width = currField->width;
                         retNode->offset = -1;
                         retNode->type = currField->type;
+                        
                         retNode->token = (tokenInfo*)malloc(sizeof(tokenInfo));
                         retNode->token->lexeme = currField->token->lexeme;
                         retNode->token->tid = currField->token->tid;
                         retNode->token->numVal = currField->token->numVal;
                         retNode->token->lineNo = currField->token->lineNo;
+
+                        retNode->function = (tokenInfo*)malloc(sizeof(tokenInfo));
                         currNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
                         fFieldId = fFieldId->nextSibling;
                     }
@@ -495,21 +500,65 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
     }
 }
 
-void validConditional(ast* curr) {
+void validateReturn(ast* curr, ast* func) {
+    ast* child = curr->firstChild;
+    
+    //declre dummy node for retrieval
+    functionNode* retNode = (functionNode *)malloc(sizeof(functionNode));
+    retNode->width = -1;
+    retNode->rank = -1;
+    retNode->opParams = NULL;
+    retNode->ipParams = NULL;
+    retNode->tmpVars = -1;
 
+    retNode->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+    retNode->token->lexeme = func->lex;
+    retNode->token->lineNo = func->line;
+    retNode->token->tid = func->symbol;
+    //declaration finished
+
+    functionNode* funcInfo = (functionNode*)retrieve(SymbolTable, retNode, FUNCTION_SEQ);
+
+    parameters* outputParams = funcInfo->opParams;
+    identifierNode* opInfo = NULL;
+    int numReturn = 0;
+    parameters* tempOP = outputParams;
+    while(tempOP) {
+        numReturn++;
+        tempOP = tempOP->next;
+    }
+    if(numReturn != funcInfo->numOp) {
+        printf("Line no. %d: Number of return values not equal to number of output parameters\n", curr->line);
+        return;
+    }
+
+    identifierNode* currNode = (identifierNode*)malloc(sizeof(identifierNode));
+    parameters* iterParams = outputParams;
+    for(int i=0; i<numReturn; i++, child = child->nextSibling, iterParams = iterParams->next) {
+        //use iterators for output parameters and return values
+        if(strcmp(child->lex, iterParams->token->lexeme) != 0) {
+            printf("Line no. %d: Unexpected return parameter found. Parameter returned: %s and Parameter expected: %s\n", child->line, child->lex, iterParams->token->lexeme);
+        }
+    }
 }
 
-void handleStmt(ast* curr) {
+void validConditional(ast* curr) {
+    
+}
+
+void handleStmt(ast* curr, ast* func) {
     switch(curr->nodeType) {
         case ASSIGNOP:
             //TODO: write the correct order of calling
-            validateArithmetic(curr, NULL);
+            validateArithmetic(curr, func);
             break;
         case ITERATIVE:
-            validateIterative(curr);
+            validateIterative(curr, func);
             break;
         case CONDITIONAL:
             validateConditional(curr);
             break;
+        case RETURN:
+            validateReturn(curr, func);
     }
 }
