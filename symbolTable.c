@@ -696,10 +696,13 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
+                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
+                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         break;
                     }
@@ -707,7 +710,7 @@ void createFTable(ast *root)
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
                     if (check)
                     {
-                        printf("redeclaration");
+                        printf("Redeclaration of %s in input parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
                     }
                     else
                     {
@@ -750,10 +753,12 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
+                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
+                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         break;
                     }
@@ -880,16 +885,14 @@ void createITable(ast *root)
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, true, &globalOffset);
-                        recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,id,RECORD_OR_UNION);
-                        recordField* head = ru->fieldList;
-                        while(head){
-                            // printf("%s.%s\n",child->firstChild->lex,head->token->lexeme);
-                            head = head->next;
-                        }
+                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+
                     }
                     else
                     {
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, true, &globalOffset);
+                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+
                     }
                 }
                 else
@@ -905,6 +908,8 @@ void createITable(ast *root)
                     else
                     {
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, false, &localOffset);
+                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+
                     }
                 }
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
@@ -1098,6 +1103,28 @@ void printFunctionTable(subTable *fun_table)
             if (fun_node != NULL)
             {
                 printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+                printf("-------------------------------\n");
+            }
+            entry = entry->next;
+        }
+    }
+}
+
+void printSymbolTable(symbol_Table* st){
+    subTable* t = st->IdentifierTable;
+    int i;
+    Entry * entry;
+    identifierNode *node;
+    printf("%-20s %-15s %-10s %-15s %-10s %-10s %-10s %-10s\n", "Variable Name", "Scope", "Type", "Type Expression", "Width", "isGlobal", "Offset", "VariableUsage");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(t->table[i]);
+        while (entry != NULL)
+        {
+            node = (identifierNode *)(entry->node);
+            if (node != NULL)
+            {
+                printf("%-30s %d %s \n", node->token->lexeme, node->width, node->function->lexeme);
                 printf("-------------------------------\n");
             }
             entry = entry->next;

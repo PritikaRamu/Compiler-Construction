@@ -202,6 +202,8 @@ int main(int argc, char *argv[])
 			printf("Function table printed above\n");
 			printIDTable(SymbolTable->IdentifierTable);
 			printf("Identifier table printed above\n");
+			printSymbolTable(SymbolTable);
+			break;
 		}
 		case 7:
 		{

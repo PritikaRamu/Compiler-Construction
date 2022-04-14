@@ -1,7 +1,7 @@
 #include "ast.h"
 
-#define REAL_WIDTH 8
-#define INT_WIDTH 4
+#define REAL_WIDTH 4
+#define INT_WIDTH 2
 #define TABLE_SLOTS 100
 
 //TODO IMPLEMENT ERROR HANDLING VIA FILE

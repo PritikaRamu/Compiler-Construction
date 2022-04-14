@@ -14,5 +14,7 @@ void* retrieve(symbol_Table *st, void *node, NodeType type);
 void printFPTable(subTable *fun_table);
 void printAliasTable(subTable *fun_table);
 identifierNode* retrieveFake(subTable* st, identifierNode* id, bool token, bool alias);
+void printSymbolTable(symbol_Table* st);
+int GodHelpMe(char* a, char* b, bool global, ast* node);
 
 #endif
