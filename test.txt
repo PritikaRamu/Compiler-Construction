@@ -26,6 +26,8 @@ end
 
 %The following program computes the average of marks of total d5cb34567  students
 _main 
+
+	
 	record #marks
 		type real : maths; 
 		type real: physics; 
@@ -38,6 +40,7 @@ _main
 		type real: efgh; 
 		type real: ijkl;
 	endrecord
+
 
 	definetype record #bruh as #thot
 

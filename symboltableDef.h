@@ -35,8 +35,9 @@ typedef struct recordField{
     int width;
     int offset;
     Type type;
-    tokenInfo* token;
-    struct recordField* next; 
+    tokenInfo* token;  //token->lexeme has identifier name
+    struct recordField* next;
+    char* recordName;   //have the record name here 
 }recordField;
 
 typedef struct record_or_union_node{

@@ -36,6 +36,7 @@ recordField* createFieldList(ast *curr_ast, int *offset)
             fields->token->lexeme = iterator->firstChild->lex;
             fields->token->lineNo = iterator->line;
             fields->type = INT_TYPE;
+            fields->recordName = NULL;
         }
         else if (iterator->nodeType == REAL)
         {
@@ -47,33 +48,37 @@ recordField* createFieldList(ast *curr_ast, int *offset)
             fields->token->lexeme = iterator->firstChild->lex;
             fields->token->lineNo = iterator->line;
             fields->type = REAL_TYPE;
+            fields->recordName = NULL;
         }
         else if (iterator->nodeType == RECORD_OR_UNION)
         {
             fields->offset = *offset;
             //just creating a dummy node to cheEnterck entry in record table
-            recordUnionNode *ru = (recordUnionNode *)malloc(sizeof(recordUnionNode));
-            ru->width = 0;
-            ru->fieldList = NULL;
-            ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-            ru->token->tid = -1;
-            ru->token->lexeme = iterator->lex;
+            // recordUnionNode *ru = (recordUnionNode *)malloc(sizeof(recordUnionNode));
+            // ru->width = 0;
+            // ru->fieldList = NULL;
+            // ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+            // ru->token->tid = -1;
+            // ru->token->lexeme = iterator->lex;
             //ru->token->lineNo = curr_ast->line;
+            identifierNode* temp = (identifierNode*)malloc(sizeof(identifierNode));
+            temp->function = (tokenInfo *)malloc(sizeof(tokenInfo));
+            temp->function->lexeme = iterator->lex;
 
-            recordUnionNode *x = (recordUnionNode *)retrieve(SymbolTable, ru, iterator->nodeType);
+            identifierNode *x = (identifierNode *)retrieveFake(aliasTable,temp,false,true);
             if (x == NULL)
             {
                 printf("Using a record as field that has not been declared on line no. %d\n", iterator->line);
             }
             else
             {
-                (*offset) += x->width;
-                fields->width = x->width;
                 fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-                fields->token->tid = x->token->tid;
-                fields->token->lexeme = x->token->lexeme;
-                fields->token->lineNo = x->token->lineNo;
-                fields->type = (x->is_union) ? UNION_TYPE : RECORD_TYPE;
+                fields->token->tid = iterator->symbol;
+                fields->token->lexeme = iterator->firstChild->lex;
+                fields->token->lineNo = iterator->line;
+                fields->type = (iterator->is_union) ? UNION_TYPE : RECORD_TYPE;
+                fields->recordName = x->token->lexeme;
+                printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
             }
         }
         if (head)
@@ -89,11 +94,6 @@ recordField* createFieldList(ast *curr_ast, int *offset)
         iterator = iterator->nextSibling;
     }
 
-    // recordField* x = head;
-    // while(x){
-	// 				printf(" huhu check %s\n",x->token->lexeme);
-	// 				x = x->next;
-	// 			}
     return head;
 }
 
@@ -836,16 +836,16 @@ void createITable(ast *root)
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);
                         recordUnionNode* temp = createRUNode(child,NULL);
                         recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
-                        // if(ru!=NULL){
-                        //     recordField* head = ru->fieldList;
-                        //     while(head){
-                        //         printf("%s.%s %d\n",child->firstChild->lex,head->token->lexeme, head->type);
-                        //         head = head->next;
-                        //     }
-                        // }
-                        // else{
-                        //     printf("RU IS NULLLLLLL\n");
-                        // }
+                        if(ru!=NULL){
+                            recordField* head = ru->fieldList;
+                            while(head){
+                                printf("%s.%s %d\n",child->firstChild->lex,head->token->lexeme, head->type);
+                                head = head->next;
+                            }
+                        }
+                        else{
+                            printf("RU IS NULLLLLLL\n");
+                        }
                         
                     }
                     else
@@ -871,12 +871,12 @@ void createITable(ast *root)
                     else
                     {
                         insert(SymbolTable, id, ID);
+                        //insertFields()
                     }
                 }
             }
             else if (child->nodeType == INTEGER && child->firstChild->nodeType == ID)
             {
-               printf("um");
                printf("%d", child->parent->nodeType);
                 //printf("here 2 %d %d  %d\n",child->nodeType,child->parent->nodeType, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
