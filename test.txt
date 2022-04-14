@@ -30,19 +30,16 @@ _main
 		type real : maths; 
 		type real: physics; 
 		type real: chemistry;
+		type #thot: tester;
 	endrecord
 
 	record #bruh
-		type real : maths; 
-		type real: physics; 
-		type real: chemistry;
+		type real : abcd; 
+		type real: efgh; 
+		type real: ijkl;
 	endrecord
 
-	record #bruh
-		type real : maths; 
-		type real: physics; 
-		type real: chemistry;
-	endrecord
+	definetype record #bruh as #thot
 
     %record #marks
 	%	type int : mths; 

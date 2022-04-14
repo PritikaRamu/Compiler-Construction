@@ -57,6 +57,7 @@ typedef struct identifierNode{
     bool global;
     bool assigned;
     struct identifierNode* next;
+    bool isRecordField;
 }identifierNode;
 
 typedef struct parameters{
