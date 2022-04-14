@@ -78,7 +78,7 @@ recordField* createFieldList(ast *curr_ast, int *offset)
                 fields->token->lineNo = iterator->firstChild->line;
                 fields->type = (iterator->is_union) ? UNION_TYPE : RECORD_TYPE;
                 fields->recordName = x->token->lexeme;
-                printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
+               // printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
             }
         }
         if (head)
@@ -144,38 +144,44 @@ parameters *createIPParams(ast *ast, NodeType type)
 
 bool runode_check(void *node1, void *node2)
 {
-    if (strcmp(((recordUnionNode *)node1)->token->lexeme, ((recordUnionNode *)node2)->token->lexeme) == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    // if (strcmp(((recordUnionNode *)node1)->token->lexeme, ((recordUnionNode *)node2)->token->lexeme) == 0)
+    // {
+    //     return true;
+    // }
+    // else
+    // {
+    //     return false;
+    // }
+
+    return (strcmp(((recordUnionNode *)node1)->token->lexeme, ((recordUnionNode *)node2)->token->lexeme) == 0) ? true : false;
 }
 
 bool first_check(char *node1, char *node2)
 {
-    if (strcmp(node1,node2) == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    // if (strcmp(node1,node2) == 0)
+    // {
+    //     return true;
+    // }
+    // else
+    // {
+    //     return false;
+    // }
+
+    return (strcmp(node1,node2) == 0) ? true : false;
 }
 
 bool fnode_check(void *node1, void *node2)
 {
-    if (strcmp(((functionNode *)node1)->token->lexeme, ((functionNode *)node2)->token->lexeme) == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    // if (strcmp(((functionNode *)node1)->token->lexeme, ((functionNode *)node2)->token->lexeme) == 0)
+    // {
+    //     return true;
+    // }
+    // else
+    // {
+    //     return false;
+    // }
+
+    return (strcmp(((functionNode *)node1)->token->lexeme, ((functionNode *)node2)->token->lexeme) == 0) ? true:false;
 }
 
 //need to check this function
@@ -596,7 +602,7 @@ void createFirstPass(ast *root)
 
                 else
                 {
-                    printf("lexeme being inserted: %s\n", new->token->lexeme);
+                    // printf("lexeme being inserted: %s\n", new->token->lexeme);
                     insertFake(firstPass, new, true);
                 }
             }
@@ -870,14 +876,14 @@ void createITable(ast *root)
                 if (child->firstChild->nextSibling)
                 {
                     // It is a global identifier
-                    printf("%s\n", child->firstChild->nextSibling->lex);
+                    // printf("%s\n", child->firstChild->nextSibling->lex);
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, true, &globalOffset);
                         recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,id,RECORD_OR_UNION);
                         recordField* head = ru->fieldList;
                         while(head){
-                            printf("%s.%s\n",child->firstChild->lex,head->token->lexeme);
+                            // printf("%s.%s\n",child->firstChild->lex,head->token->lexeme);
                             head = head->next;
                         }
                     }
@@ -893,7 +899,7 @@ void createITable(ast *root)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);
                         int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
-                        printf("FINAL WIDTH %s %d\n",child->lex,a);
+                        // printf("FINAL WIDTH %s %d\n",child->lex,a);
                         
                     }
                     else
@@ -949,7 +955,7 @@ void createITable(ast *root)
 
                     if (check!=NULL)
                     {
-                        printf("huhu\n");
+                        // printf("huhu\n");
                         if (check->global)
                         {
                             printf("redeclr of global var bad\n");
@@ -969,7 +975,7 @@ void createITable(ast *root)
             }
             else if(child->nodeType == REAL && child->firstChild->nodeType == ID)
             {
-                printf("3 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
+                // printf("3 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
