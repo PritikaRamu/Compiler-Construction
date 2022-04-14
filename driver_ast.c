@@ -202,6 +202,7 @@ int main(int argc, char *argv[])
 			printf("Function table printed above\n");
 			printIDTable(SymbolTable->IdentifierTable);
 			printf("Identifier table printed above\n");
+			break;
 		}
 		case 7:
 		{
@@ -223,8 +224,10 @@ int main(int argc, char *argv[])
 			// }
 			// printf("\n");
 			initializeSymbolTable(astree);
-			//semanticAnalyser(astree);
+			printf("Starting Semantic Analysis\n");
+			semanticAnalyser(astree);
 			printf("\nEnd of Semantic Analysis.\n");
+			break;
 		}
 		}
 	}
