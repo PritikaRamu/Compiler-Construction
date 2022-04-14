@@ -139,10 +139,10 @@ int main(int argc, char* argv[]){
                 }
                 printf("\n");
 				initializeSymbolTable(astree);
-				// printRecordTable(SymbolTable->RecordUnionTable);
-				// printf("Record table printed above\n");
-				// printFunctionTable(SymbolTable->FunctionTable);
-				// printf("Function table printed above\n");
+				printRecordTable(SymbolTable->RecordUnionTable);
+				printf("\nRecord table printed above\n");
+				printFunctionTable(SymbolTable->FunctionTable);
+				printf("Function table printed above\n");
 				// printIDTable(SymbolTable->IdentifierTable);
 				// printf("Identifier table printed above\n");
 

@@ -217,7 +217,7 @@ void *retrieve(symbol_Table *st, void *node, NodeType type)
     case RECORD_OR_UNION:
     {
         key = hash(((recordUnionNode *)node)->token->lexeme);
-        printf("Lexeme for retrieve is %s\n",((recordUnionNode *)node)->token->lexeme);
+        // printf("Lexeme for retrieve is %s\n",((recordUnionNode *)node)->token->lexeme);
         t = st->RecordUnionTable;
         break;
     }
@@ -294,7 +294,7 @@ void insert(symbol_Table *st, void *node, NodeType type)
     case RECORD_OR_UNION:
     {
         key = hash(((recordUnionNode *)node)->token->lexeme);
-        printf("key is %d\n",key);
+        // printf("key is %d\n",key);
         t = st->RecordUnionTable;
         break;
     }
@@ -378,75 +378,75 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
 
 void createRUtable(ast *root)
 {
-    root = root->firstChild;
-    recordField *curr_field = NULL;
+    //taking our third pass through the record table 
+    root = root->firstChild;    //first node in FUNCTION_SEQ
+    recordField *curr_field = NULL; 
     recordField *fields = NULL;
     ast *curr_ast = NULL;
     while (root)
     {
-        // printf("inside root while %s\n",root->lex);
+        //root always points to one of the functions
         ast *child = root->firstChild;
+        //child is the first child of the function pointed to by root
         while (child)
         {
-            // printf("inside child while %s\n",child->lex);
-
             int offset = 0;
             if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType != ID)
             {
-                printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
+                // printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
                 curr_ast = child->firstChild;
-                printf("current node's lexeme: %s\n", curr_ast->lex);
+                // printf("current node's lexeme: %s\n", curr_ast->lex);
                 fields = createFieldList(curr_ast, &offset);    //iterates and returns a linked list of field nodes
                 recordUnionNode* new = createRUNode(child, fields);
-                recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
-                if(check)
-                {
-                    printf("Redeclaration of Record on line %d\n", curr_ast->line);
-                }
-
-                else
-                {
-                    printf("lexeme being inserted: %s\n", new->token->lexeme);
+                //check if the name exists in the first pass table
+                //recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
+                identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
+                new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                new1->token->lexeme = curr_ast->lex;
+                identifierNode* check = retrieveFake(firstPass, new1, true, false);
+                // if(check)
+                // {
                     insert(SymbolTable, new, RECORD_OR_UNION);
-                }
+                  
+                // }
             }
-            else if (child->nodeType == DEFINETYPE)
-            {
-                printf("In definetype, Child node is %s and type is %d\n", child->lex, child->nodeType);
-                recordUnionNode *ru = (recordUnionNode *)malloc(sizeof(recordUnionNode));
-                ru->width = 0;
-                ru->fieldList = NULL;
-                ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-                ru->token->tid = -1;
-                ru->token->lexeme = child->firstChild->nextSibling->lex;
-                // ru->token->lineNo = ast->line;
-                ru->fieldList = NULL;
-                recordUnionNode *existing = (recordUnionNode *)retrieve(SymbolTable, ru, RECORD_OR_UNION);
-                if (existing == NULL)
-                {
-                    printf("Implicit declaration of %s on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
-                }
-                else
-                {
-                    if ((existing->is_union == true && child->firstChild->symbol == TK_RECORD) || (existing->is_union == false && child->firstChild->symbol == TK_UNION))
-                    {
-                        printf("Type Mismatch on line no. %d\n", child->firstChild->line);
-                    }
-                    else
-                    {
-                        recordUnionNode *tdefNode = (recordUnionNode *)malloc(sizeof(recordUnionNode));
-                        tdefNode->is_union = existing->is_union;
-                        tdefNode->width = existing->width;
-                        tdefNode->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-                        tdefNode->token->tid = existing->token->tid;
-                        tdefNode->token->numVal = existing->token->numVal;
-                        tdefNode->token->lineNo = existing->token->lineNo;
-                        tdefNode->token->lexeme = child->firstChild->nextSibling->nextSibling->lex;
-                        printf("In definetype, lexeme being inserted: %s\n", tdefNode->token->lexeme);
-                        insert(SymbolTable, tdefNode, RECORD_OR_UNION);
-                    }
-                }
-            }
+            // else if (child->nodeType == DEFINETYPE)
+            // {
+            //     printf("In definetype, Child node is %s and type is %d\n", child->lex, child->nodeType);
+            //     recordUnionNode *ru = (recordUnionNode *)malloc(sizeof(recordUnionNode));
+            //     ru->width = 0;
+            //     ru->fieldList = NULL;
+            //     ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+            //     ru->token->tid = -1;
+            //     ru->token->lexeme = child->firstChild->nextSibling->lex;
+            //     // ru->token->lineNo = ast->line;
+            //     ru->fieldList = NULL;
+            //     recordUnionNode *existing = (recordUnionNode *)retrieve(SymbolTable, ru, RECORD_OR_UNION);
+            //     if (existing == NULL)
+            //     {
+            //         printf("Implicit declaration of %s on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
+            //     }
+            //     else
+            //     {
+            //         if ((existing->is_union == true && child->firstChild->symbol == TK_RECORD) || (existing->is_union == false && child->firstChild->symbol == TK_UNION))
+            //         {
+            //             printf("Type Mismatch on line no. %d\n", child->firstChild->line);
+            //         }
+            //         else
+            //         {
+            //             recordUnionNode *tdefNode = (recordUnionNode *)malloc(sizeof(recordUnionNode));
+            //             tdefNode->is_union = existing->is_union;
+            //             tdefNode->width = existing->width;
+            //             tdefNode->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+            //             tdefNode->token->tid = existing->token->tid;
+            //             tdefNode->token->numVal = existing->token->numVal;
+            //             tdefNode->token->lineNo = existing->token->lineNo;
+            //             tdefNode->token->lexeme = child->firstChild->nextSibling->nextSibling->lex;
+            //             printf("In definetype, lexeme being inserted: %s\n", tdefNode->token->lexeme);
+            //             insert(SymbolTable, tdefNode, RECORD_OR_UNION);
+            //         }
+            //     }
+            // }
             child = child->nextSibling;
         }
         root = root->nextSibling;
@@ -954,11 +954,11 @@ void initializeSymbolTable(ast *ast)
     printFPTable(firstPass);
     createAliasTable(ast);
     printAliasTable(aliasTable);
-    // createRUtable(ast);
-    // printf("record table done\n");
-    // createFTable(ast);
-    // printf("function table done\n");
-    // //createITable(ast);
+    createRUtable(ast);
+    printf("record table done\n");
+    createFTable(ast);
+    printf("function table done\n");
+    //createITable(ast);
     // printf("identifier table done\n");
 }
 
