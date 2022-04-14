@@ -82,3 +82,6 @@ typedef struct function_list{
 }funList;
 
 symbol_Table* SymbolTable;
+
+subTable* firstPass;
+subTable* aliasTable;

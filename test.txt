@@ -12,6 +12,14 @@ output parameter list [ record #marks b3c45];
 	read(b3c45.chemistry);
 	return [b3c45];
 end
+
+_helloworld input parameter list[int b7]
+output parameter list [ record #marks b3c45];
+	read(b3c45.maths);
+	read(b3c45.physics);
+	read(b3c45.chemistry);
+	return [b3c45];
+end
 % Notice here that  your compiler recognizes the type definition of marks even before it is 
 % declared. This will be handled at the semantic analyzer phase.
 
@@ -24,10 +32,22 @@ _main
 		type real: chemistry;
 	endrecord
 
-    record #marks
-		type int : mths; 
-		type real: phyics;
+	record #bruh
+		type real : maths; 
+		type real: physics; 
+		type real: chemistry;
 	endrecord
+
+	record #bruh
+		type real : maths; 
+		type real: physics; 
+		type real: chemistry;
+	endrecord
+
+    %record #marks
+	%	type int : mths; 
+	%	type real: phyics;
+	%endrecord
 	% each field above represents the marks obtained in corresponding subject
 
 	type record #marks : d4;
