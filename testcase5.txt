@@ -31,6 +31,7 @@ _main
 	endrecord	
 	definetype record #one as #point
 	definetype record #two as #line
+	definetype record #pooop as #line
 	union #four
 		type #line : ln; 
 		type #point: pt; 
