@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
 			// }
 			// printf("\n");
 			initializeSymbolTable(astree);
-			semanticAnalyser(astree);
+			//semanticAnalyser(astree);
 			printf("\nEnd of Semantic Analysis.\n");
 		}
 		}
