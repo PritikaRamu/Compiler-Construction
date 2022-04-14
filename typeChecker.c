@@ -146,7 +146,7 @@ void validateAssign(ast* curr, ast* func) {
 identifierNode* validateArithmetic(ast* curr, ast* func) {
     if (curr == NULL)
     {
-        return;
+        return NULL;
     }
     int localOffset = 0;
     //int numTempVar = 0;
@@ -222,7 +222,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         sChild = fChild->nextSibling;
         //ast has 1 or no children
         if(fChild==NULL || sChild == NULL) {
-            return;
+            return NULL;
         }
 
         identifierNode *fNode, *sNode;
@@ -230,7 +230,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         sNode = retrieve(SymbolTable, sNode, sChild->nodeType);
         //node(s) not found in symbol table
         if(fNode==NULL || sNode == NULL) {
-            return;
+            return NULL;
         }
         Type fType = fNode->type;
         Type sType = sNode->type;
@@ -331,7 +331,7 @@ void validateFunCall (ast* call, ast* func) {
     }
 
     //fetching calling func node from ST
-    functionNode* callingFunctionNode = createFnode(func); //to be modified
+    functionNode* callingFunctionNode = createFNode(func); //to be modified
     functionNode* tempCalling = callingFunctionNode;
     callingFunctionNode = retrieve(SymbolTable, callingFunctionNode, call->nodeType);
     free(tempCalling);
@@ -360,7 +360,7 @@ void validateFunCall (ast* call, ast* func) {
     if(calledFunctionNode->rank > callingFunctionNode->rank) {
         printf("Function called before being defined.\n");
         // semanticErrors++;
-        return NULL;
+        return;
     }
 
     ast* opGivenPars = opCall->firstChild;
