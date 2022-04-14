@@ -1,0 +1,13 @@
+
+                   ------               1                        PROGRAM        Not a number                      ROOT         NO                    PROGRAM
+                   ------               0               TYPE_DEFINITIONS        Not a number                    PROGRAM       YES                 Leaf node 
+                      int               7                        INTEGER        Not a number                    PROGRAM        NO                    INTEGER
+                   b5b567               7                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                   b5b567               8                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---               8                       ASSIGNOP        Not a number                    PROGRAM        NO                   ASSIGNOP
+                        1               8                            NUM                    1                  ASSIGNOP       YES                 Leaf node 
+                       d3               9                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---               9                       ASSIGNOP        Not a number                    PROGRAM        NO                   ASSIGNOP
+                     0.00               9                           RNUM                 0.00                  ASSIGNOP       YES                 Leaf node 
+                    _main               6                  MAIN_FUNCTION        Not a number                    PROGRAM        NO              MAIN_FUNCTION
+                   return              10                         RETURN        Not a number                    PROGRAM       YES                 Leaf node 

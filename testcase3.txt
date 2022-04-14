@@ -25,6 +25,10 @@ _main
 	endrecord
 	% each field above represents the marks obtained in corresponding subject
 
+	record #marks
+		type int : phyics;
+	#endrecord
+
 	type record #marks : d4;
 	% The variable d4 stores the marks of one student
 
