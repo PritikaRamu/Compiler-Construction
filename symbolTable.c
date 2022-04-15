@@ -878,8 +878,6 @@ char* concatString(char* s1, char* s2){
 
 //return type expression
 char* GodHelpMeOneMoreTime(char* recordName){
-    printf("IN here\n");
-    //return NULL;
     recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
     temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     temp->token->lexeme = recordName;
@@ -887,16 +885,41 @@ char* GodHelpMeOneMoreTime(char* recordName){
     recordField* head = ru->fieldList;
     char* a = (char *)malloc(sizeof(char)*400);
     char* y;
-    while(head!=NULL){
+    if(head){
         if(head->type == INT_TYPE){
             
-            y = (char *)malloc(sizeof(char)*4);
-            y[0] = 'x'; y[1] = 'i'; y[2] = 'n'; y[3] = 't';
+            y = (char *)malloc(sizeof(char)*5);
+            y[0] = 'i'; y[1] = 'n'; y[2] = 't'; y[3]  = ' ';
 
         }
         else if(head->type == REAL_TYPE){
             y = (char *)malloc(sizeof(char)*5);
-            y[0] = 'x'; y[1] = 'r'; y[2] = 'e'; y[3] = 'a'; y[4] = 'l';
+            y[0] = 'r'; y[1] = 'e'; y[2] = 'a'; y[3] = 'l'; y[4]  = ' ';
+        }
+        else{
+            char *z = GodHelpMeOneMoreTime(head->recordName);
+            y = (char *)malloc(sizeof(char) * (3+strlen(z)));
+            y[0] = '(';
+            y = concatString(y,z);
+            int u = strlen(y);
+            y[u]=')';
+            y[u+1]='\0';
+        }
+        head = head->next;
+        a = concatString(a, y);
+
+        head = head->next;
+    }
+    while(head!=NULL){
+        if(head->type == INT_TYPE){
+            
+            y = (char *)malloc(sizeof(char)*6);
+            y[0] = 'x'; y[1] = ' '; y[2] = 'i'; y[3] = 'n'; y[4] = 't';y[5] = ' ';
+
+        }
+        else if(head->type == REAL_TYPE){
+            y = (char *)malloc(sizeof(char)*7);
+            y[0] = 'x'; y[1] = ' '; y[2] = 'r'; y[3] = 'e'; y[4] = 'a'; y[5] = 'l';y[6] = ' ';
         }
         else{
             char *z = GodHelpMeOneMoreTime(head->recordName);
@@ -906,19 +929,11 @@ char* GodHelpMeOneMoreTime(char* recordName){
             int u = strlen(y);
             y[u]=')';
             y[u+1]='\0';
-
-            printf("Y INSIDE: %s\n", y);
-
-            //free(z);
         }
-        printf("Y OUTSIDE: %s\n", y);
-        //printf("    %s\n",y);
+        //printf("Y OUTSIDE: %s\n", y);
         head = head->next;
-        //GodHelpMeTwoMoreTimes(head->recordName);
         a = concatString(a, y);
-        
     }
-    printf("    %s\n",a);
     return a;
 }
 
@@ -1189,14 +1204,13 @@ void printSymbolTable(symbol_Table* st){
             if (node != NULL)
             {   
                 if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
-                        printf("%-30s %d %s %s\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName);
-                        printf("%s\n",GodHelpMeOneMoreTime(node->recordName));
+                        printf("%-30s %d %s %s %s %s\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false");
                 }
                 else if(node->type == INT_TYPE){
-                    printf("%-30s %d %s INT\n", node->token->lexeme, node->width, node->function->lexeme);
+                    printf("%-30s %d %s INT %s\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false");
                 }
                 else{
-                    printf("%-30s %d %s REAL\n", node->token->lexeme, node->width, node->function->lexeme);
+                    printf("%-30s %d %s REAL %s\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false");
                 }
                 printf("-------------------------------\n");
             }

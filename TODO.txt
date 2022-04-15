@@ -8,8 +8,11 @@ scope
 type name
 type expression
 width 
-variant record
 isGlobal
+
+
+TODO
+
 offset
 variable usage
 
@@ -21,3 +24,4 @@ record types and size
 
 redeclaration errors and line number
 
+variant record

@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "stdbool.h"
 
 #define REAL_WIDTH 4
 #define INT_WIDTH 2
