@@ -66,9 +66,9 @@ bool isOperator(ast* curr) {
     }
 }
 
-bool isIntReal(ast* curr) {
+bool isNumRnum(ast* curr) {
     NodeType nType = curr->nodeType;
-    if(nType == INTEGER || nType == REAL) {
+    if(nType == NUM || nType == RNUM) {
         return true;
     }
     else {
@@ -88,7 +88,7 @@ bool isIntReal(ast* curr) {
 
 void validateAssign(ast* curr, ast* func) {
     int localOffset = 0; 
-    printf("In validateAssign, entering valArith, curr->firstChild->nextSibling lexeme: %s and NodeType: %d\n", curr->firstChild->nextSibling->lex, curr->firstChild->nextSibling->nodeType);
+    printf("In validateAssign, entering valArith, curr->firstChild->nextSibling lexeme: %s and func: %s and NodeType: %d\n", curr->firstChild->nextSibling->lex, func->lex, curr->firstChild->nextSibling->nodeType);
     identifierNode* ArithNode = validateArithmetic(curr->firstChild->nextSibling, func);
     printf("In valAss Exited valArith successfully for lexeme: %s and NodeType: %d\n", curr->firstChild->nextSibling->lex, curr->firstChild->nextSibling->nodeType);
     if(ArithNode != NULL) {
@@ -99,31 +99,64 @@ void validateAssign(ast* curr, ast* func) {
         printf("ArithNode returned NULL from valArith\n");
     }
     ast* lChild = curr->firstChild;
-    identifierNode* lChildNode = createINode(lChild, func, lChild->nodeType, false, &localOffset);
-    identifierNode* notGlobalCurr = lChildNode;
-    notGlobalCurr->global = false;
-    notGlobalCurr = (identifierNode*)retrieve(SymbolTable, notGlobalCurr, lChild->nodeType);
-    //if(notGlobalCurr) printf("Type of notGlobalCurr: %d\n", notGlobalCurr->type);
-    identifierNode* globalCurr = lChildNode;
-    globalCurr->global = true;
-    globalCurr = (identifierNode*)retrieve(SymbolTable, globalCurr, lChild->nodeType);
-    if (globalCurr)
-    {
-        lChildNode = globalCurr;
-        printf("Retrived global identifier for lex: %s type: %d nodetype: %d\n", lChildNode->token->lexeme, lChildNode->type, lChild->nodeType);
+    //Type lChildType = TypeUsingAST(lChild->nodeType, lChild->is_union);
+    printf("This lexeme in valAss: %s is in scope of function: %s with nodeType: %d\n", curr->lex, func->lex, curr->nodeType);
+    identifierNode* lChildNode = createINode(lChild, func, -1, false, &localOffset);
+
+    //identifierNode* tempLChild = lChildNode;
+    lChildNode = (identifierNode*)retrieve(SymbolTable, lChildNode, ID);
+    printf("Chcekpoint 1 post retrieve in ValAssign.\n");
+
+    if(lChildNode == NULL) {
+        identifierNode* lChildNode_global = createINode(lChild, func, -1, true, &localOffset);
+        lChildNode_global = (identifierNode* ) retrieve(SymbolTable, lChildNode, ID);
+        printf("Chcekpoint 2 post retrieve in ValAssign.\n");
+
+        if(lChildNode_global == NULL) {
+            // semanticErrors ++;
+            printf("Line no. %d: Undeclared Variable HERE IN VALass %s in Assignment.\n", lChild->line, lChild->lex);
+            return;
+        }
+        else {
+            lChildNode = lChildNode_global;
+            printf("Retrived global identifier for lex: %s, type: %d\n", lChildNode_global->token->lexeme, lChildNode_global->type);
+        }
     }
-    else if (notGlobalCurr)
-    {
-        printf("Retrived non global identifier for lex: %s, type: %d\n", lChildNode->token->lexeme, lChildNode->type);
-        lChildNode = notGlobalCurr;
+    else {
+        printf("Retrived non global identifier for lex: %s type: %d nodetype: %d\n", lChildNode->token->lexeme, lChildNode->type, lChild->nodeType);
     }
-    else
-    {
-        // semanticErrors ++;
-        printf("Line no. %d: Undeclared Variable %s in Assignment.\n", lChild->line, lChild->lex);
-        return;
-    }
+
+    // identifierNode* notGlobalCurr = lChildNode;
+    // notGlobalCurr->global = false;
+    // notGlobalCurr = (identifierNode*)retrieve(SymbolTable, notGlobalCurr, ID);
+    // printf("Chcekpoint 2 post retrieve in ValAssign.\n");
+
+    // //if(notGlobalCurr) printf("Type of notGlobalCurr: %d\n", notGlobalCurr->type);
+    // identifierNode* globalCurr = lChildNode;
+    // globalCurr->global = true;
+    // globalCurr = (identifierNode*)retrieve(SymbolTable, globalCurr, ID);
+    // printf("Chcekpoint 3 post retrieve in ValAssign.\n");
+    // if (notGlobalCurr)
+    // {
+    //     lChildNode = notGlobalCurr;
+    //     printf("Retrived non global identifier for lex: %s type: %d nodetype: %d\n", lChildNode->token->lexeme, lChildNode->type, lChild->nodeType);
+    // }
+    // else if (globalCurr)
+    // {
+    //     printf("Retrived global identifier for lex: %s, type: %d\n", lChildNode->token->lexeme, lChildNode->type);
+    //     lChildNode = globalCurr;
+    // }
+    // else
+    // {
+    //     // semanticErrors ++;
+    //     printf("Line no. %d: Undeclared Variable HERE IN VALass %s in Assignment.\n", lChild->line, lChild->lex);
+    //     return;
+    // }
+    
+    printf("Before Arithnode check\n");
+
     if(ArithNode == NULL) {
+        printf("Arithnode returned NULL so returning from valASS\n");
         return;
     }
 
@@ -139,18 +172,54 @@ void validateAssign(ast* curr, ast* func) {
 
     // record/union from symbol table
 
-    if (lChild->nodeType != RECORD_OR_UNION && attribute != NULL)
+    if ((lChildNode->type == RECORD_TYPE || lChildNode->type == UNION_TYPE) && attribute != NULL)
     {
         printf("Identifier not of type record/ union but has fields.\n");
         // semanticErrors++;
         return;
     }
-    else if (lChild->nodeType == RECORD_OR_UNION && attribute != NULL)
+    //NESTED RECORDS
+    else if ((lChildNode->type == RECORD_TYPE || lChildNode->type == UNION_TYPE) && attribute != NULL)
     {
-        // NESTED RECORDS
+        Type lChildType = lChildNode->type;
+
+        char* fConcatLex = (char*)malloc(sizeof(char)*strlen(lChild->lex));
+        strcpy(fConcatLex, lChild->lex);
+
+        printf("\nConcatenating Second Child in ValAss: \n\n\n\n\n");
+        while(attribute) {
+            int x = strlen(fConcatLex);
+            int y = strlen(attribute->lex);
+            fConcatLex = (char*)realloc(fConcatLex, sizeof(char)*(x+y+1));
+            char dot[] = ".";
+            strcat(fConcatLex, dot);
+            strcat(fConcatLex, attribute->lex);
+                        
+            identifierNode* retNode = createINode(attribute, func, -1, false, &localOffset);
+            retNode->token->lexeme = fConcatLex;
+
+            identifierNode* fidNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
+            printf("%s\n", fConcatLex);
+
+            if(fidNode == NULL) {
+                printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                //semanticErrors++;
+                return;
+            }
+            lChildNode = fidNode;
+            attribute = attribute->nextSibling;
+        }
+        if(lChildNode->type == ArithNode->type) {
+            printf("In valAss, type of assigned node: %s match val of arith node: %s\n", lChild->lex, ArithNode->token->lexeme);
+        }
+        else {
+            printf("Line no %d: Type mismatch in assign.\n", lChild->line);
+            // semanticErrors++;
+            return;
+        }
     }
     //int/real
-    else if(lChild->nodeType != RECORD_OR_UNION)
+    else if((lChildNode->type != RECORD_TYPE || lChildNode->type != UNION_TYPE))
     {
         Type lChildType = lChildNode->type;
         if (lChildType != ArithNode->type)
@@ -174,9 +243,9 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
     int localOffset = 0;
     //int numTempVar = 0;
 
-    //identifier node/ int-real
     bool isOp = isOperator(curr);
 
+    //identifier node/ int-real
     if(isOp == 0){
         //num or rnum
         if(curr->nodeType == NUM || curr->nodeType == RNUM){
@@ -189,30 +258,48 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                 return createINode(curr, func, REAL_TYPE, false, &localOffset);
             }
         }
+        //id
         printf("\nIn valArith, not an operator, creating a node for ast lexeme: %s\n", curr->lex);
-        identifierNode* currNode = createINode(curr, func, curr->nodeType, false, &localOffset);
-        //printf("ValArith mai createINode hua kya?\n");
-        identifierNode* notGlobalCurr = currNode;
-        notGlobalCurr->global = false;
-        notGlobalCurr = (identifierNode*)retrieve(SymbolTable, notGlobalCurr, curr->nodeType);
-        //printf("ValArith mai retrieve hua kya?\n");
-        identifierNode* globalCurr = currNode;
-        globalCurr->global = true;
-        globalCurr = (identifierNode*)retrieve(SymbolTable, globalCurr, curr->nodeType);
-        if (globalCurr)
-        {
-            printf("In valArith globalCurr, retrived type is %d for lexeme: %s\n", globalCurr->type, globalCurr->token->lexeme);
-            currNode = globalCurr;
-        }
-        else if (notGlobalCurr){
-            printf("In valArith notglobalCurr, retrived type is %d for lexeme: %s\n", globalCurr->type, globalCurr->token->lexeme);
-            currNode = notGlobalCurr;
+        identifierNode* currNode = createINode(curr, func, -1, false, &localOffset);
+        
+        if(currNode == NULL) {
+            identifierNode* currNode_global = createINode(curr, func, -1, true, &localOffset);
+            currNode_global = (identifierNode*)retrieve(SymbolTable, currNode_global, ID);
+            if(currNode_global == NULL) {
+                printf("Line no. %d: Using undeclared variable %s\n", curr->line, curr->lex);
+                return NULL;
+            }
+            else {
+                currNode = currNode_global;
+                printf("Retrived global identifier for lex: %s, type: %d\n", currNode_global->token->lexeme, currNode_global->type);
+            }
         }
         else {
-            //semanticErrors ++;
-            printf("Line no. %d: Undeclared Variable %s\n", curr->line, curr->lex);
-            return NULL;
+            printf("Retrived global identifier for lex: %s, type: %d\n", currNode->token->lexeme, currNode->type);
         }
+
+        //printf("ValArith mai createINode hua kya?\n");
+        // identifierNode* notGlobalCurr = currNode;
+        // notGlobalCurr->global = false;
+        // notGlobalCurr = (identifierNode*)retrieve(SymbolTable, notGlobalCurr, curr->nodeType);
+        // //printf("ValArith mai retrieve hua kya?\n");
+        // identifierNode* globalCurr = currNode;
+        // globalCurr->global = true;
+        // globalCurr = (identifierNode*)retrieve(SymbolTable, globalCurr, curr->nodeType);
+        // if (globalCurr)
+        // {
+        //     printf("In valArith globalCurr, retrived type is %d for lexeme: %s\n", globalCurr->type, globalCurr->token->lexeme);
+        //     currNode = globalCurr;
+        // }
+        // else if (notGlobalCurr){
+        //     printf("In valArith notglobalCurr, retrived type is %d for lexeme: %s\n", globalCurr->type, globalCurr->token->lexeme);
+        //     currNode = notGlobalCurr;
+        // }
+        // else {
+        //     //semanticErrors ++;
+        //     printf("Line no. %d: Undeclared Variable %s\n", curr->line, curr->lex);
+        //     return NULL;
+        // }
         
         // free(notGlobalCurr);
         // free(globalCurr);
@@ -226,33 +313,79 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         //record/union from symbol table
 
         //NESTED RECORDS
-        recordField * fieldList = NULL;
-        if(currNode->type == RECORD_TYPE){
-            fieldList = currNode->recordList->fieldList;
-        }
-        else if (currNode->type == UNION_TYPE){
-            fieldList = currNode->unionList->fieldList;
-        }
-    
-        if(curr->nodeType != RECORD_OR_UNION && attribute != NULL){
-            printf("Variable not of type record or union.\n");
-            //semanticErrors++;
-        }
-        else if (curr->nodeType == RECORD_OR_UNION && attribute != NULL) {
-            for(;fieldList!=NULL;fieldList->next){
-                if(strcmp(attribute->lex, fieldList->token->lexeme) == 0){
-                    return createINode(NULL,func,fieldList->type,false,&localOffset);
+
+        else if ((currNode->type == RECORD_TYPE || currNode->type == UNION_TYPE) && attribute != NULL)
+        {
+            Type currType = currNode->type;
+            char* fConcatLex = (char*)malloc(sizeof(char)*strlen(curr->lex));
+            strcpy(fConcatLex, curr->lex);
+
+            printf("\nConcatenating Second Child in ValAss: \n\n\n\n\n");
+            while(attribute) {
+                int x = strlen(fConcatLex);
+                int y = strlen(attribute->lex);
+                fConcatLex = (char*)realloc(fConcatLex, sizeof(char)*(x+y+1));
+                char dot[] = ".";
+                strcat(fConcatLex, dot);
+                strcat(fConcatLex, attribute->lex);
+                            
+                identifierNode* retNode = createINode(attribute, func, -1, false, &localOffset);
+                retNode->token->lexeme = fConcatLex;
+
+                identifierNode* fidNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
+                printf("%s\n", fConcatLex);
+
+                if(fidNode == NULL) {
+                    printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                    //semanticErrors++;
+                    return NULL;
                 }
+                currNode = fidNode;
+                attribute = attribute->nextSibling;
             }
-            if(fieldList == NULL) {
-                printf("Field not present in the record.\n");
-                // semanticErrors++;
-                return NULL;
-            }
-        }
-        else if (curr->nodeType != RECORD_OR_UNION && attribute == NULL){
             return currNode;
         }
+        else if ((currNode->type == RECORD_TYPE || currNode->type == UNION_TYPE) && attribute == NULL) {
+            printf("Line no %d: Record %s has no fields.\n", curr->line, curr->lex);
+            //semanticErrors++;
+            return NULL;
+        }
+        else if ((currNode->type != RECORD_TYPE || currNode->type != UNION_TYPE) && attribute != NULL) {
+            printf("Line no. %d: Variale %s not of type record.\n", curr->line, curr->lex);
+            //semanticErrors++;
+            return NULL;
+
+        }
+        else if ((currNode->type != RECORD_TYPE || currNode->type != UNION_TYPE) && attribute == NULL){
+            return currNode;
+        }
+        // recordField * fieldList = NULL;
+        // if(currNode->type == RECORD_TYPE){
+        //     fieldList = currNode->recordList->fieldList;
+        // }
+        // else if (currNode->type == UNION_TYPE){
+        //     fieldList = currNode->unionList->fieldList;
+        // }
+    
+        // if((currNode->type != RECORD_TYPE || currNode->type != UNION_TYPE) && attribute != NULL){
+        //     printf("Variable not of type record or union.\n");
+        //     //semanticErrors++;
+        // }
+        // else if ((currNode->type == RECORD_TYPE || currNode->type == UNION_TYPE) && attribute != NULL) {
+        //     for(;fieldList!=NULL;fieldList->next){
+        //         if(strcmp(attribute->lex, fieldList->token->lexeme) == 0){
+        //             return createINode(NULL,func,fieldList->type,false,&localOffset);
+        //         }
+        //     }
+        //     if(fieldList == NULL) {
+        //         printf("Field not present in the record.\n");
+        //         // semanticErrors++;
+        //         return NULL;
+        //     }
+        // }
+        // else if ((currNode->type != RECORD_TYPE || currNode->type != UNION_TYPE) && attribute == NULL){
+        //     return currNode;
+        // }
     }
 
     //operator node
@@ -377,7 +510,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         // else if(isOperator(fChild) == false && isOperator(sChild) == false) {
 
         //     //both int/real
-        //     if(isIntReal(fChild) == true && isIntReal(sChild) == true){
+        //     if(isNumRnum(fChild) == true && isNumRnum(sChild) == true){
         //         //both int, both real;
         //         if(fType == sType) {
         //             return createINode(fChild, func, fChild->nodeType, false, &localOffset);
@@ -459,13 +592,13 @@ void validateFunCall (ast* call, ast* func) {
     //fetching calling func node from ST
     functionNode* callingFunctionNode = createFNode(func); //to be modified
     functionNode* tempCalling = callingFunctionNode;
-    callingFunctionNode = retrieve(SymbolTable, callingFunctionNode, call->nodeType);
+    callingFunctionNode =(functionNode *)retrieve(SymbolTable, callingFunctionNode, FUNCTION_SEQ);
     free(tempCalling);
 
     //fetching called func node from ST
     functionNode* calledFunctionNode = createFNode(funcIdentifier); //to be modified
     functionNode* tempCalled = calledFunctionNode;
-    calledFunctionNode = retrieve(SymbolTable, calledFunctionNode, funcIdentifier->nodeType);
+    calledFunctionNode = (functionNode*)retrieve(SymbolTable, calledFunctionNode, FUNCTION_SEQ);
     free(tempCalled);
 
     //calling a non-existing function
@@ -497,38 +630,45 @@ void validateFunCall (ast* call, ast* func) {
 
         //retrieve from ST node corresponding to AST
         Type opGivenType = TypeUsingAST(opGivenPars->nodeType, opGivenPars->is_union);
+        
         identifierNode* opGivenNode = createINode(opGivenPars, func, opGivenType, false, &localOffset);
-        identifierNode* notGlobalOPgiven = opGivenNode;
-        notGlobalOPgiven->global = false;
-        notGlobalOPgiven = retrieve(SymbolTable, notGlobalOPgiven, opGivenPars->nodeType);
-        identifierNode* globalOPgiven = opGivenNode;
-        globalOPgiven->global = true;
-        globalOPgiven = retrieve(SymbolTable, globalOPgiven, opGivenPars->nodeType);
+        opGivenNode = (identifierNode*)retrieve(SymbolTable, opGivenNode, ID);
 
-        if(globalOPgiven){
-            opGivenNode = globalOPgiven;
-        }
-        else if(notGlobalOPgiven){
-            opGivenNode = notGlobalOPgiven;
-        }
-        else {
-            opGivenNode = NULL;
-        }
+        if (opGivenNode == NULL)
+        {
+            identifierNode *opGivenNode_global = createINode(opGivenPars, func, -1, true, &localOffset);
+            opGivenNode_global = (identifierNode *)retrieve(SymbolTable, opGivenPars, ID);
+            printf("Chcekpoint 2 post retrieve in ValFunCall.\n");
 
-        if(opGivenNode == NULL) {
-            printf("Undeclared Variable\n");
-            //semanticErrors++;
-            return;
+            if (opGivenNode_global == NULL)
+            {
+                // semanticErrors ++;
+                printf("Line no. %d: Undeclared given op Variable HERE IN ValFunCall %s.\n", opGivenPars->line, opGivenPars->lex);
+                return;
+            }
+            else
+            {
+                opGivenNode = opGivenNode_global;
+                printf("Retrived global identifier for given op lex: %s, type: %d in ValFunCall\n", opGivenNode_global->token->lexeme, opGivenNode_global->type);
+            }
+        }
+        else
+        {
+            printf("Retrived non global identifier for given op lex: %s type: %d nodetype: %d in ValFunCall\n", opGivenNode->token->lexeme, opGivenNode->type, opGivenPars->nodeType);
         }
 
         Type opSTtype = TypeUsingAST(opSTpars->nodeType, opSTpars->is_union);
         
         //initialising identifier node
-        identifierNode* opSTnode;
+        identifierNode* opSTnode = (identifierNode*)malloc(sizeof(identifierNode));
         opSTnode->width = 0;
         opSTnode->offset = 0;
         opSTnode->type = opSTtype;
+       
+        opSTnode->token = (tokenInfo*)malloc(sizeof(tokenInfo));
         opSTnode->token = opSTpars->token;
+
+        opSTnode->function = (tokenInfo*)malloc(sizeof(tokenInfo));
         opSTnode->function = calledFunctionNode->token;
         opSTnode->recordList = NULL;
         opSTnode->unionList = NULL;
@@ -537,7 +677,7 @@ void validateFunCall (ast* call, ast* func) {
         opSTnode->next = NULL; 
 
         identifierNode* tempOPST = opSTnode;
-        opSTnode = retrieve(SymbolTable, opSTnode, opSTpars->nodeType);
+        opSTnode = (identifierNode*)retrieve(SymbolTable, opSTnode, ID);
         free(tempOPST);
 
         if(opSTnode->type == opGivenNode->type) {
@@ -579,14 +719,16 @@ void validateFunCall (ast* call, ast* func) {
         opSTpars = opSTpars->next;
     }
 
-    if(opGivenPars != NULL) {
-        printf("Function call has extra output parameters\n");
+    if(opSTpars == NULL && opGivenPars == NULL) {
+        
+    }
+    else if(opGivenPars != NULL) {
+        printf("Line no. %d: Function call has extra output parameters\n", opGivenPars->line);
         //semanticErrors++;
         //return;
     }
-
-    if(opSTpars != NULL) {
-        printf("Function call has insufficient output parameters.\n");
+    else if(opSTpars != NULL) {
+        printf("Line no. %d: Function call has insufficient output parameters.\n", opGivenPars->line);
         //semanticErrors++;
         //return;
     }
@@ -602,37 +744,43 @@ void validateFunCall (ast* call, ast* func) {
         //retrieve from ST node corresponding to AST
         Type ipGivenType = TypeUsingAST(ipGivenPars->nodeType, ipGivenPars->is_union);
         identifierNode* ipGivenNode = createINode(ipGivenPars, func, ipGivenType, false, &localOffset);
-        identifierNode* notGlobalIPgiven = ipGivenNode;
-        notGlobalIPgiven->global = false;
-        notGlobalIPgiven = retrieve(SymbolTable, notGlobalIPgiven, ipGivenPars->nodeType);
-        identifierNode* globalIPgiven = ipGivenNode;
-        globalIPgiven->global = true;
-        globalIPgiven = retrieve(SymbolTable, globalIPgiven, ipGivenPars->nodeType);
+        ipGivenNode = (identifierNode*)retrieve(SymbolTable, ipGivenNode, ID);
 
-        if(globalIPgiven){
-            ipGivenNode = globalIPgiven;
-        }
-        else if(notGlobalIPgiven){
-            ipGivenNode = notGlobalIPgiven;
-        }
-        else {
-            ipGivenNode = NULL;
-        }
+        if (ipGivenNode == NULL)
+        {
+            identifierNode *ipGivenNode_global = createINode(ipGivenPars, func, -1, true, &localOffset);
+            ipGivenNode_global = (identifierNode *)retrieve(SymbolTable, ipGivenPars, ID);
+            printf("Chcekpoint 2 post retrieve in ValFunCall.\n");
 
-        if(ipGivenNode == NULL) {
-            printf("Undeclared Variable in function call input\n");
-            //semanticErrors++;
-            return;
+            if (ipGivenNode_global == NULL)
+            {
+                // semanticErrors ++;
+                printf("Line no. %d: Undeclared given ip Variable HERE IN ValFunCall %s.\n", ipGivenPars->line, ipGivenPars->lex);
+                return;
+            }
+            else
+            {
+                ipGivenNode = ipGivenNode_global;
+                printf("Retrived global identifier for given ip lex: %s, type: %d in ValFunCall %d.\n", ipGivenNode_global->token->lexeme, ipGivenNode_global->type,ipGivenPars->nodeType);
+            }
+        }
+        else
+        {
+            printf("Retrived non global identifier for ip lex: %s type: %d nodetype: %d in ValFun Call\n", ipGivenNode->token->lexeme, ipGivenNode->type, ipGivenPars->nodeType);
         }
 
         Type ipSTtype = TypeUsingAST(ipSTpars->nodeType, ipSTpars->is_union);
         
         //initialising identifier node
-        identifierNode* ipSTnode;
+        identifierNode* ipSTnode = (identifierNode*)malloc(sizeof(identifierNode));
         ipSTnode->width = 0;
         ipSTnode->offset = 0;
         ipSTnode->type = ipSTtype;
+        
+        ipSTnode->token = (tokenInfo *)malloc(sizeof(tokenInfo));
         ipSTnode->token = ipSTpars->token;
+        
+        ipSTnode->function = (tokenInfo *)malloc(sizeof(tokenInfo));
         ipSTnode->function = calledFunctionNode->token;
         ipSTnode->recordList = NULL;
         ipSTnode->unionList = NULL;
@@ -641,9 +789,10 @@ void validateFunCall (ast* call, ast* func) {
         ipSTnode->next = NULL; 
 
         identifierNode* tempIPST = ipSTnode;
-        ipSTnode = retrieve(SymbolTable, ipSTnode, ipSTpars->nodeType);
+        ipSTnode = (identifierNode*)retrieve(SymbolTable, ipSTnode, ID);
         free(tempIPST);
 
+        printf("Is this being printed when ipst\n");
         if(ipSTnode->type == ipGivenNode->type) {
             Type nType = ipSTnode->type;
             switch(nType) {
@@ -702,28 +851,53 @@ void validateRead(ast* curr, ast* func) {
     int localOffset = 0;
     Type currType = TypeUsingAST(curr->nodeType, curr->is_union);
     identifierNode* currNode = createINode(curr, func, currType, false, &localOffset);    
-    identifierNode* notGlobalCurr = currNode;
-    notGlobalCurr->global = false;
-    notGlobalCurr = retrieve(SymbolTable, notGlobalCurr, curr->nodeType);
-    identifierNode* globalCurr = currNode;
-    globalCurr->global = true;
-    globalCurr = retrieve(SymbolTable, globalCurr, curr->nodeType);
+    currNode = (identifierNode*)retrieve(SymbolTable, currNode, ID);
 
-    if(globalCurr){
-            currNode = globalCurr;
+    if (currNode == NULL)
+    {
+        identifierNode *currNode_global = createINode(curr, func, -1, true, &localOffset);
+        currNode_global = (identifierNode *)retrieve(SymbolTable, curr, ID);
+        printf("Chcekpoint 2 post retrieve in ValRead.\n");
+
+        if (currNode_global == NULL)
+        {
+            // semanticErrors ++;
+            printf("Line no. %d: Undeclared Variable HERE %s in ValRead.\n", curr->line, curr->lex);
+            return;
         }
-    else if(notGlobalCurr){
-        currNode = notGlobalCurr;
+        else
+        {
+            currNode = currNode_global;
+            printf("Retrived global identifier for lex: %s, type: %d in ValRead\n", currNode_global->token->lexeme, currNode_global->type);
+        }
     }
-    else {
-        currNode = NULL;
-        printf("Undeclared Variable in read.\n");
-        //semanticErrors++;
-        return;
+    else
+    {
+        printf("Retrived non global identifier for lex: %s type: %d nodetype: %d in ValRead\n", currNode->token->lexeme, currNode->type, curr->nodeType);
     }
+
+    // identifierNode* notGlobalCurr = currNode;
+    // notGlobalCurr->global = false;
+    // notGlobalCurr = retrieve(SymbolTable, notGlobalCurr, ID);
+    // identifierNode* globalCurr = currNode;
+    // globalCurr->global = true;
+    // globalCurr = retrieve(SymbolTable, globalCurr, ID);
+
+    // if(globalCurr){
+    //         currNode = globalCurr;
+    //     }
+    // else if(notGlobalCurr){
+    //     currNode = notGlobalCurr;
+    // }
+    // else {
+    //     currNode = NULL;
+    //     printf("Undeclared Variable in read.\n");
+    //     //semanticErrors++;
+    //     return;
+    // }
 
     if(curr->firstChild != NULL) {
-        if(curr->nodeType != RECORD_OR_UNION) {
+        if((currNode->type != RECORD_TYPE || currNode->type != UNION_TYPE)) {
             printf("Variable is not of type record/union.");
             //semanticErrors++:
             return;
@@ -743,29 +917,53 @@ void validateWrite(ast* curr, ast* func) {
     curr = curr->firstChild;
     int localOffset = 0;
     Type currType = TypeUsingAST(curr->nodeType, curr->is_union);
-    identifierNode* currNode = createINode(curr, func, currType, false, &localOffset);    
-    identifierNode* notGlobalCurr = currNode;
-    notGlobalCurr->global = false;
-    notGlobalCurr = retrieve(SymbolTable, notGlobalCurr, curr->nodeType);
-    identifierNode* globalCurr = currNode;
-    globalCurr->global = true;
-    globalCurr = retrieve(SymbolTable, globalCurr, curr->nodeType);
+    identifierNode* currNode = createINode(curr, func, currType, false, &localOffset);
 
-    if(globalCurr){
-            currNode = globalCurr;
+    if (currNode == NULL)
+    {
+        identifierNode *currNode_global = createINode(curr, func, -1, true, &localOffset);
+        currNode_global = (identifierNode *)retrieve(SymbolTable, curr, ID);
+        printf("Chcekpoint 2 post retrieve in ValWrite.\n");
+
+        if (currNode_global == NULL)
+        {
+            // semanticErrors ++;
+            printf("Line no. %d: Undeclared Variable HERE %s in ValWrite.\n", curr->line, curr->lex);
+            return;
         }
-    else if(notGlobalCurr){
-        currNode = notGlobalCurr;
+        else
+        {
+            currNode = currNode_global;
+            printf("Retrived global identifier for lex: %s, type: %d in ValWrite\n", currNode_global->token->lexeme, currNode_global->type);
+        }
     }
-    else {
-        currNode = NULL;
-        printf("Undeclared Variable in read.\n");
-        //semanticErrors++;
-        return;
+    else
+    {
+        printf("Retrived non global identifier for lex: %s type: %d nodetype: %d in ValWrite\n", currNode->token->lexeme, currNode->type, curr->nodeType);
     }
+
+    // identifierNode* notGlobalCurr = currNode;
+    // notGlobalCurr->global = false;
+    // notGlobalCurr = retrieve(SymbolTable, notGlobalCurr, ID);
+    // identifierNode* globalCurr = currNode;
+    // globalCurr->global = true;
+    // globalCurr = retrieve(SymbolTable, globalCurr, ID);
+
+    // if(globalCurr){
+    //         currNode = globalCurr;
+    //     }
+    // else if(notGlobalCurr){
+    //     currNode = notGlobalCurr;
+    // }
+    // else {
+    //     currNode = NULL;
+    //     printf("Undeclared Variable in read.\n");
+    //     //semanticErrors++;
+    //     return;
+    // }
 
     if(curr->firstChild != NULL) {
-        if(curr->nodeType != RECORD_OR_UNION) {
+        if((currNode->type != RECORD_TYPE || currNode->type != UNION_TYPE)) {
             printf("Variable is not of type record/union.");
             //semanticErrors++:
             return;
@@ -791,7 +989,7 @@ void validateIterative(ast* curr, ast* func) {
 }
 
 int isRelOp(ast* curr) {
-    if(curr->nodeType == LESS_THAN || curr->nodeType == LESS_EQUAL || curr->nodeType == EQUAL || curr->nodeType == GREATER_THAN || curr->nodeType == GREATER_EQUAL) {
+    if(curr->nodeType == LESS_THAN || curr->nodeType == LESS_EQUAL || curr->nodeType == EQUAL || curr->nodeType == GREATER_THAN || curr->nodeType == GREATER_EQUAL || curr->nodeType == NOT_EQUAL) {
         return 1;
     }
     else {
@@ -803,8 +1001,15 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
     int localOffset = 0;
     printf("Entered valBool with current lexeme: %s, and function lexeme: %s\n", curr->lex, func->lex);
     if(curr->nodeType == AND || curr->nodeType == OR) {
-        validateBoolean(curr->firstChild, func);
-        return validateBoolean(curr->firstChild->nextSibling, func);
+        identifierNode* fNode = validateBoolean(curr->firstChild, func);
+        identifierNode* sNode = validateBoolean(curr->firstChild->nextSibling, func);
+
+        if(fNode == NULL || sNode == NULL) {
+            return NULL;
+        }
+        else {
+            return fNode;
+        }
     }
     else if(isRelOp(curr)) {
         //      relop
@@ -814,29 +1019,31 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
         printf("It is relOp with lexeme: %s\n", curr->lex);
         ast* fChild = curr->firstChild;
         ast* sChild = curr->firstChild->nextSibling;
-        if(isIntReal(fChild) == true && isIntReal(sChild) == true) {
+        if(isNumRnum(fChild) == true && isNumRnum(sChild) == true) {
             if(fChild->nodeType == sChild->nodeType) {
                 Type type = (fChild->nodeType == INTEGER) ? INT_TYPE : REAL_TYPE;
                 return createINode(fChild, func, type, false, &localOffset);
             }
             else {
-                printf("Operand Type error mismatch on Line no. %d\n", curr->line);
+                printf("Line no. %d: Operand Type error mismatch\n", curr->line);
                 return NULL;
             }
         } 
         else {
-            printf("Both are not integer or real\n");
+            //printf("\nLine no. %d: Both are not integer or real\n", curr->line);
             identifierNode* fNode, *sNode;
+            
             if(fChild->nodeType == ID && sChild->nodeType == ID) {
+                printf("\nBoth are identfiers\n");
                 //create temp nodes to lookup in symbol table
                 identifierNode* t1 = createINode(fChild, func, -1, false, &localOffset);
                 identifierNode* t1_global = createINode(fChild, func, -1, true, &localOffset);
                 fNode = (identifierNode*)retrieve(SymbolTable, t1, ID);
-                printf("fNode retrieved with lexeme: %s\n", fNode->token->lexeme);
+                printf("In validateBoolean fNode retrieved with lexeme: %s\n", fNode->token->lexeme);
                 if(fNode == NULL) {
                     fNode = (identifierNode*)retrieve(SymbolTable, t1_global, ID);
                     if(fNode == NULL) {
-                        printf("Using undeclared identifier %s on line no. %d\n", fChild->lex, fChild->line);
+                        printf("Line no. %d: Using undeclared identifier %s\n", fChild->line, fChild->lex);
                     }
                 }
                 t1 = createINode(sChild, func, -1, false, &localOffset);
@@ -846,7 +1053,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                 if(sNode == NULL) {
                     sNode = (identifierNode*)retrieve(SymbolTable, t1_global, ID);
                     if(sNode == NULL) {
-                        printf("Using undeclared identifier %s on line no. %d\n", sChild->lex, sChild->line);
+                        printf("Line no. %d: Using undeclared identifier %s\n", sChild->line, sChild->lex);
                         return NULL;
                     }
                 }
@@ -854,84 +1061,232 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                 if((fNode->type == INT_TYPE || fNode->type == REAL_TYPE) && (sNode->type == INT_TYPE || sNode->type == REAL_TYPE)) {
                     if(fNode->type == sNode->type) {
                         //return createINode(, func, fNode->type, false, &localOffset);
+                        printf("\nLeft and right nodes are not records\n");
                         return fNode;
                     }
                     else {
-                        printf("Operand Type error mismatch on Line no. %d\n", curr->line);
+                        printf("Line no. %d: Operand Type error mismatch\n", curr->line);
                     }
                 }
 
                 else {
                     //the node is a record or union
-                    if(fChild->firstChild == NULL) {
-                        printf("Line no. %d: Record or Union type can not be used with relational operator", fChild->line);
+                    printf("\nIn valBool, one of the nodes is a record or union\n");
+                    if(fChild->firstChild == NULL && (fNode->type == RECORD_TYPE || fNode->type == UNION_TYPE)) {
+                        printf("Line no. %d: Record or Union type can not be used with relational operator\n", fChild->line);
                     }
-                    if(sChild->firstChild == NULL) {
-                        printf("Line no. %d: Record or Union type can not be used with relational operator", sChild->line);
+                    if(sChild->firstChild == NULL && (sNode->type == RECORD_TYPE || sNode->type == UNION_TYPE)) {
+                        printf("Line no. %d: Record or Union type can not be used with relational operator\n", sChild->line);
                         return NULL;
                     }
 
                     //this part will only be reached if there is an expansion
                     //iterate through the node, retrieve their node in each loop
                     //call searchInFieldList, if it is present then proceed
+                    
                     ast* fFieldId = fChild->firstChild;
                     ast* sFieldId = sChild->firstChild;
-                    identifierNode* currNode = fNode;
+
+                    char* fConcatLex = (char*)malloc(sizeof(char)*strlen(fChild->lex));
+                    strcpy(fConcatLex, fChild->lex);
+
+                    printf("\nConcatenating Second Child: \n\n\n\n\n");
                     while(fFieldId) {
-                        recordUnionNode* temp = (currNode->recordList == NULL) ? currNode->unionList : currNode->recordList;
-                        if(temp == NULL && fFieldId->nextSibling != NULL) {
-                            printf("Line no. %d: Identifiers of type int or real can not have field IDs\n", fFieldId->line);
+                        int x = strlen(fConcatLex);
+                        int y = strlen(fFieldId->lex);
+                        fConcatLex = (char*)realloc(fConcatLex, sizeof(char)*(x+y+1));
+                        char dot[] = ".";
+                        strcat(fConcatLex, dot);
+                        strcat(fConcatLex, fFieldId->lex);
+                        
+                        identifierNode* retNode = createINode(fFieldId, func, -1, false, &localOffset);
+                        retNode->token->lexeme = fConcatLex;
+
+                        identifierNode* fidNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
+                        printf("%s\n", fConcatLex);
+
+                        if(fidNode == NULL) {
+                            printf("Line no %d: No field name %s in the Record or union\n", fFieldId->line, fFieldId->lex);
+                            fNode = fidNode;
                             break;
                         }
-                        recordField* currField = searchInFieldList(fFieldId, temp->fieldList);
-                        if(currField == NULL) {
-                            printf("Line no. %d: No such field identifier %s\n", fFieldId->line, fFieldId->lex);
-                        }
-                        
-                        identifierNode* retNode = (identifierNode*)malloc(sizeof(identifierNode));
-                        retNode->width = currField->width;
-                        retNode->offset = -1;
-                        retNode->type = currField->type;
-                        
-                        retNode->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-                        retNode->token->lexeme = currField->token->lexeme;
-                        retNode->token->tid = currField->token->tid;
-                        retNode->token->numVal = currField->token->numVal;
-                        retNode->token->lineNo = currField->token->lineNo;
-
-                        retNode->function = (tokenInfo*)malloc(sizeof(tokenInfo));
-                        currNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
+                        fNode = fidNode;
                         fFieldId = fFieldId->nextSibling;
                     }
 
-                    currNode = sNode;
+                    char* sConcatLex = (char*)malloc(sizeof(char)*strlen(sChild->lex));
+                    strcpy(sConcatLex, sChild->lex);
+
+                    printf("\nConcatenating First Child: \n\n\n\n\n");
                     while(sFieldId) {
-                        recordUnionNode* temp = (currNode->recordList == NULL) ? currNode->unionList : currNode->recordList;
-                        if(temp == NULL && sFieldId->nextSibling != NULL) {
-                            printf("Line no. %d: Identifiers of type int or real can not have field IDs\n", fFieldId->line);
-                            return NULL;
+                        int x = strlen(sConcatLex);
+                        int y = strlen(sFieldId->lex);
+                        sConcatLex = (char*)realloc(sConcatLex, sizeof(char)*(x+y+1));
+                        char dot[] = ".";
+                        strcat(sConcatLex, dot);
+                        strcat(sConcatLex, sFieldId->lex);
+                        
+                        identifierNode* retNode = createINode(sFieldId, func, -1, false, &localOffset);
+                        retNode->token->lexeme = sConcatLex;
+
+                        identifierNode* fidNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
+                        printf("%s\n", sConcatLex);
+
+                        if(fidNode == NULL) {
+                            printf("Line no %d: No field name %s in the Record or union\n", sFieldId->line, sFieldId->lex);
+                            sNode = fidNode;
+                            break;
                         }
-                        recordField* currField = searchInFieldList(fFieldId, temp->fieldList);
-                        if(currField == NULL) {
-                            printf("Line no. %d: No such field identifier %s\n", sFieldId->line, sFieldId->lex);
-                        }
-                        identifierNode* retNode = (identifierNode*)malloc(sizeof(identifierNode));
-                        retNode->width = currField->width;
-                        retNode->offset = -1;
-                        retNode->type = currField->type;
-                        retNode->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-                        retNode->token->lexeme = currField->token->lexeme;
-                        retNode->token->tid = currField->token->tid;
-                        retNode->token->numVal = currField->token->numVal;
-                        retNode->token->lineNo = currField->token->lineNo;
-                        currNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
+                        sNode = fidNode;
                         sFieldId = sFieldId->nextSibling;
                     }
+                    printf("Concatenation ended\n");
 
-                    //currently fFieldId and sFieldId are at the end
-                    //they have to be INTEGER or REAL 
+                    if(fNode == NULL || sNode == NULL) {
+                        return NULL;
+                    }
+                    
+                    if(fNode->type == sNode->type) {
+                        if(fNode->type == INT_TYPE || fNode->type == REAL_TYPE) {
+                            return fNode;
+                        }
+                        else {
+                            printf("Line no %d: Type error mismatch\n", fNode->token->lineNo);
+                            return NULL;
+                        }
+                    }
+                    else {
+                        printf("Line no %d: Type error mismatch\n", fNode->token->lineNo);
+                        return NULL;
+                    }
+                }
+            }
+            else {
+                printf("\nOne is ID and other is not\n");
+                if(fChild->nodeType == ID) {
+                    identifierNode* t1 = createINode(fChild, func, -1, false, &localOffset);
+                    identifierNode* t1_global = createINode(fChild, func, -1, true, &localOffset);
+                    fNode = (identifierNode*)retrieve(SymbolTable, t1, ID);
+                    printf("In validateBoolean fNode retrieved with lexeme: %s\n", fNode->token->lexeme);
+                    if(fNode == NULL) {
+                        fNode = (identifierNode*)retrieve(SymbolTable, t1_global, ID);
+                        if(fNode == NULL) {
+                            printf("Line no. %d: Using undeclared identifier %s\n", fChild->line, fChild->lex);
+                            return NULL;
+                        }
+                    }
 
+                    Type currType = fNode->type;
+                    if(currType == RECORD_TYPE || currType == UNION_TYPE) {
+                        if(fChild->firstChild == NULL) {
+                            printf("Line no. %d: Relational operator can not be used with Unions or records\n", fChild->line);
+                            return NULL;
+                        }
+                        else {
+                            ast* fFieldId = fChild->firstChild;
 
+                            char* fConcatLex = (char*)malloc(sizeof(char)*strlen(fChild->lex));
+                            strcpy(fConcatLex, fChild->lex);
+
+                            printf("\n\nConcatenation starting for fFieldId, current conclex: %s\n\n\n", fConcatLex);
+                            while(fFieldId) {
+                                int x = strlen(fConcatLex);
+                                int y = strlen(fFieldId->lex);
+                                fConcatLex = (char*)realloc(fConcatLex, sizeof(char)*(x+y+1));
+                                char dot[] = ".";
+                                strcat(fConcatLex, dot);
+                                strcat(fConcatLex, fFieldId->lex);
+                                printf("Current state of conlex: %s\n", fConcatLex);
+                                
+                                identifierNode* retNode = createINode(fFieldId, func, -1, false, &localOffset);
+                                retNode->token->lexeme = fConcatLex;
+                                
+
+                                identifierNode* fidNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
+                                printf("Retrieved fidNode dk if it is NULL or not tho, vibes XOXOXO yass kween\n");
+                                if(fidNode == NULL) {
+                                    printf("Line no %d: No field name %s in the Record or union\n", fFieldId->line, fFieldId->lex);
+                                    fNode = fidNode;
+                                    break;
+                                }
+                                else {
+                                    printf("Retrived successfully, fidNode lex: %s\n", fidNode->token->lexeme);
+                                    fNode = fidNode;
+                                    fFieldId = fFieldId->nextSibling;
+                                }
+                            }
+                        }
+                    }
+                    if((currType == INT_TYPE && sChild->nodeType == NUM) || (currType == REAL_TYPE && sChild->nodeType == RNUM)) {
+                        //printf("Line no. %d: Operand type mismatch", fChild->line);
+                        return fNode;
+                    }
+                    else {
+                        printf("Line no. %d: Operand type mismatch\n", fChild->line);
+                        return NULL;
+                    }
+                }
+                else if(sChild->nodeType == ID) {
+                    identifierNode* t1 = createINode(fChild, func, -1, false, &localOffset);
+                    identifierNode* t1_global = createINode(fChild, func, -1, true, &localOffset);
+                    sNode = (identifierNode*)retrieve(SymbolTable, t1, ID);
+                    printf("In validateBoolean fNode retrieved with lexeme: %s\n", fNode->token->lexeme);
+                    if(sNode == NULL) {
+                        sNode = (identifierNode*)retrieve(SymbolTable, t1_global, ID);
+                        if(sNode == NULL) {
+                            printf("Line no. %d: Using undeclared identifier %s\n", fChild->line, fChild->lex);
+                            return NULL;
+                        }
+                    }
+                    
+                    Type currType = sNode->type;
+                    if(currType == RECORD_TYPE || currType == UNION_TYPE) {
+                        if(sChild->firstChild == NULL) {
+                            printf("Line no. %d: Relational operator can not be used with Unions or records\n", fChild->line);
+                            return NULL;
+                        }
+                        else {
+                            char *sConcatLex = (char *)malloc(sizeof(char) * strlen(sChild->lex));
+                            strcpy(sConcatLex, sChild->lex);
+
+                            ast* sFieldId = sChild->firstChild;
+
+                            printf("\nConcatenating Second Child: \n\n\n\n\n");
+                            while (sFieldId)
+                            {
+                                int x = strlen(sConcatLex);
+                                int y = strlen(sFieldId->lex);
+                                sConcatLex = (char *)realloc(sConcatLex, sizeof(char) * (x + y + 1));
+                                char dot[] = ".";
+                                strcat(sConcatLex, dot);
+                                strcat(sConcatLex, sFieldId->lex);
+
+                                identifierNode *retNode = createINode(sFieldId, func, -1, false, &localOffset);
+                                retNode->token->lexeme = sConcatLex;
+
+                                identifierNode *fidNode = (identifierNode *)retrieve(SymbolTable, retNode, ID);
+                                printf("%s\n", sConcatLex);
+
+                                if (fidNode == NULL)
+                                {
+                                    printf("Line no %d: No field name %s in the Record or union\n", sFieldId->line, sFieldId->lex);
+                                    sNode = fidNode;
+                                    break;
+                                }
+                                sNode = fidNode;
+                                sFieldId = sFieldId->nextSibling;
+                            }
+                            printf("Concatenation ended\n");
+                        }
+                    }
+                    if((currType == INT_TYPE && fChild->nodeType == NUM) || (currType == REAL_TYPE && fChild->nodeType == RNUM)) {
+                        //printf("Line no. %d: Operand type mismatch", fChild->line);
+                        return sNode;
+                    }
+                    else {
+                        printf("Line no. %d: Operand type mismatch", fChild->line);
+                        return NULL;
+                    }
                 }
             }
         }
@@ -985,14 +1340,22 @@ void validateReturn(ast* curr, ast* func) {
 }
 
 void validateConditional(ast* curr, ast* func) {
+    printf("Entered valCon with func: %s\n", func->lex);
     validateBoolean(curr->firstChild, func);
     handleStmt(curr->firstChild->nextSibling, func);
+    printf("Handled the first stmt in Conditional for lexeme %s\n", curr->firstChild->nextSibling->lex);
     ast* iter = curr->firstChild->nextSibling->nextSibling;
+    if(iter == NULL) {
+        printf("Else part hai hi nahi\n");
+        return;
+    }
     while(iter != NULL && iter->nodeType != ELSE) {
+        printf("Entering while loop in valCond with lex: %s and function: %s\n", iter->lex, func->lex);
         handleStmt(iter, func);
+        printf("Handled the while loop stmt in Conditional for lexeme %s with firstChild lex: %s\n", iter->lex, iter->firstChild->lex);
         iter = iter->nextSibling;
     }
-    if(iter->nodeType == ELSE) {
+    if(iter != NULL && iter->nodeType == ELSE) {
         handleStmt(iter->firstChild, func);
         iter = iter->nextSibling;
         while(iter != NULL) {
@@ -1000,9 +1363,15 @@ void validateConditional(ast* curr, ast* func) {
             iter = iter->nextSibling;
         }
     }
+    else {
+        return;
+    }
 }
 
 void handleStmt(ast* curr, ast* func) {
+    if(curr == NULL) {
+        return;
+    }
     switch(curr->nodeType) {
         case ASSIGNOP:
             //TODO: write the correct order of calling
@@ -1026,21 +1395,23 @@ void handleStmt(ast* curr, ast* func) {
             validateWrite(curr, func);
             break;
         case CALL:
+            printf("\n\nEntered validateFunCall for lex: %s\n", curr->lex);
             validateFunCall(curr, func);
+            printf("\n\nExited validateFunCall for lex: %s\n", curr->lex);
             break;
     }
+    handleStmt(curr->firstChild, func);
 }
 
 void validateFunction(ast* curr) {
     if(curr == NULL) {
         return;
     }
-    printf("\nIn validate function, current function name: %s\n", curr->lex);
+    printf("\nIn validate function, current node name: %s\n", curr->lex);
     ast* child = curr->firstChild;
     for(; child!=NULL; child=child->nextSibling) {
-        printf("In valFunc, going to handleStmt, child lexeme: %s\n", child->lex);
+        printf("\nIn valFunc, going to handleStmt, child lexeme: %s and curr lexeme: %s\n", child->lex, curr->lex);
         handleStmt(child, curr);
-        validateFunction(child);
-        printf("Finished validateFunction inside for loop, child lexeme: %s\n", child->lex);
+        printf("\nFinished validateFunction inside for loop, child lexeme: %s\n", child->lex);
     }
 }
