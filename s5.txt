@@ -1,0 +1,177 @@
+
+
+%Test Case 5: Semantic analysis - nested while loop variables, function overloading and recursion
+%Details: 
+%        (a) Simple arithmetic expressions involvoing record data types and primitive data types are used in this test case
+%        (b) Multiple modules
+%	 (c) Handles semantic checks relating to number and type of parameters in function modules and 
+%            while loop variable (any one should be assigned a value through assignment, function call or read statements), function overloading and recorsion are 
+%            not allowed
+%        (d) The variables participating in the expression need not be initialized any values. Only test cases for code generation will have all values initialized or read appropriately.
+%	(e) There could be several other errors not reported by me here in this test case. The emphasis is on nested while loop
+% The errors are reported by me in the test cases right in front of the corresponding line in comment form. 
+% It is essential for you to report errors with LINE NUMBERS correctly.	 
+
+%The following source code is expected to be syntactically correct as per the modified grammar.
+%If any line has syntax error, please inform me as that error needs to be fixed in this test case.
+
+
+_nestedwhile  input parameter list [int d5cc34]  
+output parameter list[real d3];
+	type int : b5b567:global;
+	type int : b3;
+	type int : b3bbcc33;
+	type int : b2bbcc;
+	type real : c3bd;
+	type int : c5cc:global;
+	type real : c4;
+	type real: c5;
+	type real: c6:global;
+	type real: c7;
+	b5b567 <--- 1;
+	d3 <--- 0.00;
+	% ERROR- variables of ourmost while loop are not assigned any value
+	while ((c4 >= c5) @@@ (c5>=c6))
+		% ERROR- variables b3bbcc33 or c5cc of the while loop below never get assigned any value
+		while (b3bbcc33 < c5cc)
+			while ( b5b567 <= d5cc34)     %No error as variable b5b567 is assigned value at line number 45
+				read( c3bd);
+				while ( (b3bbcc33 <= d3ddd333) &&& (b2bbcc <= d3ddd333))   %No error as variable b2bbcc is assigned value at line number 43
+					c7 <--- c4 - c5;
+					while (d3 > d2)
+						d3 <--- d3 + c3bd;
+						b2bbcc <--- b5b567 - b3*3;
+					endwhile
+					b5b567 <--- b5b567 + 1;
+				endwhile
+				d3 <--- d3 + c3bd;
+			endwhile
+		endwhile
+	endwhile
+	return [b5b567];
+end
+
+_demoRecords input parameter list[real c6, int b2, record #marks c3b5, record #marks c3b6]
+output parameter list [ record #marks b3c45];
+	type real: c7c3;
+	c7c3 <--- c6 + 36;
+	[c3b5] <---call _readMarks with parameters [b2];      %ERROR- function _readMarks is not defined before calling it
+	[c3b6]<---call _readMarks with parameters [b2];        %ERROR- function _readMarks is not defined before calling it
+	b3c45 <--- c3b5 + c3b6;
+	return [b3c45];
+end
+
+
+
+
+_addRecords input parameter list[int b2, record #marks c3b5, record #marks c3b6]
+output parameter list [ record #marks b3c45];
+	[c3b5] <---call _readMarks with parameters [b2];    %ERROR- function _readMarks is not defined before calling it
+	[c3b6]<---call _readMarks with parameters [b2];      %ERROR- function _readMarks is not defined before calling it
+	b3c45 <--- c3b5 + c3b6;
+	return [b3c45];
+end
+
+_readMarks input parameter list[int b7]
+output parameter list [ record #marks b3c2];
+	read(b3c2.maths);
+	read(b3c2.physics);
+	read(b3c2.chemistry);
+	return [b3c2];
+end
+
+_readMarksNew input parameter list[int b7]
+output parameter list [ record #marks b3c2];
+	read(b3c2.maths);
+	read(b3c2.physics);
+	[b3c2]<---call _readMarksNew with parameters [b7];     %ERROR- Recusion is not valid
+	read(b3c2.chemistry);
+	return [b3c2];
+end
+
+
+%The following program computes the average of marks of total d5cb34567  students
+
+_swapints
+input parameter list [int b2b, int b2c]   
+output parameter list[int c2b, int c2c]; 
+	c2b<---b2c;
+	c2c<---b2b;
+	return [c2b, c2c]; 
+end 
+
+_swaprecs
+input parameter list [record #rec d5b, record #rec d2c]   
+output parameter list[record #rec d5c, record #rec d2b]; 
+	record #marks
+		type real : maths; 
+		type real: physics; 
+		type real: chemistry;
+	endrecord
+
+
+	type int : b3;
+	[b3,b3]<--- call _swapints with parameters [b3,b3];
+	[d5d,d2b]<--- call _swapints with parameters [b3, d5c];
+	return [d2d, d2b];
+end
+
+_swapints					%ERROR- Function overloading is not valid
+input parameter list [int b2b, int b2c]   
+output parameter list[int c2b, int c2c]; 
+	c2b<---b2c;
+	c2c<---b2b;
+	return [c2b, c2c]; 
+end 
+
+_main 
+
+
+
+	record  #rec 
+		type int : len; 
+		type int : height; 
+  	endrecord 
+
+	type real :c4bd56;
+	type int :c2;
+	type int : b5b567:global;
+	type record #marks : d4;
+	type int : b5;
+	type int : d5cb34567;
+	type real : b5;
+	type record #marks : b5c6;
+	type record #rec : b2; 
+	type record #rec : d5b: global; 
+
+
+	b3 <--- 7;
+	read( c2);
+	[c4bd56]<--- call _sumN with parameters [c2];
+	write(c4bd56);
+	
+	b5 <--- 1;
+	read(d5cb34567);
+	b5c6.maths <--- 0.00;
+	b5c6.physics <--- 0.00;
+	b5c6.chemistry <---0.00;
+	while(b5<=d5cb34567)
+		[d4] <--- call _readMarks with parameters [b5];
+		[b5c6] <--- call _addRecords with parameters [b5c6]; 
+		% above displays the sum of records
+		b5 <--- b5 +1;
+	endwhile
+	d4 <--- b5c6 / d5cb34567;
+	write(d4.maths);
+	write(d4.physics);
+	write(d4.chemistry);
+
+	b2.len<---5;
+	b2.height <---7;
+	d5b.len <---10.56;
+	d5b.height <---20;
+	[b2, c2]<--- call _swaprecs with parameters [b2,d5b]; 
+	write(b2);
+	write(c2);
+	return;
+end
