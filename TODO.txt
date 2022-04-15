@@ -19,3 +19,5 @@ activation record size
 
 record types and size
 
+redeclaration errors and line number
+
