@@ -9,11 +9,11 @@ type name
 type expression
 width 
 isGlobal
-
+offset
 
 TODO
 
-offset
+
 
 variable usage
 
