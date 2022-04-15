@@ -103,13 +103,14 @@ void validateAssign(ast* curr, ast* func) {
     identifierNode* notGlobalCurr = lChildNode;
     notGlobalCurr->global = false;
     notGlobalCurr = (identifierNode*)retrieve(SymbolTable, notGlobalCurr, lChild->nodeType);
+    //if(notGlobalCurr) printf("Type of notGlobalCurr: %d\n", notGlobalCurr->type);
     identifierNode* globalCurr = lChildNode;
     globalCurr->global = true;
     globalCurr = (identifierNode*)retrieve(SymbolTable, globalCurr, lChild->nodeType);
     if (globalCurr)
     {
         lChildNode = globalCurr;
-        printf("Retrived global identifier for lex: %s type: %d\n", lChildNode->token->lexeme, lChildNode->type);
+        printf("Retrived global identifier for lex: %s type: %d nodetype: %d\n", lChildNode->token->lexeme, lChildNode->type, lChild->nodeType);
     }
     else if (notGlobalCurr)
     {
@@ -200,9 +201,11 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         globalCurr = (identifierNode*)retrieve(SymbolTable, globalCurr, curr->nodeType);
         if (globalCurr)
         {
+            printf("In valArith globalCurr, retrived type is %d for lexeme: %s\n", globalCurr->type, globalCurr->token->lexeme);
             currNode = globalCurr;
         }
         else if (notGlobalCurr){
+            printf("In valArith notglobalCurr, retrived type is %d for lexeme: %s\n", globalCurr->type, globalCurr->token->lexeme);
             currNode = notGlobalCurr;
         }
         else {
@@ -779,6 +782,7 @@ void validateWrite(ast* curr, ast* func) {
 }
 
 void validateIterative(ast* curr, ast* func) {
+    printf("Entered valIter with current lexeme: %s, and function lexeme: %s\n", curr->lex, func->lex);
     validateBoolean(curr->firstChild, func);
     ast* temp = curr->firstChild->nextSibling;
     for(; temp != NULL; temp = temp->nextSibling) {
@@ -797,6 +801,7 @@ int isRelOp(ast* curr) {
 
 identifierNode* validateBoolean(ast* curr, ast* func) {
     int localOffset = 0;
+    printf("Entered valBool with current lexeme: %s, and function lexeme: %s\n", curr->lex, func->lex);
     if(curr->nodeType == AND || curr->nodeType == OR) {
         validateBoolean(curr->firstChild, func);
         return validateBoolean(curr->firstChild->nextSibling, func);
@@ -806,24 +811,28 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
         //     /
         //    /
         //   ID---->ID
+        printf("It is relOp with lexeme: %s\n", curr->lex);
         ast* fChild = curr->firstChild;
         ast* sChild = curr->firstChild->nextSibling;
         if(isIntReal(fChild) == true && isIntReal(sChild) == true) {
             if(fChild->nodeType == sChild->nodeType) {
                 Type type = (fChild->nodeType == INTEGER) ? INT_TYPE : REAL_TYPE;
-                return createINode(NULL, func, type, false, &localOffset);
+                return createINode(fChild, func, type, false, &localOffset);
             }
             else {
                 printf("Operand Type error mismatch on Line no. %d\n", curr->line);
+                return NULL;
             }
         } 
         else {
+            printf("Both are not integer or real\n");
             identifierNode* fNode, *sNode;
             if(fChild->nodeType == ID && sChild->nodeType == ID) {
                 //create temp nodes to lookup in symbol table
                 identifierNode* t1 = createINode(fChild, func, -1, false, &localOffset);
                 identifierNode* t1_global = createINode(fChild, func, -1, true, &localOffset);
                 fNode = (identifierNode*)retrieve(SymbolTable, t1, ID);
+                printf("fNode retrieved with lexeme: %s\n", fNode->token->lexeme);
                 if(fNode == NULL) {
                     fNode = (identifierNode*)retrieve(SymbolTable, t1_global, ID);
                     if(fNode == NULL) {
@@ -833,6 +842,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                 t1 = createINode(sChild, func, -1, false, &localOffset);
                 t1_global = createINode(sChild, func, -1, true, &localOffset);
                 sNode = (identifierNode*)retrieve(SymbolTable, t1, ID);
+                printf("sNode retrieved with lexeme: %s\n", sNode->token->lexeme);
                 if(sNode == NULL) {
                     sNode = (identifierNode*)retrieve(SymbolTable, t1_global, ID);
                     if(sNode == NULL) {
@@ -843,7 +853,8 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
 
                 if((fNode->type == INT_TYPE || fNode->type == REAL_TYPE) && (sNode->type == INT_TYPE || sNode->type == REAL_TYPE)) {
                     if(fNode->type == sNode->type) {
-                        return createINode(NULL, func, fNode->type, false, &localOffset);
+                        //return createINode(, func, fNode->type, false, &localOffset);
+                        return fNode;
                     }
                     else {
                         printf("Operand Type error mismatch on Line no. %d\n", curr->line);
@@ -1000,6 +1011,7 @@ void handleStmt(ast* curr, ast* func) {
             break;
         case ITERATIVE:
             validateIterative(curr, func);
+            printf("Exited validateIterative for lex: %s\n", curr->lex);
             break;
         case CONDITIONAL:
             validateConditional(curr, func);

@@ -1,0 +1,14 @@
+_main
+    type int : b5;
+	type int : d5cb34567;
+    type real : b2;
+    type real : b3;
+    while (b5<=d5cb34567) 
+        b5 <--- b5 + 1;
+    endwhile
+
+    if ((b5==d5cb34567) &&& (b2>b3)) then
+        b2 <--- 2.34 + b3;
+    endif
+    return;
+end
