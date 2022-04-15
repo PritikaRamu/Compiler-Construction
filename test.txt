@@ -30,7 +30,6 @@ _main
 	
 	record #marks
 		type real : maths; 
-		type real: maths; 
 		type real: chemistry;
 		type #thot: tester;
 	endrecord

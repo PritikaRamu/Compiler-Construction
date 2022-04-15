@@ -20,11 +20,13 @@ recordField* createFieldList(ast *curr_ast, int *offset)
     
     ast *iterator = curr_ast;
     recordField *head = NULL;
+    printf(" print record name %s\n", curr_ast->parent->lex);
     recordField *tail = NULL;
-
+    
     while (iterator != NULL)
     {
         recordField *fields = (recordField *)malloc(sizeof(recordField));
+
         if (iterator->nodeType == INTEGER)
         {
 
@@ -78,6 +80,7 @@ recordField* createFieldList(ast *curr_ast, int *offset)
                 fields->token->lineNo = iterator->firstChild->line;
                 fields->type = (iterator->is_union) ? UNION_TYPE : RECORD_TYPE;
                 fields->recordName = x->token->lexeme;
+
                // printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
             }
         }
@@ -365,6 +368,7 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
     iden->assigned = false;
     iden->offset = *offset;
     iden->isRecordField = false;
+    iden->recordList = NULL;
     if (iden->type == RECORD_TYPE || iden->type == UNION_TYPE)
     {
         recordUnionNode *temp = (recordUnionNode *)malloc(sizeof(recordUnionNode));
@@ -826,18 +830,22 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
         for(int j = 0; j < y; j++)
             concatString[j+x+1] = (head->token->lexeme)[j];
 
-        // strcpy(concatString,dotName);
-        // strcat(concatString,".");
-        // strcat(concatString, head->token->lexeme)
-
         identifierNode* id = (identifierNode*)malloc(sizeof(identifierNode));
         id->token  = (tokenInfo*)malloc(sizeof(tokenInfo));
         id->global = global;
         id->function = (tokenInfo*)malloc(sizeof(tokenInfo));
         id->function->lexeme = func->lex;
+        id->isRecordField = true;
+        id->recordList = ru;
 
         if(head->type == INT_TYPE || head->type == REAL_TYPE){
             width += head->width;
+            if(head->type == INT_TYPE){
+                id->type = INT_TYPE;
+            }
+            else{
+                id->type = REAL_TYPE;
+            }
             id->width = head->width;
         }
         else{
@@ -984,11 +992,11 @@ void createITable(ast *root)
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
-                    id = createINode(child->firstChild, child->parent, REAL, true, &globalOffset);
+                    id = createINode(child->firstChild, child->parent, REAL_TYPE, true, &globalOffset);
                 }
                 else
                 {
-                    id = createINode(child->firstChild, child->parent, REAL, false, &localOffset);
+                    id = createINode(child->firstChild, child->parent, REAL_TYPE, false, &localOffset);
                 }
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
@@ -1123,8 +1131,21 @@ void printSymbolTable(symbol_Table* st){
         {
             node = (identifierNode *)(entry->node);
             if (node != NULL)
-            {
-                printf("%-30s %d %s \n", node->token->lexeme, node->width, node->function->lexeme);
+            {   
+                if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
+                    if(node->recordList){
+                        printf("%-30s %d %s %s\n", node->token->lexeme, node->width, node->function->lexeme, node->recordList->fieldList->recordName);
+                    }
+                    else{
+                        printf("%-30s %d %s \n", node->token->lexeme, node->width, node->function->lexeme);
+                    }
+                }
+                else if(node->type == INT_TYPE){
+                    printf("%-30s %d %s INT\n", node->token->lexeme, node->width, node->function->lexeme);
+                }
+                else{
+                    printf("%-30s %d %s REAL\n", node->token->lexeme, node->width, node->function->lexeme);
+                }
                 printf("-------------------------------\n");
             }
             entry = entry->next;
@@ -1145,8 +1166,9 @@ void printIDTable(subTable *fun_table)
         {
             fun_node = (identifierNode *)(entry->node);
             if (fun_node != NULL)
-            {
-                printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+            {   
+                    printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+ 
                 printf("-------------------------------\n");
             }
             entry = entry->next;

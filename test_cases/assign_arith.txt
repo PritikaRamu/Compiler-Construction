@@ -1,0 +1,32 @@
+_main
+    record #marks
+		type real : maths; 
+		type real: physics; 
+		type real: chemistry;
+	endrecord
+
+    union #four
+		type int : ln; 
+		type real: pt; 
+		type real:tr;
+	endunion
+
+    type record #marks : d4;
+    type record #marks : d5;
+    type union #four: b2;
+    type union #four: b3;
+    type int : b5b567;
+    type real: b5b5;
+	b5b567 <--- 1 + 2;
+
+    d5 <--- d4 * (2 + b5b567);
+
+    b3 <--- b2 / b5b567;
+
+    b3 <--- b2 - b4;
+
+    b5b567 <--- b5b567 - b5b5;
+
+    %b5b5 <--- 2.34 - b5b5;
+    return;
+end

@@ -1,0 +1,19 @@
+_main
+    type int : b5;
+	type int : d5cb34567;
+    type int : d35;
+    type real : b2;
+    type real : b3;
+    while (b5<=d5cb34567) 
+        b5 <--- b5 + 1;
+    endwhile
+
+    if ((b5==d5cb34567) &&& (b2>b3)) then
+        d35 <--- 3;
+        b5 <--- b5 - d35;
+        if((~(b5 < 0)) @@@ (d35 != 67))
+            d35 <--- 84;
+        endif
+    endif
+    return;
+end
