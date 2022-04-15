@@ -51,6 +51,8 @@ void genArithExpr(ast* arithNode, char *result, FILE *fptr) {
 }
 
 void getLabel(char *buff){
+    finalAsm.labelCount++;
+    sprintf(buff, "label%d", finalAsm.labelCount); // Creates a new label, puts it in this string
 
 }
 
@@ -65,7 +67,7 @@ void resetTemps(){
 void getTemp(char *buff, int width) {
 	finalAsm.currentTempCount[width]+=1;
 
-	sprintf(buff, "temp%d + %d", width, (finalAsm.currentTempCount[width] - 1) * width); // Base-Relative Address of the new Temp
+	sprintf(buff, "temp%d + %d", width, (finalAsm.currentTempCount[width] - 1) * width); // Copies Base-Relative Address of the new Temp to this string
 	
     if (finalAsm.currentTempCount[width] > finalAsm.tempCount[width]) { // Update the TempCount array!
 		finalAsm.tempCount[width]+=1;
@@ -101,15 +103,15 @@ void printAsmTracker(){
 
 }
 
-int main(){
-    char* string = (char*)malloc(sizeof(char)*123);
+// int main(){
+//     char* string = (char*)malloc(sizeof(char)*123);
 
-    initAsm();    
+//     initAsm();    
 
 
-    printf("\tmov\tr8w, %s\n", "4");
-	getTemp(string, 2);
-	printf("\tmov\t[%s], r8w\n", string);
-    printAsmTracker();
+//     printf("\tmov\tr8w, %s\n", "4");
+// 	getTemp(string, 2);
+// 	printf("\tmov\t[%s], r8w\n", string);
+//     printAsmTracker();
     
-}
+// }
