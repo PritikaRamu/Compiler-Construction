@@ -10,8 +10,8 @@ Nandan B Parikh       ID: 2019A7PS0097P
 #include "lexer.h"
 
 twinBuffer buffers;
-int line = 1;
-//helps to keep track of the line number
+
+line = 1;
 
 bool file_end;
 //tells us if we have reached the end of file

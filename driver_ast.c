@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 		case 2:
 		{
 			// print tokens from lexer
-
+			line = 1;
 			FILE *fp = startLexer(argv[1]);
 			initTable();
 			while (1)
@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
 		case 3:
 		{
 			// parser
+			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
@@ -106,7 +107,8 @@ int main(int argc, char *argv[])
 			break;
 		}
 		case 4:
-		{
+		{	
+			line = 1;
 			clock_t start_time, end_time;
 			double total_CPU_time, total_CPU_time_in_seconds;
 			start_time = clock();
@@ -132,6 +134,7 @@ int main(int argc, char *argv[])
 		case 5:
 		{
 			// AST
+			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
@@ -178,6 +181,7 @@ int main(int argc, char *argv[])
 		}
 		case 6:
 		{
+			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
@@ -207,6 +211,7 @@ int main(int argc, char *argv[])
 		}
 		case 7:
 		{
+			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
