@@ -778,29 +778,26 @@ void createFTable(ast *root)
 }
 
 int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
+
     recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
     temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     temp->token->lexeme = recordName;
+    printf("Calling Godhelpme for %s\n",recordName);
     int width = 0;
-
+    //checking for alias
     identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
     new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     new1->token->lexeme = recordName;
-    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);
-        
+    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);       
     if(checkAlias!=NULL){
-        //printf("Preetika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
         temp->token->lexeme = checkAlias->token->lexeme;
-        //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
     }
 
+    //iteration through fields
     recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
     recordField* head = ru->fieldList;
     while(head){
-        // char concatString[100];
-        // strcpy(concatString,dotName);
-        // strcat(concatString,".");
-        // strcat(concatString,head->token->lexeme);
+        //concatenation of string for field ids
         int x = strlen(dotName);
         int y = strlen(head->token->lexeme);
         int z = x+y+1;
@@ -820,18 +817,23 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
         id->recordList = ru;
 
         if(head->type == INT_TYPE || head->type == REAL_TYPE){
-            width += head->width;
+            
             if(head->type == INT_TYPE){
                 id->type = INT_TYPE;
+                width += INT_WIDTH;
             }
             else{
                 id->type = REAL_TYPE;
+                width += REAL_WIDTH;
             }
             id->width = head->width;
         }
         else{
-            width += GodHelpMe(head->recordName, concatString, false, func);
-            id->width = width;
+            id->type = RECORD_TYPE;
+            id->recordName = head->recordName;
+            int x = GodHelpMe(head->recordName, concatString, false, func);
+            id->width = x;
+            width += x;
         }
 
         id->token->lexeme = concatString;
@@ -840,7 +842,10 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
         if(check!=NULL){
             printf("Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
         }
-        insert(SymbolTable,id,ID);
+        else{
+            insert(SymbolTable,id,ID);
+        }
+        printf("width is %d now and %s\n", width, concatString);
         head = head->next;
     }
     return width;
@@ -898,7 +903,6 @@ char* GodHelpMeOneMoreTime(char* recordName){
         head = head->next;
         a = concatString(a, y);
 
-        head = head->next;
     }
     while(head!=NULL){
         if(head->type == INT_TYPE){
