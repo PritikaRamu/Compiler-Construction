@@ -46,6 +46,7 @@ typedef struct record_or_union_node{
     tokenInfo* token;
     struct recordField* fieldList;
     char* recordName;
+    bool isVariant; 
 }recordUnionNode;
 
 typedef struct identifierNode{

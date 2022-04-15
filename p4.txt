@@ -33,6 +33,7 @@ output parameter list[real d3, record #line d3b2];
 		type real: areaofshape;
 		type real: perimeter;
 		type #bruh: s;
+		type #bruh: swq;
 	endrecord
 	
 	definetype union #shape as #bruh
