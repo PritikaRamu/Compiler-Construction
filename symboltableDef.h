@@ -45,6 +45,7 @@ typedef struct record_or_union_node{
     int width;
     tokenInfo* token;
     struct recordField* fieldList;
+    char* recordName;
 }recordUnionNode;
 
 typedef struct identifierNode{
@@ -59,6 +60,8 @@ typedef struct identifierNode{
     bool assigned;
     struct identifierNode* next;
     bool isRecordField;
+    char* recordName;
+    bool isUnion;
 }identifierNode;
 
 typedef struct parameters{

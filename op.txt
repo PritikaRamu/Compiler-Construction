@@ -1,153 +1,334 @@
 
-                    input               8               INPUT_PARAMETERS        Not a number               FUNCTION_SEQ        NO           INPUT_PARAMETERS
-                      int               8                        INTEGER        Not a number           INPUT_PARAMETERS        NO                    INTEGER
-                       b7               8                             ID        Not a number                    INTEGER       YES                 Leaf node 
-                   output               9              OUTPUT_PARAMETERS        Not a number               FUNCTION_SEQ        NO          OUTPUT_PARAMETERS
-                   #marks               9                RECORD_OR_UNION        Not a number          OUTPUT_PARAMETERS        NO            RECORD_OR_UNION
-                    b3c45               9                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
-                   ------               0               TYPE_DEFINITIONS        Not a number               FUNCTION_SEQ       YES                 Leaf node 
-                   ------               0                   DECLARATIONS        Not a number               FUNCTION_SEQ       YES                 Leaf node 
-                     read              10                         IOREAD        Not a number               FUNCTION_SEQ        NO                     IOREAD
-                    b3c45              10                             ID        Not a number                     IOREAD        NO                         ID
-                    maths              10                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                     read              11                         IOREAD        Not a number               FUNCTION_SEQ        NO                     IOREAD
-                    b3c45              11                             ID        Not a number                     IOREAD        NO                         ID
-                  physics              11                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                     read              12                         IOREAD        Not a number               FUNCTION_SEQ        NO                     IOREAD
-                    b3c45              12                             ID        Not a number                     IOREAD        NO                         ID
-                chemistry              12                        FIELDID        Not a number                         ID       YES                 Leaf node 
-               _readMarks               8                   FUNCTION_SEQ        Not a number                    PROGRAM        NO               FUNCTION_SEQ
-                   return              13                         RETURN        Not a number               FUNCTION_SEQ        NO                     RETURN
-                    b3c45              13                             ID        Not a number                     RETURN       YES                 Leaf node 
-                      int              16                        INTEGER        Not a number           INPUT_PARAMETERS        NO                    INTEGER
-                       b7              16                             ID        Not a number                    INTEGER       YES                 Leaf node 
-                    input              16               INPUT_PARAMETERS        Not a number               FUNCTION_SEQ        NO           INPUT_PARAMETERS
-                     real              16                           REAL        Not a number           INPUT_PARAMETERS        NO                       REAL
-                       b5              16                             ID        Not a number                       REAL       YES                 Leaf node 
-                   output              17              OUTPUT_PARAMETERS        Not a number               FUNCTION_SEQ        NO          OUTPUT_PARAMETERS
-                   #marks              17                RECORD_OR_UNION        Not a number          OUTPUT_PARAMETERS        NO            RECORD_OR_UNION
-                    b3c45              17                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
-                   ------               0               TYPE_DEFINITIONS        Not a number               FUNCTION_SEQ       YES                 Leaf node 
-                   ------               0                   DECLARATIONS        Not a number               FUNCTION_SEQ       YES                 Leaf node 
-                     read              18                         IOREAD        Not a number               FUNCTION_SEQ        NO                     IOREAD
-                    b3c45              18                             ID        Not a number                     IOREAD        NO                         ID
-                    maths              18                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                     read              19                         IOREAD        Not a number               FUNCTION_SEQ        NO                     IOREAD
-                    b3c45              19                             ID        Not a number                     IOREAD        NO                         ID
-                  physics              19                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                     read              20                         IOREAD        Not a number               FUNCTION_SEQ        NO                     IOREAD
-                    b3c45              20                             ID        Not a number                     IOREAD        NO                         ID
-                chemistry              20                        FIELDID        Not a number                         ID       YES                 Leaf node 
-              _helloworld              16                   FUNCTION_SEQ        Not a number                    PROGRAM        NO               FUNCTION_SEQ
-                   return              21                         RETURN        Not a number               FUNCTION_SEQ        NO                     RETURN
-                    b3c45              21                             ID        Not a number                     RETURN       YES                 Leaf node 
-                   ------               1                        PROGRAM        Not a number                      ROOT         NO                    PROGRAM
-                     real              32                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                    maths              32                        FIELDID        Not a number                       REAL       YES                 Leaf node 
+                      int              14                        INTEGER        Not a number           INPUT_PARAMETERS        NO                    INTEGER
+                       c4              14                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                 #newline              14                RECORD_OR_UNION        Not a number           INPUT_PARAMETERS        NO            RECORD_OR_UNION
+                     c2c7              14                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                     real              14                           REAL        Not a number           INPUT_PARAMETERS        NO                       REAL
+                       c5              14                             ID        Not a number                       REAL       YES                 Leaf node 
+                   #point              14                RECORD_OR_UNION        Not a number           INPUT_PARAMETERS        NO            RECORD_OR_UNION
+                     c2c6              14                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                    input              14               INPUT_PARAMETERS        Not a number               FUNCTION_SEQ        NO           INPUT_PARAMETERS
+                      int              14                        INTEGER        Not a number           INPUT_PARAMETERS        NO                    INTEGER
+                       c7              14                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                     real              15                           REAL        Not a number          OUTPUT_PARAMETERS        NO                       REAL
+                       d3              15                             ID        Not a number                       REAL       YES                 Leaf node 
+                   output              15              OUTPUT_PARAMETERS        Not a number               FUNCTION_SEQ        NO          OUTPUT_PARAMETERS
+                    #line              15                RECORD_OR_UNION        Not a number          OUTPUT_PARAMETERS        NO            RECORD_OR_UNION
+                     d3b2              15                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #point              17                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+               beginpoint              17                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                    #line              16                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                   #point              18                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+                 endpoint              18                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #point              21                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+                upperleft              21                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #point              22                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+               upperright              22                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #point              23                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+                 loweleft              23                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+               #rectangle              20                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                   #point              24                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+               lowerright              24                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                 #newline              27                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+                       ln              27                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #point              28                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+                       pt              28                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #shape              26                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+          #rectangleshape              29                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+                       rc              29                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                      int              32                        INTEGER        Not a number            RECORD_OR_UNION        NO                    INTEGER
+                 tagvalue              32                        FIELDID        Not a number                    INTEGER       YES                 Leaf node 
                      real              33                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                    maths              33                        FIELDID        Not a number                       REAL       YES                 Leaf node 
+              areaofshape              33                        FIELDID        Not a number                       REAL       YES                 Leaf node 
                      real              34                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                chemistry              34                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                   #marks              31                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
-                    #thot              35                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
-                   tester              35                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
-                     real              39                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     abcd              39                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                     real              40                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     efgh              40                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                   #qwert              41                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
-                    asadf              41                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
-                    #bruh              38                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
-                     real              42                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     ijkl              42                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                     real              46                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     abcd              46                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                     real              47                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     efgh              47                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                    #test              45                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
-                     real              48                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     ijkl              48                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                   record              51                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-                   #laffy              51                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-               definetype              51                     DEFINETYPE        Not a number              MAIN_FUNCTION        NO                 DEFINETYPE
-                  #quirky              51                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-                   #qwert              54                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
-                    quirk              54                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
-                     real              55                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     abcd              55                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                     real              56                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     efgh              56                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                   #laffy              53                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
-                     real              57                           REAL        Not a number            RECORD_OR_UNION        NO                       REAL
-                     ijkl              57                        FIELDID        Not a number                       REAL       YES                 Leaf node 
-                   record              60                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-                    #bruh              60                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-               definetype              60                     DEFINETYPE        Not a number              MAIN_FUNCTION        NO                 DEFINETYPE
-                    #thot              60                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-                   record              61                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-                    #test              61                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-               definetype              61                     DEFINETYPE        Not a number              MAIN_FUNCTION        NO                 DEFINETYPE
-                   #qwert              61                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
-                   #marks              69                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
-                       d4              69                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
-                     real              72                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
-                       b5              72                             ID        Not a number                       REAL       YES                 Leaf node 
-                     real              73                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
-                d5cb34567              73                             ID        Not a number                       REAL       YES                 Leaf node 
-                   #marks              74                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
-                     b5c6              74                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
-                   #laffy              75                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
-                     b4c6              75                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
-                       b5              78                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
-                     <---              78                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
-                        1              78                            NUM                    1                  ASSIGNOP       YES                 Leaf node 
-                     read              79                         IOREAD        Not a number              MAIN_FUNCTION        NO                     IOREAD
-                d5cb34567              79                             ID        Not a number                     IOREAD       YES                 Leaf node 
-                     b5c6              80                             ID        Not a number                   ASSIGNOP        NO                         ID
-                    maths              80                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                     <---              80                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
-                     0.00              80                           RNUM                 0.00                  ASSIGNOP       YES                 Leaf node 
-                     b5c6              81                             ID        Not a number                   ASSIGNOP        NO                         ID
-                  physics              81                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                     <---              81                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
-                     0.00              81                           RNUM                 0.00                  ASSIGNOP       YES                 Leaf node 
-                     b5c6              82                             ID        Not a number                   ASSIGNOP        NO                         ID
-                chemistry              82                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                     <---              82                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
-                     0.00              82                           RNUM                 0.00                  ASSIGNOP       YES                 Leaf node 
-                       b5              83                             ID        Not a number                 LESS_EQUAL       YES                 Leaf node 
-                       <=              83                     LESS_EQUAL        Not a number                  ITERATIVE        NO                 LESS_EQUAL
-                d5cb34567              83                             ID        Not a number                 LESS_EQUAL       YES                 Leaf node 
-                   ------               0         OUTPUT_PARAMETERS_CALL        Not a number                       CALL        NO     OUTPUT_PARAMETERS_CALL
-                       d4              84                             ID        Not a number     OUTPUT_PARAMETERS_CALL       YES                 Leaf node 
-               _readMarks              84                  FUNCTION_CALL        Not a number                       CALL       YES                 Leaf node 
-                     call              84                           CALL        Not a number                  ITERATIVE        NO                       CALL
-                   ------               0          INPUT_PARAMETERS_CALL        Not a number                       CALL        NO      INPUT_PARAMETERS_CALL
-                       b5              84                             ID        Not a number      INPUT_PARAMETERS_CALL       YES                 Leaf node 
-                     b5c6              85                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
-                     <---              85                       ASSIGNOP        Not a number                  ITERATIVE        NO                   ASSIGNOP
-                     b5c6              85                             ID        Not a number                       PLUS       YES                 Leaf node 
-                        +              85                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
-                       d4              85                             ID        Not a number                       PLUS       YES                 Leaf node 
-                    while              83                      ITERATIVE        Not a number              MAIN_FUNCTION        NO                  ITERATIVE
-                       b5              87                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
-                     <---              87                       ASSIGNOP        Not a number                  ITERATIVE        NO                   ASSIGNOP
-                       b5              87                             ID        Not a number                       PLUS       YES                 Leaf node 
-                        +              87                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
-                        1              87                            NUM                    1                      PLUS       YES                 Leaf node 
-                       d4              89                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
-                     <---              89                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
-                     b5c6              89                             ID        Not a number                     DIVIDE       YES                 Leaf node 
-                        /              89                         DIVIDE        Not a number                   ASSIGNOP        NO                     DIVIDE
-                d5cb34567              89                             ID        Not a number                     DIVIDE       YES                 Leaf node 
-                    write              90                        IOWRITE        Not a number              MAIN_FUNCTION        NO                    IOWRITE
-                       d4              90                             ID        Not a number                    IOWRITE        NO                         ID
-                    maths              90                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                    write              91                        IOWRITE        Not a number              MAIN_FUNCTION        NO                    IOWRITE
-                       d4              91                             ID        Not a number                    IOWRITE        NO                         ID
-                  physics              91                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                    write              92                        IOWRITE        Not a number              MAIN_FUNCTION        NO                    IOWRITE
-                       d4              92                             ID        Not a number                    IOWRITE        NO                         ID
-                chemistry              92                        FIELDID        Not a number                         ID       YES                 Leaf node 
-                    _main              28                  MAIN_FUNCTION        Not a number                    PROGRAM        NO              MAIN_FUNCTION
-                   return              93                         RETURN        Not a number              MAIN_FUNCTION       YES                 Leaf node 
+                perimeter              34                        FIELDID        Not a number                       REAL       YES                 Leaf node 
+              #variantrec              31                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                    #bruh              35                RECORD_OR_UNION        Not a number            RECORD_OR_UNION        NO            RECORD_OR_UNION
+                        s              35                        FIELDID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                    union              38                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+                   #shape              38                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+               definetype              38                     DEFINETYPE        Not a number               FUNCTION_SEQ        NO                 DEFINETYPE
+                    #bruh              38                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+                   record              39                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+                    #line              39                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+               definetype              39                     DEFINETYPE        Not a number               FUNCTION_SEQ        NO                 DEFINETYPE
+                 #newline              39                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+                   record              40                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+              #coordinate              40                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+               definetype              40                     DEFINETYPE        Not a number               FUNCTION_SEQ        NO                 DEFINETYPE
+                   #point              40                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+                   record              41                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+               #rectangle              41                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+               definetype              41                     DEFINETYPE        Not a number               FUNCTION_SEQ        NO                 DEFINETYPE
+          #rectangleshape              41                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+                   record              42                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+              #variantrec              42                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+               definetype              42                     DEFINETYPE        Not a number               FUNCTION_SEQ        NO                 DEFINETYPE
+           #variantrecord              42                RECORD_OR_UNION        Not a number                 DEFINETYPE       YES                 Leaf node 
+                    #line              44                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                     d7d3              44                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+              #coordinate              45                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                   b3bbb2              45                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+              #coordinate              46                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                   b3bbb3              46                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #shape              47                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                   b6b222              47                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+           #variantrecord              48                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                   b6b333              48                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #point              49                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                   d5ddd2              49                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                    #line              50                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                    b5cc2              50                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                    #line              51                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                    b5cc3              51                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                    #line              52                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                    b5cc4              52                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                 #newline              53                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                  c5bccc2              53                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                 #newline              54                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                  c5bccc3              54                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #point              55                RECORD_OR_UNION        Not a number               FUNCTION_SEQ        NO            RECORD_OR_UNION
+                   d5ddd3              55                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                      int              56                        INTEGER        Not a number               FUNCTION_SEQ        NO                    INTEGER
+                   b5b567              56                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                     real              57                           REAL        Not a number               FUNCTION_SEQ        NO                       REAL
+                       b3              57                             ID        Not a number                       REAL       YES                 Leaf node 
+                     c3bd              58                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                      int              58                        INTEGER        Not a number               FUNCTION_SEQ        NO                    INTEGER
+                   global              58                         GLOBAL        Not a number                    INTEGER       YES                 Leaf node 
+                   b5b567              60                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              60                       ASSIGNOP        Not a number               FUNCTION_SEQ        NO                   ASSIGNOP
+                       c6              60                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                        *              60                       MULTIPLY        Not a number                   ASSIGNOP        NO                   MULTIPLY
+                        2              60                            NUM                    2                  MULTIPLY       YES                 Leaf node 
+                       b3              61                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              61                       ASSIGNOP        Not a number               FUNCTION_SEQ        NO                   ASSIGNOP
+                       c6              61                             ID        Not a number                      MINUS       YES                 Leaf node 
+                        -              61                          MINUS        Not a number                   ASSIGNOP        NO                      MINUS
+                       c4              61                             ID        Not a number                      MINUS       YES                 Leaf node 
+                     d3b2              62                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              62                       ASSIGNOP        Not a number               FUNCTION_SEQ        NO                   ASSIGNOP
+                     c2c7              62                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +              62                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                     d7d3              62                             ID        Not a number                       PLUS       YES                 Leaf node 
+                   d5ddd3              63                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              63                       ASSIGNOP        Not a number               FUNCTION_SEQ        NO                   ASSIGNOP
+                     c2c6              63                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +              63                           PLUS        Not a number                      MINUS        NO                       PLUS
+                   b3bbb3              63                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        -              63                          MINUS        Not a number                   ASSIGNOP        NO                      MINUS
+                     c2c7              63                             ID        Not a number                      MINUS       YES                 Leaf node 
+                   d5ddd3              64                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              64                       ASSIGNOP        Not a number               FUNCTION_SEQ        NO                   ASSIGNOP
+                     c2c6              64                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +              64                           PLUS        Not a number                      MINUS        NO                       PLUS
+                   b3bbb3              64                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        -              64                          MINUS        Not a number                   ASSIGNOP        NO                      MINUS
+                   b3bbb2              64                             ID        Not a number                      MINUS       YES                 Leaf node 
+                   b5b567              66                             ID        Not a number                 LESS_EQUAL       YES                 Leaf node 
+                       <=              66                     LESS_EQUAL        Not a number                  ITERATIVE        NO                 LESS_EQUAL
+                       20              66                            NUM                   20                LESS_EQUAL       YES                 Leaf node 
+                     read              67                         IOREAD        Not a number                  ITERATIVE        NO                     IOREAD
+                     c3bd              67                             ID        Not a number                     IOREAD       YES                 Leaf node 
+                       d7              68                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              68                       ASSIGNOP        Not a number                  ITERATIVE        NO                   ASSIGNOP
+                       d3              68                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +              68                           PLUS        Not a number                      MINUS        NO                       PLUS
+                    36.87              68                           RNUM                36.87                      PLUS       YES                 Leaf node 
+                        -              68                          MINUS        Not a number                   ASSIGNOP        NO                      MINUS
+                29.67E-35              68                           RNUM            29.67E-35                     MINUS       YES                 Leaf node 
+                     d3b2              69                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              69                       ASSIGNOP        Not a number                  ITERATIVE        NO                   ASSIGNOP
+                     d3b2              69                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +              69                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                     c3bd              69                             ID        Not a number                       PLUS       YES                 Leaf node 
+                    while              66                      ITERATIVE        Not a number               FUNCTION_SEQ        NO                  ITERATIVE
+                   b5b567              70                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              70                       ASSIGNOP        Not a number                  ITERATIVE        NO                   ASSIGNOP
+                   b5b567              70                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +              70                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                     c3bd              70                             ID        Not a number                       PLUS       YES                 Leaf node 
+                       d3              72                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---              72                       ASSIGNOP        Not a number               FUNCTION_SEQ        NO                   ASSIGNOP
+                       d3              72                             ID        Not a number                      MINUS       YES                 Leaf node 
+                        -              72                          MINUS        Not a number                   ASSIGNOP        NO                      MINUS
+                       b3              72                             ID        Not a number                      MINUS       YES                 Leaf node 
+                     _one              14                   FUNCTION_SEQ        Not a number                    PROGRAM        NO               FUNCTION_SEQ
+                       d3              73                             ID        Not a number                     RETURN       YES                 Leaf node 
+                   return              73                         RETURN        Not a number               FUNCTION_SEQ        NO                     RETURN
+                     d3b2              73                             ID        Not a number                     RETURN       YES                 Leaf node 
+                   ------               1                        PROGRAM        Not a number                      ROOT         NO                    PROGRAM
+                      int              78                        INTEGER        Not a number            RECORD_OR_UNION        NO                    INTEGER
+                        x              78                        FIELDID        Not a number                    INTEGER       YES                 Leaf node 
+              #coordinate              77                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                      int              79                        INTEGER        Not a number            RECORD_OR_UNION        NO                    INTEGER
+                        y              79                        FIELDID        Not a number                    INTEGER       YES                 Leaf node 
+                      int              82                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                       b5              82                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                     real              83                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
+                       d2              83                             ID        Not a number                       REAL       YES                 Leaf node 
+                       c6              84                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                      int              84                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                   global              84                         GLOBAL        Not a number                    INTEGER       YES                 Leaf node 
+                      int              85                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                d5cb34567              85                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                    #line              86                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                    b5cb2              86                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                    #line              87                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                    b5cb3              87                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                     real              88                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
+                       d6              88                             ID        Not a number                       REAL       YES                 Leaf node 
+                       d7              89                             ID        Not a number                       REAL       YES                 Leaf node 
+                     real              89                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
+                   global              89                         GLOBAL        Not a number                       REAL       YES                 Leaf node 
+                      int              90                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                       d4              90                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                     real              91                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
+                     b5c6              91                             ID        Not a number                       REAL       YES                 Leaf node 
+                      int              92                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                       c2              92                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                   #point              93                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                    b4cd2              93                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                   #point              94                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                    b4cd3              94                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+              #coordinate              95                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                    b5cc2              95                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+              #coordinate              96                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                    b5cc3              96                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+              #coordinate              97                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                    b5cc4              97                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                      int              98                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                    c3c56              98                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                      int              99                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                     d6b7              99                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                     real             100                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
+                     c2d5             100                             ID        Not a number                       REAL       YES                 Leaf node 
+                 #newline             101                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                   b5cbb3             101                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                 #newline             102                RECORD_OR_UNION        Not a number              MAIN_FUNCTION        NO            RECORD_OR_UNION
+                   b5cbb4             102                             ID        Not a number            RECORD_OR_UNION       YES                 Leaf node 
+                     real             103                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
+                     d5c2             103                             ID        Not a number                       REAL       YES                 Leaf node 
+                     real             104                           REAL        Not a number              MAIN_FUNCTION        NO                       REAL
+                     c2c2             104                             ID        Not a number                       REAL       YES                 Leaf node 
+                      int             105                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                 c2cc2345             105                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                      int             106                        INTEGER        Not a number              MAIN_FUNCTION        NO                    INTEGER
+                     c5c5             106                             ID        Not a number                    INTEGER       YES                 Leaf node 
+                       b5             108                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             108                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                       c6             108                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             108                           PLUS        Not a number                      MINUS        NO                       PLUS
+                d5cb34567             108                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        -             108                          MINUS        Not a number                   ASSIGNOP        NO                      MINUS
+                       b5             108                             ID        Not a number                      MINUS       YES                 Leaf node 
+                       d7             109                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             109                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                     b5c6             109                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             109                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                d5cb34567             109                             ID        Not a number                       PLUS       YES                 Leaf node 
+                     c2d5             110                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             110                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                     d5c2             110                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                        *             110                       MULTIPLY        Not a number                   ASSIGNOP        NO                   MULTIPLY
+                     c2c2             110                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                       c2             111                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             111                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                    c3c56             111                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             111                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                     d6b7             111                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                        *             111                       MULTIPLY        Not a number                       PLUS        NO                   MULTIPLY
+                d5cb34567             111                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                     d5c2             112                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             112                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+               beginpoint             112                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                   b5cbb3             112                             ID        Not a number                       PLUS        NO                         ID
+                        x             112                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                        +             112                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+               beginpoint             112                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                   b5cbb4             112                             ID        Not a number                       PLUS        NO                         ID
+                        x             112                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                       c2             114                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             114                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                    c3c56             114                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             114                           PLUS        Not a number                      MINUS        NO                       PLUS
+                       23             114                            NUM                   23                      PLUS       YES                 Leaf node 
+                        -             114                          MINUS        Not a number                   ASSIGNOP        NO                      MINUS
+                     d6b7             114                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                        *             114                       MULTIPLY        Not a number                      MINUS        NO                   MULTIPLY
+                d5cb34567             114                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                    b5cc2             115                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             115                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                    b5cc3             115                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             115                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                    b4cd2             115                             ID        Not a number                       PLUS       YES                 Leaf node 
+                     c2d5             116                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             116                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                     d5c2             116                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                        *             116                       MULTIPLY        Not a number                       PLUS        NO                   MULTIPLY
+                     c2c2             116                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                        +             116                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                       23             116                            NUM                   23                      PLUS       YES                 Leaf node 
+                     c3bd             117                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             117                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                    c3c56             117                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             117                           PLUS        Not a number                       PLUS        NO                       PLUS
+                       40             117                            NUM                   40                      PLUS       YES                 Leaf node 
+                        +             117                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                     c3bd             117                             ID        Not a number                       PLUS       YES                 Leaf node 
+                     c2d5             118                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             118                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                     d5c2             118                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                        *             118                       MULTIPLY        Not a number                       PLUS        NO                   MULTIPLY
+                     c2c2             118                             ID        Not a number                   MULTIPLY       YES                 Leaf node 
+                        +             118                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                23.34E+32             118                           RNUM            23.34E+32                      PLUS       YES                 Leaf node 
+                       c2             119                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             119                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+               beginpoint             119                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                   b5cbb3             119                             ID        Not a number                       PLUS        NO                         ID
+                        x             119                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                        +             119                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+               beginpoint             119                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                   b5cbb4             119                             ID        Not a number                       PLUS        NO                         ID
+                        x             119                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                     d6b7             120                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             120                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                 endpoint             120                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                    b5cb2             120                             ID        Not a number                       PLUS        NO                         ID
+                        y             120                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                        +             120                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+               beginpoint             120                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                   b5cbb4             120                             ID        Not a number                       PLUS        NO                         ID
+                        y             120                        FIELDID        Not a number                         ID       YES                 Leaf node 
+                        ~             121                       NOT_BOOL        Not a number                        AND        NO                   NOT_BOOL
+                 c2cc2345             121                             ID        Not a number                      EQUAL       YES                 Leaf node 
+                       ==             121                          EQUAL        Not a number                   NOT_BOOL        NO                      EQUAL
+                        0             121                            NUM                    0                     EQUAL       YES                 Leaf node 
+                      &&&             121                            AND        Not a number                CONDITIONAL        NO                        AND
+                     c5c5             121                             ID        Not a number               GREATER_THAN       YES                 Leaf node 
+                        >             121                   GREATER_THAN        Not a number                        AND        NO               GREATER_THAN
+                     d6b7             121                             ID        Not a number               GREATER_THAN       YES                 Leaf node 
+                     c3bd             123                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             123                       ASSIGNOP        Not a number                CONDITIONAL        NO                   ASSIGNOP
+                    c3c56             123                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             123                           PLUS        Not a number                       PLUS        NO                       PLUS
+                       40             123                            NUM                   40                      PLUS       YES                 Leaf node 
+                        +             123                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                     c3bd             123                             ID        Not a number                       PLUS       YES                 Leaf node 
+                       if             121                    CONDITIONAL        Not a number              MAIN_FUNCTION        NO                CONDITIONAL
+                     else             124                           ELSE        Not a number                CONDITIONAL        NO                       ELSE
+                    write             125                        IOWRITE        Not a number                       ELSE        NO                    IOWRITE
+                     c3bd             125                             ID        Not a number                    IOWRITE       YES                 Leaf node 
+                   b5cbb3             128                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             128                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                   b5cbb4             128                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             128                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                    b5cb2             128                             ID        Not a number                       PLUS       YES                 Leaf node 
+                    b5cc2             129                             ID        Not a number                   ASSIGNOP       YES                 Leaf node 
+                     <---             129                       ASSIGNOP        Not a number              MAIN_FUNCTION        NO                   ASSIGNOP
+                    b5cc3             129                             ID        Not a number                       PLUS       YES                 Leaf node 
+                        +             129                           PLUS        Not a number                   ASSIGNOP        NO                       PLUS
+                   b5cbb3             129                             ID        Not a number                       PLUS       YES                 Leaf node 
+                    _main              76                  MAIN_FUNCTION        Not a number                    PROGRAM        NO              MAIN_FUNCTION
+                   return             131                         RETURN        Not a number              MAIN_FUNCTION       YES                 Leaf node 
