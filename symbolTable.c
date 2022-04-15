@@ -55,14 +55,6 @@ recordField* createFieldList(ast *curr_ast, int *offset)
         else if (iterator->nodeType == RECORD_OR_UNION)
         {
             fields->offset = *offset;
-            //just creating a dummy node to cheEnterck entry in record table
-            // recordUnionNode *ru = (recordUnionNode *)malloc(sizeof(recordUnionNode));
-            // ru->width = 0;
-            // ru->fieldList = NULL;
-            // ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-            // ru->token->tid = -1;
-            // ru->token->lexeme = iterator->lex;
-            //ru->token->lineNo = curr_ast->line;
             identifierNode* temp = (identifierNode*)malloc(sizeof(identifierNode));
             temp->function = (tokenInfo *)malloc(sizeof(tokenInfo));
             temp->function->lexeme = iterator->lex;
@@ -390,27 +382,22 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
             //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
         }
         iden->recordList = (recordUnionNode *)retrieve(SymbolTable, temp, RECORD_OR_UNION);
-
-        if (iden->recordList)
-        {   
-            iden->width = iden->recordList->width;
-            (*offset) += iden->recordList->width;
-        }
+        iden->width = GodHelpMe(id->parent->lex,id->lex,false,func);
+        
     }
     else
     {
         if (iden->type == INT_TYPE)
         {
             iden->width = INT_WIDTH;
-            (*offset) += INT_WIDTH;
         }
         else
         {
             iden->width = REAL_WIDTH;
-            (*offset) += REAL_WIDTH;
         }
     }
     iden->global = is_global;
+    (*offset) += iden->width;
     return iden;
 }
 
@@ -668,11 +655,13 @@ void createFTable(ast *root)
                     case TK_INT:
                     {
                         id = createINode(pars->firstChild, child->parent, INT_TYPE, false, &offset); // TODO
+                        offset += INT_WIDTH;
                         break;
                     }
                     case TK_REAL:
                     {
                         id = createINode(pars->firstChild, child->parent, REAL_TYPE, false, &offset); // TODO
+                        offset += REAL_WIDTH;
                         break;
                     }
                     case TK_RUID:
@@ -680,13 +669,14 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
-                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
-
+                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+                            //offset += a;
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
-                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+                            //offset += a;
                         }
                         break;
                     }
@@ -737,12 +727,12 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
-                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
-                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         break;
                     }
@@ -788,29 +778,26 @@ void createFTable(ast *root)
 }
 
 int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
+
     recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
     temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     temp->token->lexeme = recordName;
+    printf("Calling Godhelpme for %s\n",recordName);
     int width = 0;
-
+    //checking for alias
     identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
     new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     new1->token->lexeme = recordName;
-    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);
-        
+    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);       
     if(checkAlias!=NULL){
-        //printf("Preetika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
         temp->token->lexeme = checkAlias->token->lexeme;
-        //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
     }
 
+    //iteration through fields
     recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
     recordField* head = ru->fieldList;
     while(head){
-        // char concatString[100];
-        // strcpy(concatString,dotName);
-        // strcat(concatString,".");
-        // strcat(concatString,head->token->lexeme);
+        //concatenation of string for field ids
         int x = strlen(dotName);
         int y = strlen(head->token->lexeme);
         int z = x+y+1;
@@ -830,18 +817,23 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
         id->recordList = ru;
 
         if(head->type == INT_TYPE || head->type == REAL_TYPE){
-            width += head->width;
+            
             if(head->type == INT_TYPE){
                 id->type = INT_TYPE;
+                width += INT_WIDTH;
             }
             else{
                 id->type = REAL_TYPE;
+                width += REAL_WIDTH;
             }
             id->width = head->width;
         }
         else{
-            width += GodHelpMe(head->recordName, concatString, false, func);
-            id->width = width;
+            id->type = RECORD_TYPE;
+            id->recordName = head->recordName;
+            int x = GodHelpMe(head->recordName, concatString, false, func);
+            id->width = x;
+            width += x;
         }
 
         id->token->lexeme = concatString;
@@ -850,7 +842,10 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
         if(check!=NULL){
             printf("Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
         }
-        insert(SymbolTable,id,ID);
+        else{
+            insert(SymbolTable,id,ID);
+        }
+        printf("width is %d now and %s\n", width, concatString);
         head = head->next;
     }
     return width;
@@ -908,7 +903,6 @@ char* GodHelpMeOneMoreTime(char* recordName){
         head = head->next;
         a = concatString(a, y);
 
-        head = head->next;
     }
     while(head!=NULL){
         if(head->type == INT_TYPE){
@@ -964,13 +958,13 @@ void createITable(ast *root)
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, true, &globalOffset);
-                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+                        //int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
 
                     }
                     else
                     {
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, true, &globalOffset);
-                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+                        //int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
 
                     }
                 }
@@ -980,14 +974,14 @@ void createITable(ast *root)
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);  
-                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+                        //int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
                         // printf("FINAL WIDTH %s %d\n",child->lex,a);
                         
                     }
                     else
                     {
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, false, &localOffset);
-                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+                        //int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
 
                     }
                 }
