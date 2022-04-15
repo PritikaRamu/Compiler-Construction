@@ -984,11 +984,11 @@ void createITable(ast *root)
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
-                    id = createINode(child->firstChild, child->parent, REAL, true, &globalOffset);
+                    id = createINode(child->firstChild, child->parent, REAL_TYPE, true, &globalOffset);
                 }
                 else
                 {
-                    id = createINode(child->firstChild, child->parent, REAL, false, &localOffset);
+                    id = createINode(child->firstChild, child->parent, REAL_TYPE, false, &localOffset);
                 }
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
