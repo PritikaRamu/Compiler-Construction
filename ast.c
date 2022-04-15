@@ -181,6 +181,7 @@ ast* makeAST(parseTree node, ast* parent) {
         } //constructedDatatype ==> TK_UNION TK_RUID 
         else if (node->firstChild->symbol == TK_UNION) {
             curr = mkNode(RECORD_OR_UNION, parent, NULL, NULL, node->firstChild->nextSibling);
+            curr->is_union = true;
         } //constructedDatatype ==> TK_RUID
         else if(node->firstChild->symbol == TK_RUID) {
             curr = mkNode(RECORD_OR_UNION, parent, NULL, NULL, node->firstChild);
