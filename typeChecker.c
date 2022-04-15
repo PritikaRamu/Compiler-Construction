@@ -936,7 +936,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
             }
         }
     }
-    else if(curr->nodeType == NOT_EQUAL) {
+    else if(curr->nodeType == NOT_BOOL) {
         return validateBoolean(curr->firstChild, func);
     }
 }
