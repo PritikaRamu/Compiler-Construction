@@ -15,7 +15,7 @@ int hash(char *key)
     return hashed % TABLE_SLOTS;
 }
 
-recordField* createFieldList(ast *curr_ast, int *offset)
+recordField* createFieldList(ast *curr_ast)
 {
     
     ast *iterator = curr_ast;
@@ -30,8 +30,7 @@ recordField* createFieldList(ast *curr_ast, int *offset)
         if (iterator->nodeType == INTEGER)
         {
 
-            fields->offset = *offset;
-            (*offset) += INT_WIDTH;
+            fields->offset = 0;
             fields->width = INT_WIDTH;
             fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
             fields->token->tid = iterator->symbol;
@@ -42,8 +41,7 @@ recordField* createFieldList(ast *curr_ast, int *offset)
         }
         else if (iterator->nodeType == REAL)
         {
-            fields->offset = *offset;
-            (*offset) += REAL_WIDTH;
+            fields->offset = 0;
             fields->width = REAL_WIDTH;
             fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
             fields->token->tid = iterator->symbol;
@@ -54,7 +52,6 @@ recordField* createFieldList(ast *curr_ast, int *offset)
         }
         else if (iterator->nodeType == RECORD_OR_UNION)
         {
-            fields->offset = *offset;
             identifierNode* temp = (identifierNode*)malloc(sizeof(identifierNode));
             temp->function = (tokenInfo *)malloc(sizeof(tokenInfo));
             temp->function->lexeme = iterator->lex;
@@ -401,6 +398,7 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
     return iden;
 }
 
+// PASS 3 : record field lexemes are stored
 void createRUtable(ast *root)
 {
     //taking our third pass through the record table 
@@ -415,26 +413,22 @@ void createRUtable(ast *root)
         //child is the first child of the function pointed to by root
         while (child)
         {
-            int offset = 0;
             if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType != ID)
             {
-                // printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
                 curr_ast = child->firstChild;
-                // printf("current node's lexeme: %s\n", curr_ast->lex);
-                fields = createFieldList(curr_ast, &offset);    //iterates and returns a linked list of field nodes
+                fields = createFieldList(curr_ast);    //iterates and returns a linked list of field nodes
                 recordUnionNode* new = createRUNode(child, fields);
                 new->recordName = child->lex;
+
                 //check if the name exists in the first pass table
                 //recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
-                // identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
-                // new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-                // new1->token->lexeme = curr_ast->lex;
-                // identifierNode* check = retrieveFake(firstPass, new1, true, false);
-                // if(check)
-                // {
-                    insert(SymbolTable, new, RECORD_OR_UNION);
-                  
-                // }
+                identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
+                new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                new1->token->lexeme = curr_ast->lex;
+                identifierNode* check = retrieveFake(firstPass, new1, true, false);
+                if(!check){
+                    insert(SymbolTable, new, RECORD_OR_UNION);                
+                }
             }
             child = child->nextSibling;
         }
@@ -548,6 +542,8 @@ void insertFake(subTable* st, identifierNode* id, bool token){
     }
 }
 
+
+// PASS 1 : collectiong record names by looking for record definitions
 void createFirstPass(ast *root)
 {
     root = root->firstChild;
@@ -583,6 +579,7 @@ void createFirstPass(ast *root)
     }
 }
 
+// PASS 2 : Mapping aliases to actual record/Union names
 void createAliasTable(ast* root){
     root = root->firstChild;
     ast *curr_ast = NULL;
@@ -655,13 +652,11 @@ void createFTable(ast *root)
                     case TK_INT:
                     {
                         id = createINode(pars->firstChild, child->parent, INT_TYPE, false, &offset); // TODO
-                        offset += INT_WIDTH;
                         break;
                     }
                     case TK_REAL:
                     {
                         id = createINode(pars->firstChild, child->parent, REAL_TYPE, false, &offset); // TODO
-                        offset += REAL_WIDTH;
                         break;
                     }
                     case TK_RUID:
@@ -931,6 +926,7 @@ char* GodHelpMeOneMoreTime(char* recordName){
     return a;
 }
 
+// PASS 4 : check for identifier declarations
 void createITable(ast *root)
 {
     int globalOffset = 0;
@@ -1197,16 +1193,18 @@ void printSymbolTable(symbol_Table* st){
 
             if (node != NULL)
             {   
-                if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
-                        printf("%-30s %d %s %s %s %s\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false");
+                if(!(node->isRecordField)){
+                    if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
+                        printf("%-30s %d %s %s %s %s   %d\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false",node->offset);
                 }
                 else if(node->type == INT_TYPE){
-                    printf("%-30s %d %s INT %s\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false");
+                    printf("%-30s %d %s INT %s   %d\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false",node->offset);
                 }
                 else{
-                    printf("%-30s %d %s REAL %s\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false");
+                    printf("%-30s %d %s REAL %s  %d\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false",node->offset);
                 }
                 printf("-------------------------------\n");
+                }
             }
             entry = entry->next;
         }
