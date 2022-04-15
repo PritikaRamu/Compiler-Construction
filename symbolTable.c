@@ -369,14 +369,30 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
     iden->offset = *offset;
     iden->isRecordField = false;
     iden->recordList = NULL;
+    iden->recordName = id->parent->lex;
     if (iden->type == RECORD_TYPE || iden->type == UNION_TYPE)
     {
+        
         recordUnionNode *temp = (recordUnionNode *)malloc(sizeof(recordUnionNode));
         temp->token = (tokenInfo *)malloc(sizeof(tokenInfo));
         temp->token->lexeme = id->parent->lex;
+
+        identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
+        new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+        new1->token->lexeme = id->parent->lex;
+        
+        identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);
+        
+        if(checkAlias!=NULL){
+            //printf("Preetika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
+            temp->token->lexeme = checkAlias->token->lexeme;
+            iden->recordName = checkAlias->token->lexeme;
+            //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
+        }
         iden->recordList = (recordUnionNode *)retrieve(SymbolTable, temp, RECORD_OR_UNION);
+
         if (iden->recordList)
-        {
+        {   
             iden->width = iden->recordList->width;
             (*offset) += iden->recordList->width;
         }
@@ -420,55 +436,19 @@ void createRUtable(ast *root)
                 // printf("current node's lexeme: %s\n", curr_ast->lex);
                 fields = createFieldList(curr_ast, &offset);    //iterates and returns a linked list of field nodes
                 recordUnionNode* new = createRUNode(child, fields);
+                new->recordName = child->lex;
                 //check if the name exists in the first pass table
                 //recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
-                identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
-                new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-                new1->token->lexeme = curr_ast->lex;
-                identifierNode* check = retrieveFake(firstPass, new1, true, false);
+                // identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
+                // new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                // new1->token->lexeme = curr_ast->lex;
+                // identifierNode* check = retrieveFake(firstPass, new1, true, false);
                 // if(check)
                 // {
                     insert(SymbolTable, new, RECORD_OR_UNION);
                   
                 // }
             }
-            // else if (child->nodeType == DEFINETYPE)
-            // {
-            //     printf("In definetype, Child node is %s and type is %d\n", child->lex, child->nodeType);
-            //     recordUnionNode *ru = (recordUnionNode *)malloc(sizeof(recordUnionNode));
-            //     ru->width = 0;
-            //     ru->fieldList = NULL;
-            //     ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-            //     ru->token->tid = -1;
-            //     ru->token->lexeme = child->firstChild->nextSibling->lex;
-            //     // ru->token->lineNo = ast->line;
-            //     ru->fieldList = NULL;
-            //     recordUnionNode *existing = (recordUnionNode *)retrieve(SymbolTable, ru, RECORD_OR_UNION);
-            //     if (existing == NULL)
-            //     {
-            //         printf("Implicit declaration of %s on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
-            //     }
-            //     else
-            //     {
-            //         if ((existing->is_union == true && child->firstChild->symbol == TK_RECORD) || (existing->is_union == false && child->firstChild->symbol == TK_UNION))
-            //         {
-            //             printf("Type Mismatch on line no. %d\n", child->firstChild->line);
-            //         }
-            //         else
-            //         {
-            //             recordUnionNode *tdefNode = (recordUnionNode *)malloc(sizeof(recordUnionNode));
-            //             tdefNode->is_union = existing->is_union;
-            //             tdefNode->width = existing->width;
-            //             tdefNode->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-            //             tdefNode->token->tid = existing->token->tid;
-            //             tdefNode->token->numVal = existing->token->numVal;
-            //             tdefNode->token->lineNo = existing->token->lineNo;
-            //             tdefNode->token->lexeme = child->firstChild->nextSibling->nextSibling->lex;
-            //             printf("In definetype, lexeme being inserted: %s\n", tdefNode->token->lexeme);
-            //             insert(SymbolTable, tdefNode, RECORD_OR_UNION);
-            //         }
-            //     }
-            // }
             child = child->nextSibling;
         }
         root = root->nextSibling;
@@ -629,9 +609,9 @@ void createAliasTable(ast* root){
                 //printf("In definetype, Child node is %s and type is %d\n", child->lex, child->nodeType);
                 identifierNode *ru = (identifierNode *)malloc(sizeof(identifierNode));
                 ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-                ru->token->lexeme = child->firstChild->nextSibling->lex;
+                ru->token->lexeme = child->firstChild->nextSibling->lex; //actual name
                 ru->function = (tokenInfo *)malloc(sizeof(tokenInfo));
-                ru->function->lexeme = child->firstChild->nextSibling->nextSibling->lex;
+                ru->function->lexeme = child->firstChild->nextSibling->nextSibling->lex; //alias name
 
                 identifierNode *existing = (identifierNode*)retrieveFake(firstPass, ru, true, false); //check if record exists
                 if (existing == NULL)
@@ -813,6 +793,17 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
     temp->token->lexeme = recordName;
     int width = 0;
 
+    identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
+    new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+    new1->token->lexeme = recordName;
+    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);
+        
+    if(checkAlias!=NULL){
+        //printf("Preetika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
+        temp->token->lexeme = checkAlias->token->lexeme;
+        //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
+    }
+
     recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
     recordField* head = ru->fieldList;
     while(head){
@@ -866,6 +857,71 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
 
 }
 
+char* concatString(char* s1, char* s2){
+    int l1 = strlen(s1);
+    int l2 = strlen(s2);
+    int size = l1+l2+1;
+    char* s = (char*)malloc(sizeof(char)*size);
+
+    for(int i=0; i<l1; i++){
+        s[i]=s1[i];
+    }
+
+    for(int i=0; i<l2; i++){
+        s[l1+i]=s2[i];
+    }
+
+    s[size-1]='\0';
+
+    return s;
+}
+
+//return type expression
+char* GodHelpMeOneMoreTime(char* recordName){
+    printf("IN here\n");
+    //return NULL;
+    recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
+    temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+    temp->token->lexeme = recordName;
+    recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
+    recordField* head = ru->fieldList;
+    char* a = (char *)malloc(sizeof(char)*400);
+    char* y;
+    while(head!=NULL){
+        if(head->type == INT_TYPE){
+            
+            y = (char *)malloc(sizeof(char)*4);
+            y[0] = 'x'; y[1] = 'i'; y[2] = 'n'; y[3] = 't';
+
+        }
+        else if(head->type == REAL_TYPE){
+            y = (char *)malloc(sizeof(char)*5);
+            y[0] = 'x'; y[1] = 'r'; y[2] = 'e'; y[3] = 'a'; y[4] = 'l';
+        }
+        else{
+            char *z = GodHelpMeOneMoreTime(head->recordName);
+            y = (char *)malloc(sizeof(char) * (3+strlen(z)));
+            y[0] = 'x'; y[1] = '(';
+            y = concatString(y,z);
+            int u = strlen(y);
+            y[u]=')';
+            y[u+1]='\0';
+
+            printf("Y INSIDE: %s\n", y);
+
+            //free(z);
+        }
+        printf("Y OUTSIDE: %s\n", y);
+        //printf("    %s\n",y);
+        head = head->next;
+        //GodHelpMeTwoMoreTimes(head->recordName);
+        a = concatString(a, y);
+        
+    }
+    printf("    %s\n",a);
+    return a;
+}
+
 void createITable(ast *root)
 {
     int globalOffset = 0;
@@ -908,7 +964,7 @@ void createITable(ast *root)
                     // it is local id
                     if (!child->is_union)
                     {
-                        id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);
+                        id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);  
                         int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
                         // printf("FINAL WIDTH %s %d\n",child->lex,a);
                         
@@ -938,7 +994,6 @@ void createITable(ast *root)
                     else
                     {
                         insert(SymbolTable, id, ID);
-                        //insertFields()
                     }
                 }
             }
@@ -1130,15 +1185,12 @@ void printSymbolTable(symbol_Table* st){
         while (entry != NULL)
         {
             node = (identifierNode *)(entry->node);
+
             if (node != NULL)
             {   
                 if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
-                    if(node->recordList){
-                        printf("%-30s %d %s %s\n", node->token->lexeme, node->width, node->function->lexeme, node->recordList->fieldList->recordName);
-                    }
-                    else{
-                        printf("%-30s %d %s \n", node->token->lexeme, node->width, node->function->lexeme);
-                    }
+                        printf("%-30s %d %s %s\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName);
+                        printf("%s\n",GodHelpMeOneMoreTime(node->recordName));
                 }
                 else if(node->type == INT_TYPE){
                     printf("%-30s %d %s INT\n", node->token->lexeme, node->width, node->function->lexeme);

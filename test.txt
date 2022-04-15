@@ -71,7 +71,7 @@ _main
 	type real : b5;
 	type real : d5cb34567;
 	type record #marks : b5c6;
-	type record #laffy : b4c6;
+	type record #quirky : b4c6;
 	%The identifier b5c6 stores the sum of marks
 
 	b5 <--- 1;
