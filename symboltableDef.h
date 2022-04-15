@@ -1,5 +1,4 @@
 #include "ast.h"
-#include "stdbool.h"
 
 #define REAL_WIDTH 4
 #define INT_WIDTH 2
@@ -62,6 +61,7 @@ typedef struct identifierNode{
     struct identifierNode* next;
     bool isRecordField;
     char* recordName;
+    bool isUnion;
 }identifierNode;
 
 typedef struct parameters{
