@@ -249,6 +249,7 @@ ast* makeAST(parseTree node, ast* parent) {
     //A ==> TK_RECORD | TK_UNION
     if(node->symbol == A) {
         curr = mkNode(RECORD_OR_UNION, parent, NULL, NULL, node->firstChild);
+        curr->is_union = (node->firstChild->symbol == TK_UNION) ? true : false;
     }
 
     //typeDefinition ==> TK_RECORD TK_RUID <fieldDefinitions> TK_ENDRECORD | TK_UNION TK_RUID <fieldDefinitions> TK_ENDUNION

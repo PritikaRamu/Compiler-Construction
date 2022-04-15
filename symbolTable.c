@@ -15,6 +15,11 @@ int hash(char *key)
     return hashed % TABLE_SLOTS;
 }
 
+int max(int num1, int num2)
+{
+    return (num1 > num2 ) ? num1 : num2;
+}
+
 recordField* createFieldList(ast *curr_ast)
 {
     
@@ -72,6 +77,37 @@ recordField* createFieldList(ast *curr_ast)
 
                // printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
             }
+
+
+            // identifierNode *x = (identifierNode *)retrieveFake(aliasTable,temp,false,true);
+            // identifierNode *y = (identifierNode *)retrieveFake(firstPass,temp,false,false);
+
+            //     if (y!=NULL && y->isUnion)
+            //     {   
+            //         fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+            //         fields->token->tid = iterator->symbol;
+            //         fields->token->lexeme = iterator->firstChild->lex;
+            //         fields->token->lineNo = iterator->firstChild->line;
+            //         fields->type = UNION_TYPE;
+            //         fields->recordName = y->token->lexeme;
+            //     }
+            //     else if(y==NULL && x!=NULL &&){
+            //         fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+            //         fields->token->tid = iterator->symbol;
+            //         fields->token->lexeme = iterator->firstChild->lex;
+            //         fields->token->lineNo = iterator->firstChild->line;
+            //         fields->type = RECORD_TYPE;
+            //         fields->recordName = x->token->lexeme;
+            //     }
+            //     else if(y!=NULL && !y->isUnion)
+            //     {
+            //         printf("Use an alias for nested records at line no. %d\n",iterator->line);
+
+            //     // printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
+            //     }
+            //     else{
+            //         printf("Record or union not defined at line no. %d\n",iterator->line);
+            //     }       
         }
         if (head)
         {
@@ -379,8 +415,12 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
             //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
         }
         iden->recordList = (recordUnionNode *)retrieve(SymbolTable, temp, RECORD_OR_UNION);
-        iden->width = GodHelpMe(id->parent->lex,id->lex,false,func);
-        
+        if(iden->type == RECORD_TYPE){
+            iden->width = GodHelpMe(id->parent->lex,id->lex,false,func);
+        }
+        else{
+            iden->width = GodHelpMeForUnion(id->parent->lex,id->lex,false,func);
+        }
     }
     else
     {
@@ -561,6 +601,7 @@ void createFirstPass(ast *root)
                 identifierNode* new = (identifierNode*)malloc(sizeof(identifierNode));
                 new->token = (tokenInfo*)malloc(sizeof(tokenInfo));
                 new->token->lexeme = child->lex;
+                new->isUnion = child->is_union;
                 identifierNode* check = retrieveFake(firstPass, new, true, false);
                 if(check)
                 {
@@ -596,6 +637,7 @@ void createAliasTable(ast* root){
                 ru->token->lexeme = child->firstChild->nextSibling->lex; //actual name
                 ru->function = (tokenInfo *)malloc(sizeof(tokenInfo));
                 ru->function->lexeme = child->firstChild->nextSibling->nextSibling->lex; //alias name
+                ru->isUnion = child->firstChild->is_union;
 
                 identifierNode *existing = (identifierNode*)retrieveFake(firstPass, ru, true, false); //check if record exists
                 if (existing == NULL)
@@ -772,6 +814,79 @@ void createFTable(ast *root)
     }
 }
 
+int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func){
+    recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
+    temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+    temp->token->lexeme = unionName;
+
+    int width = 0;
+    //checking for alias
+    identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
+    new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+    new1->token->lexeme = unionName;
+    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);       
+    if(checkAlias!=NULL){
+        temp->token->lexeme = checkAlias->token->lexeme;
+    }
+
+    //iteration through fields
+    recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
+    recordField* head = ru->fieldList;
+    while(head){
+        //concatenation of string for field ids
+        int x = strlen(dotName);
+        int y = strlen(head->token->lexeme);
+        int z = x+y+1;
+        char* concatString = (char *)malloc(sizeof(char) * z);
+        for(int i = 0; i < x; i++)
+            concatString[i] = dotName[i];
+        concatString[x] = '.';
+        for(int j = 0; j < y; j++)
+            concatString[j+x+1] = (head->token->lexeme)[j];
+
+        identifierNode* id = (identifierNode*)malloc(sizeof(identifierNode));
+        id->token  = (tokenInfo*)malloc(sizeof(tokenInfo));
+        id->global = global;
+        id->function = (tokenInfo*)malloc(sizeof(tokenInfo));
+        id->function->lexeme = func->lex;
+        id->isRecordField = true;
+        id->recordList = ru;
+
+        if(head->type == INT_TYPE || head->type == REAL_TYPE){
+            
+            if(head->type == INT_TYPE){
+                id->type = INT_TYPE;
+                width = max(width, INT_WIDTH);
+            }
+            else{
+                id->type = REAL_TYPE;
+                width = max(width, REAL_WIDTH);
+            }
+            id->width = head->width;
+        }
+        else{
+            id->type = RECORD_TYPE;
+            id->recordName = head->recordName;
+            int x = GodHelpMe(head->recordName, concatString, false, func);
+            id->width = x;
+            width = max(width, x);
+        }
+
+        id->token->lexeme = concatString;
+
+        identifierNode* check = (identifierNode*)retrieve(SymbolTable,id,ID);
+        if(check!=NULL){
+            printf("Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
+        }
+        else{
+            insert(SymbolTable,id,ID);
+        }
+        printf("width is %d now and %s\n", width, concatString);
+        head = head->next;
+    }
+    return width;
+}
+
 int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
 
     recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
@@ -946,6 +1061,11 @@ void createITable(ast *root)
             
            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
             {
+                if(child->is_union){
+                    printf("Variable cannot be of union type at line no. %d\n",child->line);
+                    child = child->nextSibling;
+                    continue;
+                }
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {

@@ -1280,7 +1280,7 @@ void removeComments(char* testcaseFile, char* cleanFile){
 
 // int main()
 // {
-// 	fp = startLexer("t6.txt");
+// 	fp = startLexer("p3.txt");
 // 	initTable();
 // 	while (1)
 // 	{
@@ -1288,7 +1288,7 @@ void removeComments(char* testcaseFile, char* cleanFile){
 // 		if(pleasework.tid!=LEX_ERROR && pleasework.tid!=TK_COMMENT)
 // 		{
 // 		printf("Line no. %d\t\tLexeme %s\t\t\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
-// 		printToken(pleasework.tid);
+// 		//printToken(pleasework.tid);
 // 		printf("\n");
 // 		if (pleasework.tid == SENTINEL)
 // 			break;
