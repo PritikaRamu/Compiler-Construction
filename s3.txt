@@ -73,6 +73,7 @@ output parameter list[real d3, record #line d3b2];
 	endunion
 	definetype union #example as #variantpart
 	definetype record #abc as #pqr
+	definetype record #abc as #uvw
 	
 
 	type record #abc :  d7d3;	% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.

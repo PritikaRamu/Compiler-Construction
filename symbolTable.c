@@ -728,7 +728,7 @@ void printReverseMapping(subTable *fun_table)
     int i;
     Entry * entry;
     identifierNode *fun_node;
-    printf("#%-30s\n", "Lexeme");
+    printf("#%-30s %s\n", "Lexeme","Alias Name");
     for (i = 0; i < TABLE_SLOTS; i++)
     {
         entry = &(fun_table->table[i]);
@@ -1412,9 +1412,9 @@ void initializeSymbolTable(ast *ast)
     SymbolTable->FunctionTable = initSubTable();
     SymbolTable->RecordUnionTable = initSubTable();
     createFirstPass(ast);
-    printFPTable(firstPass);
+    //printFPTable(firstPass);
     createAliasTable(ast);
-    printAliasTable(aliasTable);
+    //printAliasTable(aliasTable);
     createRUtable(ast);
     //printf("record table done\n");
     createFTable(ast);
@@ -1422,7 +1422,7 @@ void initializeSymbolTable(ast *ast)
     createITable(ast);
     //printf("identifier table done\n");
     //printf("Printing alias table\n");
-    printReverseMapping(firstPass);
+    
     //printf("\nAlias table printed\n");
 }
 
@@ -1441,7 +1441,7 @@ void printRecordTable(subTable *rec_table)
             if (record != NULL)
             {
                 
-                //printf("%-30s", record->token->lexeme);
+                printf("%-30s", record->token->lexeme);
                 recordField *fields = record->fieldList;
                 char fieldsstring[100] = "";
                 while (fields != NULL)
@@ -1456,8 +1456,8 @@ void printRecordTable(subTable *rec_table)
                     }
                     fields = fields->next;
                 }
-                // printf("%-30s", fieldsstring);
-                // printf("%d\n", record->width);
+                printf("%-30s", fieldsstring);
+                printf("%d\n", record->width);
                 printf("-------------------------------\n");
             }
             entry = entry->next;
@@ -1567,15 +1567,16 @@ void printIDList(functionNode* exist){
                 }
 
                 if(head->type == RECORD_TYPE || head->type == UNION_TYPE){
-                    printf("%-30s %d %s %s %s %s   %d %s\n", head->token->lexeme, head->width, head->function->lexeme, head->recordName, GodHelpMeOneMoreTime(head->recordName), head->global?"true":"false",head->offset, varType);
+                    printf("%-10s %-10d %-10s %-10s %-10s %-10s %-10d %-10s  ", head->token->lexeme, head->width, head->function->lexeme, head->recordName, GodHelpMeOneMoreTime(head->recordName), head->global?"true":"false",head->offset, varType);
                 }
                 else if(head->type == INT_TYPE){
-                    printf("%-30s %d %s INT     --- %s   %d %s\n", head->token->lexeme, head->width, head->function->lexeme,head->global?"true":"false",head->offset, varType);
+                    printf("%-10s %-10d %-10s %-10s %-10s %-10s %-10d %-10s  ", head->token->lexeme, head->width, head->function->lexeme,"int","---",head->global?"true":"false",head->offset, varType);
                 }
                 else{
-                    printf("%-30s %d %s REAL    --- %s  %d %s\n", head->token->lexeme, head->width, head->function->lexeme, head->global?"true":"false",head->offset, varType);
+                    printf("%-10s %-10d %-10s %-10s %-10s %-10s %-10d %-10s  ", head->token->lexeme, head->width, head->function->lexeme,"real","---", head->global?"true":"false",head->offset, varType);
                 }
-                printf("-------------------------------\n");
+                printf("\n");
+                printf("-------------------------------------------------------------------------------------------\n");
                 }
         head = head->idList;
     }
@@ -1745,7 +1746,7 @@ void printFinalTable(subTable *fun_table)
     int i;
     Entry *entry;
     functionNode *fun_node;
-    printf("LEXEME    WIDTH    SCOPE   TYPE   ISGLOBAL  OFFSET  VARIABLE_TYPE\n");
+    printf("%-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s \n","LEXEME", "WIDTH","SCOPE", "TYPE", "ISGLOBAL", "OFFSET", "VARIABLE_TYPE", "VARIABLE_USAGE");
     for (i = 0; i < TABLE_SLOTS; i++)
     {
         entry = &(fun_table->table[i]);
@@ -1761,6 +1762,8 @@ void printFinalTable(subTable *fun_table)
             entry = entry->next;
         }
     }
+    printf("\n \n ALIAS TABLE\n");
+printReverseMapping(firstPass);
 }
 
 void printGlobalTable(subTable *fun_table)

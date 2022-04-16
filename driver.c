@@ -127,14 +127,21 @@ int main(int argc, char *argv[])
 			initGrammar(G);
 			populateFirstFollow("First.txt", true);
 			populateFirstFollow("Follow.txt", false);
-			// computeParseTable();
-			// parseTree ptree = parseInputSourceCode(testFile);
-			// int m = printParseTree(ptree, outfile);
-			// ast *astree = initAST(ptree);
-			// int numNodes = printAST(astree, outfile);
-			// printf("\nNumber of AST Nodes is %d\n",numNodes);
-			// printf("\nNumber of parse tree Nodes is %d\n",numNodes);
-			printCompressionPercentage();
+			computeParseTable();
+			parseTree ptree = parseInputSourceCode(testFile);
+			int m = printParseTree(ptree, outfile);
+			ast *astree = initAST(ptree);
+			int n = printAST(astree, outfile);
+			int x = sizeof(struct astNode);
+			int y = sizeof(struct tree);
+			float ans = 100.00*((m*y)-(n*x))/(m*y);
+
+			printf("\nParse tree Number of nodes %d\n",m);
+			printf("Allocated memory = %d\n\n",m*y);
+			printf("AST Number of nodes %d\n",m);
+			printf("Allocated memory = %d\n\n",n*x);
+			printf("Compression Ratio: %f %%\n",ans);
+			
 			break;
 
 		}
