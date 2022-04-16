@@ -18,5 +18,7 @@ void printSymbolTable(symbol_Table* st);
 int GodHelpMe(char* a, char* b, bool global, ast* node);
 int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func);
 void addAlias(identifierNode* existing,identifierNode* alias);
+void addID(functionNode* exist, identifierNode* id);
+void printIDList(functionNode* exist);
 
 #endif

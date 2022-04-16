@@ -699,8 +699,6 @@ void addAlias(identifierNode* existing, identifierNode* alias)
 
 }
 
-
-
 void printReverseMapping(subTable *fun_table)
 {
     int i;
@@ -786,6 +784,8 @@ void createFTable(ast *root)
         ast *child = root->firstChild;
         parameters *curr_ip = (parameters*)malloc(sizeof(parameters));
         parameters *curr_op = (parameters*)malloc(sizeof(parameters));
+        curr_ip = NULL;
+        curr_op = NULL;
         ast *pars = NULL;
         int width = 0;
         func->numOp = 0;
@@ -891,7 +891,7 @@ void createFTable(ast *root)
                     {
                         insert(SymbolTable, id, ID);
                     }
-                    if (curr_op!= NULL)
+                    if (!curr_op)
                     {
                         func->opParams = createIPParams(pars->firstChild, pars->nodeType); // TODO
                         func->numOp ++;
@@ -1421,6 +1421,27 @@ void printSymbolTable(symbol_Table* st){
     }
 }
 
+void printIDList(functionNode* exist){
+    identifierNode* head = exist->idList;
+    while(head){
+        printf("%s %s\n",head->token->lexeme,head->function->lexeme);
+        head = head->idList;
+    }
+}
+
+void addID(functionNode* exist, identifierNode* id){
+    identifierNode* head = exist->idList;
+
+    if(!head){
+        head = id;
+        exist->idList = head;
+    }
+    else{
+        id->idList = head;
+        exist->idList = id;
+    }
+}
+
 void printIDTable(subTable *fun_table)
 {
     int i;
@@ -1435,9 +1456,15 @@ void printIDTable(subTable *fun_table)
             fun_node = (identifierNode *)(entry->node);
             if (fun_node != NULL)
             {   
-                    printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+                //     printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
  
-                printf("-------------------------------\n");
+                // printf("-------------------------------\n");
+                functionNode* temp = (functionNode*)malloc(sizeof(functionNode));
+                temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                temp->token->lexeme = fun_node->function->lexeme;
+                functionNode* temp1 = (functionNode*)retrieve(SymbolTable,temp,FUNCTION_SEQ);
+                addID(temp1,fun_node);
+                // printIDList(temp1);
             }
             entry = entry->next;
         }

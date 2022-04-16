@@ -54,9 +54,6 @@ void semanticAnalyser(ast* root){
     printf("Exited Semantic Analyser while loop\n");
 }
 
-// void validateStmts(ast* curr, functionNode* currNode, bool* opAssigned){
-
-// }
 bool isOperator(ast* curr) {
     NodeType nType = curr->nodeType;
     if(nType == DIVIDE || nType == MULTIPLY || nType == PLUS || nType == MINUS) {
@@ -77,7 +74,6 @@ bool isNumRnum(ast* curr) {
     }
 }
 
-
 void validateAssign(ast* curr, ast* func) {
     int localOffset = 0; 
     printf("In validateAssign, entering valArith, curr->firstChild->nextSibling lexeme: %s and func: %s and NodeType: %d\n", curr->firstChild->nextSibling->lex, func->lex, curr->firstChild->nextSibling->nodeType);
@@ -93,25 +89,26 @@ void validateAssign(ast* curr, ast* func) {
     ast* lChild = curr->firstChild;
     //Type lChildType = TypeUsingAST(lChild->nodeType, lChild->is_union);
     printf("This lexeme in valAss: %s is in scope of function: %s with nodeType: %d\n", curr->lex, func->lex, curr->nodeType);
+    
     identifierNode* lChildNode = createINode(lChild, func, -1, false, &localOffset);
-    identifierNode* lChildNode_global = createINode(lChild, func, -1, true, &localOffset);
+    //identifierNode* lChildNode_global = createINode(lChild, func, -1, true, &localOffset);
     lChildNode = (identifierNode*)retrieve(SymbolTable, lChildNode, ID);
     printf("Chcekpoint 1 post retrieve in ValAssign.\n");
 
     if(lChildNode == NULL) {
-        //identifierNode* lChildNode_global = createINode(lChild, func, -1, true, &localOffset);
+        identifierNode* lChildNode_global = createINode(lChild, func, -1, true, &localOffset);
         lChildNode_global = (identifierNode* )retrieve(SymbolTable, lChildNode_global, ID);
         printf("Chcekpoint 2 post retrieve in ValAssign.\n");
 
         if(lChildNode_global == NULL) {
             // semanticErrors ++;
-            fprintf(errorfp, "Line no. %d: Undeclared Variable HERE IN VALass %s in Assignment.\n", lChild->line, lChild->lex);
+            //fprintf(errorfp, "Line no. %d: Undeclared Variable HERE IN VALass %s in Assignment.\n", lChild->line, lChild->lex);
             printf("Line no. %d: Undeclared Variable HERE IN VALass %s in Assignment.\n", lChild->line, lChild->lex);
             return;
         }
         else {
             lChildNode = lChildNode_global;
-            printf("Retrived global identifier for lex: %s, type: %d\n", lChildNode_global->token->lexeme, lChildNode_global->type);
+            printf("Retrived global identifier for lex: %s, type: %d\n", lChildNode->token->lexeme, lChildNode->type);
         }
     }
     else {
@@ -124,9 +121,6 @@ void validateAssign(ast* curr, ast* func) {
         //printf("Line no. %d: Operand type mismatch\n", curr->line);
         return;
     }
-
-    // free(notGlobalCurr);
-    // free(globalCurr);
 
     // attribute from AST
     ast *attribute = NULL;
@@ -167,7 +161,7 @@ void validateAssign(ast* curr, ast* func) {
             printf("%s\n", fConcatLex);
 
             if(fidNode == NULL) {
-                fprintf(errorfp, "Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                //fprintf(errorfp, "Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
                 printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
                 //semanticErrors++;
                 return;
@@ -179,7 +173,7 @@ void validateAssign(ast* curr, ast* func) {
             printf("In valAss, type of assigned node: %s match val of arith node: %s\n", lChild->lex, ArithNode->token->lexeme);
         }
         else {
-            fprintf(errorfp, "Line no %d: Type mismatch in assign.\n", lChild->line);
+            //fprintf(errorfp, "Line no %d: Type mismatch in assign.\n", lChild->line);
             printf("Line no %d: Type mismatch in assign.\n", lChild->line);
             // semanticErrors++;
             return;
@@ -213,6 +207,7 @@ void validateAssign(ast* curr, ast* func) {
             printf("In valAss, type of assigned node: %s match val of arith node: %s\n", lChild->lex, ArithNode->token->lexeme);
         }
     }
+    lChildNode->assigned = true;
 }
 
 identifierNode* validateArithmetic(ast* curr, ast* func) {
@@ -240,6 +235,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
             }
         }
         //id
+        
         printf("\nIn valArith, not an operator, creating a node for ast lexeme: %s\n", curr->lex);
         identifierNode* currNode = createINode(curr, func, 0, false, &localOffset);
         identifierNode* currNode_global = createINode(curr, func, 0, true, &localOffset);
@@ -260,18 +256,25 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         else {
             printf("Retrived non global identifier for lex: %s, type: %d\n", currNode->token->lexeme, currNode->type);
         }
- 
+
         //attribute from AST
         ast* attribute = NULL;
         if(curr->firstChild != NULL) {
             attribute = curr->firstChild;
         }
 
-        //record/union from symbol table
+        //unassigned id (except nested records)
+        if(attribute == NULL) {
+            if(currNode->assigned == false) {
+                //semanticErrors++;
+                printf("Line no. %d: Can not perform assignment on unassigned identifiers\n", curr->line);
+                return NULL;
+            }
+        }
 
         //NESTED RECORDS
 
-        if ((currNode->type == RECORD_TYPE || currNode->type == UNION_TYPE) && attribute != NULL)
+        if ((currNode->type == RECORD_TYPE) && attribute != NULL)
         {
             Type currType = currNode->type;
             char* fConcatLex = (char*)malloc(sizeof(char)*strlen(curr->lex));
@@ -300,18 +303,25 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                 currNode = fidNode;
                 attribute = attribute->nextSibling;
             }
+            if(currNode->assigned == true) {
+                return currNode;
+            }
+            else {
+                //semanticErrors++;
+                printf("Line no. %d: Can not perform assignment on unassigned identifiers\n", curr->line);
+                return NULL;
+            }
+        }
+        else if ((currNode->type == RECORD_TYPE) && attribute == NULL) {
             return currNode;
         }
-        else if ((currNode->type == RECORD_TYPE || currNode->type == UNION_TYPE) && attribute == NULL) {
-            return currNode;
-        }
-        else if ((currNode->type != RECORD_TYPE && currNode->type != UNION_TYPE) && attribute != NULL) {
+        else if ((currNode->type != RECORD_TYPE) && attribute != NULL) {
             printf("Line no. %d: Variale %s not of type record.\n", curr->line, curr->lex);
             //semanticErrors++;
             return NULL;
 
         }
-        else if ((currNode->type != RECORD_TYPE || currNode->type != UNION_TYPE) && attribute == NULL){
+        else if ((currNode->type != RECORD_TYPE) && attribute == NULL){
             return currNode;
         }
     }
@@ -335,6 +345,13 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
             return NULL;
         }
 
+        //performing operations on unasigned identifiers
+        if(fNode->assigned == false || sNode->assigned == false) {
+            //semanticErrors;;
+            printf("Line no. %d: Can not perform operations on unassigned identifiers\n", fChild->line);
+            return NULL;
+        }
+
         Type fType = fNode->type;
         Type sType = sNode->type;
 
@@ -346,22 +363,32 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                     return NULL;
                 }
                 else {
-                    printf("Type matches for record in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
-                    return fNode;
+                    if(curr->nodeType == PLUS || curr->nodeType == MINUS) {
+                        printf("Type matches for record in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
+                        return fNode;
+                    }
+                    else {
+                        //semanticErrors++;
+                        printf("Line no. %d ERROR: Multiplication or Division not allowed with records\n", curr->line);
+                        return NULL;
+                    }
                 }
             }
             if (fType == UNION_TYPE) {
-                if(fNode->unionList != sNode-> unionList) {
-                    printf("Line no. %d: Can not perform operations on unions of different types\n", fNode->token->lineNo);
-                    //semanticErrors++;
-                    return NULL;
-                }
-                else {
-                    printf("Type matches for union in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
-                    return fNode;
-                }
+                //semanticErrors++;
+                printf("Line no. %d ERROR: Arithmetic operations not allowed with union types\n", curr->line);
             }
             else if (fType == INT_TYPE || fType == REAL_TYPE) {
+                if(fType == INT_TYPE) {
+                    if(curr->nodeType == DIVIDE) {
+                        printf("Type matches for Int/Real in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
+                        return createINode(fChild, func, REAL_TYPE, false, &localOffset);
+                    }
+                    else {
+                        printf("Type matches for Int/Real in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
+                        return fNode;
+                    }
+                }
                 printf("Type matches for Int/Real in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
                 return fNode;
             }
@@ -370,47 +397,79 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         else {
             if(fType == INT_TYPE) {
                 if(sType == REAL_TYPE) {
-                    printf("Line no. %d: Type mismatch operand %s is of type int and %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
-                    return NULL;
+                    if(curr->nodeType != DIVIDE) {
+                        //semanticErrors++;
+                        printf("Line no. %d: Type mismatch operand %s is of type int and %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
+                        return NULL;
+                    }
+                    else {
+                        printf("Type matches for Int/Real in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
+                        return sNode;
+                    }
                 }
                 else if(sType == RECORD_TYPE || sType == UNION_TYPE) {
-                    if(curr->nodeType == MULTIPLY) {
-                        return sNode;
+                    if(sType == UNION_TYPE) {
+                        //semanticErrors++;
+                        printf("Line no. %d ERROR: Arithmetic operations not allowed with union types\n", curr->line);
+                        return NULL;
+                    }
+                    else {
+                        if(curr->nodeType == MULTIPLY) {
+                            printf("Type matches for Int and Record in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
+                            return sNode;
+                        }
+                        else {
+                            //semanticErrors++;
+                            printf("Line no. %d ERROR: Disallowed Arithmetic operation %s with record and integer\n", curr->line, curr->lex);
+                            return NULL;
+                        }
                     }
                 }
             }
             else if(fType == REAL_TYPE) {
                 if(sType == INT_TYPE) {
-                    printf("Line no. %d: Type mismatch operand %s is of type int and %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
-                    return NULL;
-                }
-                else if(sType == RECORD_TYPE || sType == UNION_TYPE) {
-                    if(curr->nodeType == PLUS || curr->nodeType == MINUS) {
+                    if(curr->nodeType != DIVIDE) {
+                        //semanticErrors++;
+                        printf("Line no. %d: Type mismatch operand %s is of type int and %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
+                        return NULL;
+                    }
+                    else {
+                        printf("Type matches for Int/Real in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
                         return sNode;
                     }
                 }
-            }
-            else if(fType == RECORD_TYPE || fType == UNION_TYPE) {
-                if(sType == INT_TYPE) {
-                    if(curr->nodeType == PLUS || curr->nodeType == MINUS || curr->nodeType == MULTIPLY) {
-                        //printf("Line no. %d: Type mismatch operand %s is of type int and %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
-                        return fNode;
-                    }
-                    else {
-                        printf("Line no. %d: Division not allowed with type record\n", fChild->line);
-                        return NULL;
-                    }
-                }
-                else if(sType == UNION_TYPE || sType == RECORD_TYPE) {
-                    printf("Line no. %d: Type mismatch operand %s is of type Record and %s is of type Union\n", fChild->line, fChild->lex, sChild->lex);
+                else if(sType == RECORD_TYPE || sType == UNION_TYPE) {
+                    //semanticErrors++;
+                    printf("Line no. %d ERROR: Disallowed Arithmetic operation %s with record/union and real\n", curr->line, curr->lex);
                     return NULL;
                 }
-                else if(sType == REAL_TYPE) {
-                    if(curr->nodeType == PLUS || curr->nodeType == MINUS) {
-                        return fNode;
+            }
+            else if(fType == RECORD_TYPE || fType == UNION_TYPE) {
+                if(fType == UNION_TYPE) {
+                    //semanticErrors++;
+                    printf("Line no. %d ERROR: Arithmetic operations not allowed with union types\n", curr->line);
+                    return NULL;
+                }
+                else {
+                    if(sType == INT_TYPE) {
+                        if(curr->nodeType == MULTIPLY) {
+                            printf("Type matches for Int and Record in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
+                            return sNode;
+                        }
+                        else {
+                            //semanticErrors++;
+                            printf("Line no. %d ERROR: Disallowed Arithmetic operation %s with record and integer\n", curr->line, curr->lex);
+                            return NULL;
+                        }
                     }
-                    else {
-                        printf("Line no. %d: Division or multiplication not allowed with type record and real\n", fChild->line);
+                    else if(sType == UNION_TYPE) {
+                        //semanticErrors++;
+                        printf("Line no. %d: Type mismatch operand %s is of type Record and %s is of type Union\n", fChild->line, fChild->lex, sChild->lex);
+                        return NULL;
+                    }
+                    else if(sType == REAL_TYPE) {
+                        //semanticErrors++;
+                        printf("Line no. %d ERROR: Disallowed Arithmetic operation %s with record and real\n", curr->line, curr->lex);
                         return NULL;
                     }
                 }
@@ -446,21 +505,21 @@ void validateFunCall (ast* call, ast* func) {
 
     //calling a non-existing function
     if(calledFunctionNode == NULL){
-        printf("No such function exists.\n");
+        printf("Line no. %d: Undeclared function %s being called\n", funcIdentifier->line, funcIdentifier->lex);
         // semanticerrors++;
         return;
     }
 
     //function call inside function call; 
     if(calledFunctionNode->token == callingFunctionNode->token) {
-        printf("Recusion not allowed in functions.\n");
+        printf("Line no. %d: Recursion not allowed in functions.\n", call->line);
         // semanticErrors++;
         return;
     }
 
     //calling before definition
     if(calledFunctionNode->rank > callingFunctionNode->rank) {
-        printf("Function called before being defined.\n");
+        printf("Line no. %d: Function %s called before being defined.\n", call->line, funcIdentifier->lex);
         // semanticErrors++;
         return;
     }
@@ -472,15 +531,19 @@ void validateFunCall (ast* call, ast* func) {
         //ast* id, ast* func, Type type, bool is_global, int*offset
 
         //retrieve from ST node corresponding to AST
+        printf("\nEntering loop for opSTpars in the function %s\n", funcIdentifier->lex);
         Type opGivenType = TypeUsingAST(opGivenPars->nodeType, opGivenPars->is_union);
         
         identifierNode* opGivenNode = createINode(opGivenPars, func, opGivenType, false, &localOffset);
+        identifierNode* opGivenNode_global = createINode(opGivenPars, func, opGivenType, true, &localOffset);
         opGivenNode = (identifierNode*)retrieve(SymbolTable, opGivenNode, ID);
+        printf("Retrieve madarchod in %s, retrieved with lex\n", funcIdentifier->lex);
 
         if (opGivenNode == NULL)
         {
-            identifierNode *opGivenNode_global = createINode(opGivenPars, func, -1, true, &localOffset);
-            opGivenNode_global = (identifierNode *)retrieve(SymbolTable, opGivenPars, ID);
+            printf("Retrieve se pehle, retrieve se zyada\n");
+            //identifierNode *opGivenNode_global = createINode(opGivenPars, func, -1, true, &localOffset);
+            opGivenNode_global = (identifierNode *)retrieve(SymbolTable, opGivenNode_global, ID);
             printf("Chcekpoint 2 post retrieve in ValFunCall.\n");
 
             if (opGivenNode_global == NULL)
@@ -592,7 +655,7 @@ void validateFunCall (ast* call, ast* func) {
         if (ipGivenNode == NULL)
         {
             identifierNode *ipGivenNode_global = createINode(ipGivenPars, func, -1, true, &localOffset);
-            ipGivenNode_global = (identifierNode *)retrieve(SymbolTable, ipGivenPars, ID);
+            ipGivenNode_global = (identifierNode *)retrieve(SymbolTable, ipGivenNode_global, ID);
             printf("Chcekpoint 2 post retrieve in ValFunCall.\n");
 
             if (ipGivenNode_global == NULL)
@@ -727,12 +790,12 @@ void validateRead(ast* curr, ast* func) {
     }
 
     if(curr->firstChild != NULL) {
-        if((currNode->type != RECORD_TYPE && currNode->type != UNION_TYPE)) {
+        if((currNode->type != RECORD_TYPE)) {
             printf("Variable is not of type record/union.");
             //semanticErrors++:
             return;
         }
-        else if (currNode->type == RECORD_TYPE || currNode->type == UNION_TYPE) {
+        else if (currNode->type == RECORD_TYPE) {
             ast* attribute = curr->firstChild;
             //check for Nested recods type;
             // if no match-- semnatic error
@@ -839,11 +902,11 @@ void validateWrite(ast* curr, ast* func) {
 
 void validateIterative(ast* curr, ast* func) {
     printf("Entered valIter with current lexeme: %s, and function lexeme: %s\n", curr->lex, func->lex);
-    validateBoolean(curr->firstChild, func);
     ast* temp = curr->firstChild->nextSibling;
     for(; temp != NULL; temp = temp->nextSibling) {
         handleStmt(temp, func);
     }
+    validateBoolean(curr->firstChild, func);
 }
 
 int isRelOp(ast* curr) {
@@ -897,17 +960,18 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                 identifierNode* t1 = createINode(fChild, func, -1, false, &localOffset);
                 identifierNode* t1_global = createINode(fChild, func, -1, true, &localOffset);
                 fNode = (identifierNode*)retrieve(SymbolTable, t1, ID);
-                printf("In validateBoolean fNode retrieved with lexeme: %s\n", fNode->token->lexeme);
+                //printf("In validateBoolean fNode retrieved with lexeme: %s\n", fNode->token->lexeme);
                 if(fNode == NULL) {
                     fNode = (identifierNode*)retrieve(SymbolTable, t1_global, ID);
                     if(fNode == NULL) {
                         printf("Line no. %d: Using undeclared identifier %s\n", fChild->line, fChild->lex);
                     }
                 }
+                
                 t1 = createINode(sChild, func, -1, false, &localOffset);
                 t1_global = createINode(sChild, func, -1, true, &localOffset);
                 sNode = (identifierNode*)retrieve(SymbolTable, t1, ID);
-                printf("sNode retrieved with lexeme: %s\n", sNode->token->lexeme);
+                //printf("sNode retrieved with lexeme: %s\n", sNode->token->lexeme);
                 if(sNode == NULL) {
                     sNode = (identifierNode*)retrieve(SymbolTable, t1_global, ID);
                     if(sNode == NULL) {
@@ -916,7 +980,16 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     }
                 }
 
+
+
                 if((fNode->type == INT_TYPE || fNode->type == REAL_TYPE) && (sNode->type == INT_TYPE || sNode->type == REAL_TYPE)) {
+                    
+                    if(fNode->assigned == false || sNode->assigned == false) {
+                    //semanticErrors++;
+                    printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
+                    return NULL;
+                    }
+                    
                     if(fNode->type == sNode->type) {
                         //return createINode(, func, fNode->type, false, &localOffset);
                         printf("\nLeft and right nodes are not records\n");
@@ -1004,6 +1077,12 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         return NULL;
                     }
                     
+                    if(fNode->assigned == false || sNode->assigned == false) {
+                        //semanticErrors++;
+                        printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
+                        return NULL;
+                    }
+
                     if(fNode->type == sNode->type) {
                         if(fNode->type == INT_TYPE || fNode->type == REAL_TYPE) {
                             return fNode;
@@ -1035,7 +1114,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     }
 
                     Type currType = fNode->type;
-                    if(currType == RECORD_TYPE || currType == UNION_TYPE) {
+                    if(currType == RECORD_TYPE) {
                         if(fChild->firstChild == NULL) {
                             printf("Line no. %d: Relational operator can not be used with Unions or records\n", fChild->line);
                             return NULL;
@@ -1074,9 +1153,19 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                                 }
                             }
                         }
+                        if(fNode->assigned == false) {
+                            //semanticErrors++;
+                            printf("Line no. %d: Can not perform relOp on unassigned identifier\n", curr->line);
+                            return NULL;
+                        }
                     }
                     if((currType == INT_TYPE && sChild->nodeType == NUM) || (currType == REAL_TYPE && sChild->nodeType == RNUM)) {
                         //printf("Line no. %d: Operand type mismatch", fChild->line);
+                        if(fNode->assigned == false) {
+                            //semanticErrors++;
+                            printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
+                            return NULL;
+                        }
                         return fNode;
                     }
                     else {
@@ -1136,9 +1225,19 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                             }
                             printf("Concatenation ended\n");
                         }
+                        if(sNode->assigned == false) {
+                            //semanticErrors++;
+                            printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
+                            return NULL;
+                        }
                     }
                     if((currType == INT_TYPE && fChild->nodeType == NUM) || (currType == REAL_TYPE && fChild->nodeType == RNUM)) {
                         //printf("Line no. %d: Operand type mismatch", fChild->line);
+                        if(sNode->assigned == false) {
+                            //semanticErrors++;
+                            printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
+                            return NULL;
+                        }
                         return sNode;
                     }
                     else {
@@ -1204,7 +1303,7 @@ void validateReturn(ast* curr, ast* func) {
         return;
     }
 
-    return;
+    //return;
     identifierNode* currNode = (identifierNode*)malloc(sizeof(identifierNode));
     parameters* iterParams = outputParams;
     for(int i=0; i<numReturn; i++, child = child->nextSibling, iterParams = iterParams->next) {

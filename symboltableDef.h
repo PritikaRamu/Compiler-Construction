@@ -64,6 +64,7 @@ typedef struct identifierNode{
     char* recordName;
     bool isUnion;
     struct identifierNode* aliasList;
+    struct identifierNode* idList;
 }identifierNode;
 
 typedef struct parameters{
@@ -81,6 +82,7 @@ typedef struct function_node{
     int tmpVars; //keep track of no. of temp vars needed for code gen
     int rank;
     int numOp;
+    identifierNode* idList;
 }functionNode;
 
 typedef struct function_list{
@@ -93,3 +95,7 @@ symbol_Table* SymbolTable;
 
 subTable* firstPass;
 subTable* aliasTable;
+
+char redeclaration_error_array[100][200];
+
+int redeclaration_error_index;
