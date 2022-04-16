@@ -1157,20 +1157,20 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
 void validateReturn(ast* curr, ast* func) {
     ast* child = curr->firstChild;
     
-    //declre dummy node for retrieval
-    functionNode* retNode = (functionNode *)malloc(sizeof(functionNode));
-    retNode->width = -1;
-    retNode->rank = -1;
-    retNode->opParams = NULL;
-    retNode->ipParams = NULL;
-    retNode->tmpVars = -1;
+    // //declre dummy node for retrieval
+    // functionNode* retNode = (functionNode *)malloc(sizeof(functionNode));
+    // retNode->width = -1;
+    // retNode->rank = -1;
+    // retNode->opParams = NULL;
+    // retNode->ipParams = NULL;
+    // retNode->tmpVars = -1;
 
-    retNode->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-    retNode->token->lexeme = func->lex;
-    retNode->token->lineNo = func->line;
-    retNode->token->tid = func->symbol;
-    //declaration finished
-
+    // retNode->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+    // retNode->token->lexeme = func->lex;
+    // retNode->token->lineNo = func->line;
+    // retNode->token->tid = func->symbol;
+    // //declaration finished
+    functionNode* retNode = createFNode(func);
     functionNode* funcInfo = (functionNode*)retrieve(SymbolTable, retNode, FUNCTION_SEQ);
     printf("\n\nIn valReturn Function whose info was retrieved: %s and number of output params: %d\n", funcInfo->token->lexeme, funcInfo->numOp);
 
@@ -1199,12 +1199,12 @@ void validateReturn(ast* curr, ast* func) {
         numOp = 0;
     }
 
-    if(numReturn != numOp) {
+    if(numReturn != funcInfo->numOp) {
         printf("Line no. %d: Number of return values: %d not equal to number of output parameters: %d in function %s\n", curr->line, numReturn, numOp, funcInfo->token->lexeme);
         return;
     }
 
-
+    return;
     identifierNode* currNode = (identifierNode*)malloc(sizeof(identifierNode));
     parameters* iterParams = outputParams;
     for(int i=0; i<numReturn; i++, child = child->nextSibling, iterParams = iterParams->next) {
