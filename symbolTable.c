@@ -827,11 +827,11 @@ void createFTable(ast *root)
                     {
                         insert(SymbolTable, id, ID);
                     }
-                    if (!curr_op)
+                    if (curr_op!= NULL)
                     {
                         func->opParams = createIPParams(pars->firstChild, pars->nodeType); // TODO
                         func->numOp ++;
-                        curr_ip = func->opParams;
+                        curr_op = func->opParams;
                     }
                     else
                     {
@@ -844,7 +844,6 @@ void createFTable(ast *root)
                 }
             }
             child = child->nextSibling;
-            printf("            OP params %d\n",func->numOp);
         }
         func->width = width;
         functionNode *check = (functionNode *)retrieve(SymbolTable, func, FUNCTION_SEQ);
