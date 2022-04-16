@@ -1204,7 +1204,7 @@ void validateReturn(ast* curr, ast* func) {
         return;
     }
 
-    return;
+    //return;
     identifierNode* currNode = (identifierNode*)malloc(sizeof(identifierNode));
     parameters* iterParams = outputParams;
     for(int i=0; i<numReturn; i++, child = child->nextSibling, iterParams = iterParams->next) {

@@ -673,8 +673,10 @@ void createFTable(ast *root)
         int offset = 0;
         functionNode *func = createFNode(root);
         ast *child = root->firstChild;
-        parameters *curr_ip = NULL;
-        parameters *curr_op = NULL;
+        parameters *curr_ip = (parameters*)malloc(sizeof(parameters));
+        parameters *curr_op = (parameters*)malloc(sizeof(parameters));
+        curr_ip = NULL;
+        curr_op = NULL;
         ast *pars = NULL;
         int width = 0;
         while (child)
@@ -1367,3 +1369,40 @@ void addErrorToArray(char* errorMessage){
     strcpy(redeclaration_error_array[redeclaration_error_index], errorMessage);
     redeclaration_error_index++;
 }
+// funList* functionSequence(subTable* idTable){
+//     funList* sort = (funList*)malloc(sizeof(funList));
+//     sort->funToken = NULL;
+//     sort->idList = NULL;
+//     sort->next = NULL;
+    
+//     Entry * entry;
+//     identifierNode *node;
+//     for (int i = 0; i < TABLE_SLOTS; i++)
+//     {
+//         entry = &(idTable->table[i]);
+//         while (entry != NULL)
+//         {
+//             node = (identifierNode *)(entry->node);
+//             if (node != NULL)
+//             {   
+//                 if(sort == NULL){
+//                     printf("it enters here\n");
+//                     sort->funToken = node->function;
+//                     sort->idList = node;
+//                     sort->next = NULL;
+//                 }
+//                 else{
+//                     while(sort){
+//                         if(sort->funToken->lexeme == node->function->lexeme){
+//                             while(sort->idList){
+//                                 sort->
+//                             }
+//                         }
+//                     }
+//                 } 
+//                 printf("-------------------------------\n");
+//             }
+//             entry = entry->next;
+//         }
+//     }
+// }
