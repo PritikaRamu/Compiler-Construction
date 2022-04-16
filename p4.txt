@@ -32,9 +32,9 @@ output parameter list[real d3, record #line d3b2];
 		type int: tagvalue; 			%No error as tagvalue is of integer type and exists as one field of the variant record type
 		type real: areaofshape;
 		type real: perimeter;
-		type #shape: s;
+		type #newshape: s;
 	endrecord
-	
+	definetype union #shape as #newshape
 	definetype record #line as #newline
 	definetype record #coordinate as #point
 	definetype record #rectangle as #rectangleshape
@@ -64,7 +64,7 @@ output parameter list[real d3, record #line d3b2];
 	
 	while ( b5b567 <= 20)
 		read(c3bd);
-		d7<--- d3 + 36.87 - 29.67e-35; %No error as d7 is global and the types are same.
+		d7<--- d3 + 36.87 - 29.67E-35; %No error as d7 is global and the types are same.
 		d3b2 <--- d3b2 + c3bd;	  % ERROR- type mismatch as the expression has arguments of types integer and of record type
 		b5b567 <--- b5b567 + c3bd;%No error
 	endwhile
@@ -114,7 +114,7 @@ _main
 	b5cc2<--- b5cc3 + b4cd2; 		% No error - as name equivalent record type variables are used in the expression
 	c2d5 <--- d5c2 * c2c2 + 23;		% ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.
 	c3bd <--- c3c56 + 40 + c3bd;		% No error
-	c2d5 <--- d5c2 * c2c2 + 23.34e+32;	% No error
+	c2d5 <--- d5c2 * c2c2 + 23.34E+32;	% No error
 	c2<---b5cbb3.beginpoint.x + b5cbb4.beginpoint.x; %No error as all operands and the resultant variable are of type integer
 	d6b7<---b5cb2.endpoint.y + b5cbb4.beginpoint.y; %No error as the variables are constructed from the name equivalent types and are integers
 	if((~(c2cc2345 == 0)) &&& (c5c5 > d6b7)) 

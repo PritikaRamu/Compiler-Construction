@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 		case 2:
 		{
 			// print tokens from lexer
-
+			line = 1;
 			FILE *fp = startLexer(argv[1]);
 			initTable();
 			while (1)
@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
 		case 3:
 		{
 			// parser
+			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
@@ -106,7 +107,8 @@ int main(int argc, char *argv[])
 			break;
 		}
 		case 4:
-		{
+		{	
+			line = 1;
 			clock_t start_time, end_time;
 			double total_CPU_time, total_CPU_time_in_seconds;
 			start_time = clock();
@@ -132,6 +134,7 @@ int main(int argc, char *argv[])
 		case 5:
 		{
 			// AST
+			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
@@ -141,43 +144,12 @@ int main(int argc, char *argv[])
 			parseTree ptree = parseInputSourceCode(testFile);
 			ast *astree = initAST(ptree);
 			int numNodes = printAST(astree, outfile);
-			printf("Number of Nodes\n");
-			printf("Number of Children of the root:\n");
-			ast *temp = astree->firstChild;
-			while (temp)
-			{
-				printf("%d->", temp->nodeType);
-				temp = temp->nextSibling;
-			}
-			printf("\n");
+			printf("\nNumber of Nodes %d\n",numNodes);
 			break;
-			// initializeSymbolTable(astree);
-			// printRecordTable(SymbolTable->RecordUnionTable);
-			// printf("\nRecord table printed above\n");
-			// printFunctionTable(SymbolTable->FunctionTable);
-			// printf("Function table printed above\n");
-			// printIDTable(SymbolTable->IdentifierTable);
-			// printf("Identifier table printed above\n");
-
-			// char* name = "#marks";
-			// recordUnionNode* test = (recordUnionNode*)malloc(sizeof(recordUnionNode));
-			// test->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-			// test->token->lexeme = name;
-			// recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,test,RECORD_OR_UNION);
-			// recordField* head = ru->fieldList;
-			// while(head){
-			// 	printf("ghg %s\n",head->token->lexeme);
-			// 	head = head->next;
-			// }
-			// if(((recordUnionNode*)(SymbolTable->RecordUnionTable->table[54].node))->fieldList){
-			// 	printf("not null\n");
-			// }
-			// else{
-			// 	printf("null\n");
-			// }
 		}
 		case 6:
 		{
+			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
@@ -186,15 +158,7 @@ int main(int argc, char *argv[])
 			computeParseTable();
 			parseTree ptree = parseInputSourceCode(testFile);
 			ast *astree = initAST(ptree);
-			// int numNodes = printAST(astree, outfile);
-			// printf("Number of Nodes\n");
-			// printf("Number of Children of the root:\n");
-			// ast* temp = astree->firstChild;
-			// while(temp) {
-			//     printf("%d->", temp->nodeType);
-			//     temp = temp->nextSibling;
-			// }
-			// printf("\n");
+			
 			initializeSymbolTable(astree);
 			printRecordTable(SymbolTable->RecordUnionTable);
 			printf("\nRecord table printed above\n");
@@ -207,6 +171,7 @@ int main(int argc, char *argv[])
 		}
 		case 7:
 		{
+			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
@@ -215,15 +180,7 @@ int main(int argc, char *argv[])
 			computeParseTable();
 			parseTree ptree = parseInputSourceCode(testFile);
 			ast *astree = initAST(ptree);
-			// int numNodes = printAST(astree, outfile);
-			// printf("Number of Nodes\n");
-			// printf("Number of Children of the root:\n");
-			// ast* temp = astree->firstChild;
-			// while(temp) {
-			//     printf("%d->", temp->nodeType);
-			//     temp = temp->nextSibling;
-			// }
-			// printf("\n");
+			
 			initializeSymbolTable(astree);
 			printf("Starting Semantic Analysis\n");
 			semanticAnalyser(astree);

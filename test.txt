@@ -13,8 +13,8 @@ output parameter list [ record #marks b3c45];
 	return [b3c45];
 end
 
-_helloworld input parameter list[int b7, real b5]
-output parameter list [ record #marks b3c45];
+_helloworld input parameter list[record #marks b3c45]
+output parameter list [int b7, real b5];
 	read(b3c45.maths);
 	read(b3c45.physics);
 	read(b3c45.chemistry);
@@ -59,10 +59,10 @@ _main
 	definetype record #bruh as #thot
 	definetype record #test as #qwert
 
-    %record #marks
-	%	type int : mths; 
-	%	type real: phyics;
-	%endrecord
+    record #marks
+		type int : mths; 
+		type real: phyics;
+	endrecord
 	% each field above represents the marks obtained in corresponding subject
 
 	type record #marks : d4;
@@ -72,6 +72,7 @@ _main
 	type real : d5cb34567;
 	type record #marks : b5c6;
 	type record #quirky : b4c6;
+	type record #bruh : b5c7;
 	%The identifier b5c6 stores the sum of marks
 
 	b5 <--- 1;

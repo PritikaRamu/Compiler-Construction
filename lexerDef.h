@@ -17,7 +17,7 @@ Nandan B Parikh       ID: 2019A7PS0097P
 #include <time.h>
 
 
-#define BUFFER_SIZE (1 << 12)
+#define BUFFER_SIZE (1 << 25)
 #define COUNT_KEYWORDS 28
 #define SIZE 200 //max size of hash table array
 
