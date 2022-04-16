@@ -63,6 +63,7 @@ typedef struct identifierNode{
     bool isRecordField;
     char* recordName;
     bool isUnion;
+    struct identifierNode* idList;
 }identifierNode;
 
 typedef struct parameters{
@@ -80,6 +81,7 @@ typedef struct function_node{
     int tmpVars; //keep track of no. of temp vars needed for code gen
     int rank;
     int numOp;
+    identifierNode* idList;
 }functionNode;
 
 typedef struct function_list{

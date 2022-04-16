@@ -720,10 +720,8 @@ void createFTable(ast *root)
         int offset = 0;
         functionNode *func = createFNode(root);
         ast *child = root->firstChild;
-        parameters *curr_ip = (parameters*)malloc(sizeof(parameters));
-        parameters *curr_op = (parameters*)malloc(sizeof(parameters));
-        curr_ip = NULL;
-        curr_op = NULL;
+        parameters *curr_ip = NULL;
+        parameters *curr_op = NULL;
         ast *pars = NULL;
         int width = 0;
         func->numOp = 0;
@@ -1323,33 +1321,56 @@ void printFunctionTable(subTable *fun_table)
     }
 }
 
-void printSymbolTable(symbol_Table* st){
-    subTable* t = st->IdentifierTable;
+// void printSymbolTable(symbol_Table* st){
+//     subTable* t = st->IdentifierTable;
+//     int i;
+//     Entry * entry;
+//     identifierNode *node;
+//     printf("%-20s %-15s %-10s %-15s %-10s %-10s %-10s %-10s\n", "Variable Name", "Scope", "Type", "Type Expression", "Width", "isGlobal", "Offset", "VariableUsage");
+//     for (i = 0; i < TABLE_SLOTS; i++)
+//     {
+//         entry = &(t->table[i]);
+//         while (entry != NULL)
+//         {
+//             node = (identifierNode *)(entry->node);
+
+//             if (node != NULL)
+//             {   
+//                 //if(!(node->isRecordField)){
+//                     if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
+//                         printf("%-30s %d %s %s %s %s   %d\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false",node->offset);
+//                 }
+//                 else if(node->type == INT_TYPE){
+//                     printf("%-30s %d %s INT %s   %d\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false",node->offset);
+//                 }
+//                 else{
+//                     printf("%-30s %d %s REAL %s  %d\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false",node->offset);
+//                 }
+//                 printf("-------------------------------\n");
+//                 //}
+//             }
+//             entry = entry->next;
+//         }
+//     }
+// }
+
+void printSymbolTable(symbol_Table* st)
+{
+    subTable *fun_table = st->FunctionTable;
     int i;
     Entry * entry;
-    identifierNode *node;
-    printf("%-20s %-15s %-10s %-15s %-10s %-10s %-10s %-10s\n", "Variable Name", "Scope", "Type", "Type Expression", "Width", "isGlobal", "Offset", "VariableUsage");
+    functionNode *fun_node;
+    printf("#%-30s\n", "Lexeme");
     for (i = 0; i < TABLE_SLOTS; i++)
     {
-        entry = &(t->table[i]);
+        entry = &(fun_table->table[i]);
         while (entry != NULL)
         {
-            node = (identifierNode *)(entry->node);
-
-            if (node != NULL)
-            {   
-                if(!(node->isRecordField)){
-                    if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
-                        printf("%-30s %d %s %s %s %s   %d\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false",node->offset);
-                }
-                else if(node->type == INT_TYPE){
-                    printf("%-30s %d %s INT %s   %d\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false",node->offset);
-                }
-                else{
-                    printf("%-30s %d %s REAL %s  %d\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false",node->offset);
-                }
+            fun_node = (functionNode *)(entry->node);
+            if (fun_node != NULL)
+            {
+                printIDList(fun_node);
                 printf("-------------------------------\n");
-                }
             }
             entry = entry->next;
         }
@@ -1370,9 +1391,15 @@ void printIDTable(subTable *fun_table)
             fun_node = (identifierNode *)(entry->node);
             if (fun_node != NULL)
             {   
-                    printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+                //     printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
  
-                printf("-------------------------------\n");
+                // printf("-------------------------------\n");
+                functionNode* temp = (functionNode*)malloc(sizeof(functionNode));
+                temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                temp->token->lexeme = fun_node->function->lexeme;
+                functionNode* temp1 = (functionNode*)retrieve(SymbolTable,temp,FUNCTION_SEQ);
+                addID(temp1,fun_node);
+                // printIDList(temp1);
             }
             entry = entry->next;
         }
@@ -1423,40 +1450,89 @@ void printAliasTable(subTable *fun_table)
     }
 }
 
+void printIDList(functionNode* exist){
+    identifierNode* head = exist->idList;
+    while(head){
+        printf("%s %s\n",head->token->lexeme,head->function->lexeme);
+        head = head->idList;
+    }
+}
+
+void addID(functionNode* exist, identifierNode* id){
+    identifierNode* head = exist->idList;
+
+    if(!head){
+        head = id;
+        exist->idList = head;
+    }
+    else{
+        id->idList = head;
+        exist->idList = id;
+    }
+}
+
 // funList* functionSequence(subTable* idTable){
 //     funList* sort = (funList*)malloc(sizeof(funList));
+//     //sort->funToken = (tokenInfo*)malloc(sizeof(tokenInfo));
 //     sort->funToken = NULL;
 //     sort->idList = NULL;
 //     sort->next = NULL;
+//     funList* head = sort;
     
 //     Entry * entry;
 //     identifierNode *node;
 //     for (int i = 0; i < TABLE_SLOTS; i++)
-//     {
+//     {   
 //         entry = &(idTable->table[i]);
+
 //         while (entry != NULL)
 //         {
 //             node = (identifierNode *)(entry->node);
+//             bool entered = false;
+//             sort = head;
 //             if (node != NULL)
 //             {   
-//                 if(sort == NULL){
-//                     printf("it enters here\n");
+//                 printf("    ID: %s\n",node->token->lexeme);
+//                 if(sort->funToken == NULL){
 //                     sort->funToken = node->function;
 //                     sort->idList = node;
-//                     sort->next = NULL;
+//                     //sort = sort->next;
+//                     //sort->next = NULL;
+//                     entered = true;
 //                 }
 //                 else{
-//                     while(sort){
+//                     while(sort !=NULL && sort->next != NULL){
 //                         if(sort->funToken->lexeme == node->function->lexeme){
-//                             while(sort->idList){
-//                                 sort->
+//                             while(sort->idList && sort->idList->next){
+//                                 sort->idList = sort->idList->next;
 //                             }
+//                             sort->idList->next = node;
+//                             sort->idList = sort->idList->next;
+//                             sort->idList->next = NULL;
+//                             entered = true;
+//                             break;
 //                         }
+//                         sort = sort->next;
+//                     }
+//                     if(!entered){
+//                         sort->next = (funList*)malloc(sizeof(funList));
+//                         sort->next->funToken = node->function;
+//                         sort->next->idList = node;
+//                         sort = sort->next;
+//                         sort->next = NULL;
 //                     }
 //                 } 
-//                 printf("-------------------------------\n");
 //             }
 //             entry = entry->next;
 //         }
+//     }
+
+//     while(head){
+//         while(head->idList){
+//             printf("%s %s\n",head->idList->token->lexeme, head->idList->function->lexeme);
+//             head->idList = head->idList->next;
+//         }
+//         printf("-------------------------------\n");
+//         head = head->next;
 //     }
 // }
