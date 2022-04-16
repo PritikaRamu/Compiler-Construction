@@ -41,7 +41,7 @@ output parameter list[real d3, record #line d3b2];
 	d5ddd3 <--- c2c6 + b3bbb3 -  c2c7; % ERROR - record types are different
 	d5ddd3 <--- c2c6 + b3bbb3 - b3bbb2;% No error
 	
-	while ( b5b567 <= 20)
+	while ( b5b567 <= c3bd)
 		read(c3bd);
 		d7<--- d3 + 36.87 - 29.67E-35; %No error as d7 is global and the types are same.
 		d7<--- d3 + 36.87 - d2dddd3 + 29.67E-35; %ERROR - as variable d2dddd3 is not declared
@@ -99,7 +99,7 @@ output parameter list[real d3, record #line d3b2];
 	d5ddd3 <--- c2c6 + b3bbb3 -  c2c7; % ERROR - record types are different
 	d5ddd3 <--- c2c6 + b3bbb3 - b3bbb2;% No error
 	
-	while ( b3b333 <= 20)		  %No error- as the types of relational operator are same
+	while ( b3b333 <= c3bd)		  %No error- as the types of relational operator are same
 		read(c3bd);
 		d7<--- d3 + 36.87 - 29.67E-35; %No error as d7 is global and the types are same.
 		d7<--- d3 + 36.87 - d2dddd3 + 29.67E-35; %ERROR - as variable d2dddd3 is not declared

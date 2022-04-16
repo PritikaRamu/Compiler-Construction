@@ -121,7 +121,7 @@ _main
 	c2cdcdcd23<---c2cdcdcd24 + c2cdcdcd25 - c2cdcdcd23; %ERROR- variable c2cdcdcd25 is not declared
 	b5cc2<--- b5cc3 + b5cbb3; 		% ERROR- type mismatch as two different record types are used
 	c2cdcdcd23.tagvalue <--- 2;		% No type error
-	c2cdcdcd23.pointone <--- b4cd2 + b4cd3; 	% No type error
+	c2cdcdcd23.pointtwo <--- b4cd2 + b4cd3; 	% No type error
 	c2cdcdcd23.pointthree <--- b4cd2 + b4cd3; 	% ERROR: The constructed variable c2cdcdcd23.pointthree is not correct as field pointthree does not exist
 	c2cdcdcd23.tagvalue <--- c2cdcdcd23.tag  + 2;% ERROR: The constructed variable c2cdcdcd23.tag is not correct as field pointthree does not exist
 	return;

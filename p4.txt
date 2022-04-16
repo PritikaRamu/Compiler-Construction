@@ -32,10 +32,9 @@ output parameter list[real d3, record #line d3b2];
 		type int: tagvalue; 			%No error as tagvalue is of integer type and exists as one field of the variant record type
 		type real: areaofshape;
 		type real: perimeter;
-		type #bruh: s;
+		type #newshape: s;
 	endrecord
-	
-	definetype union #shape as #bruh
+	definetype union #shape as #newshape
 	definetype record #line as #newline
 	definetype record #coordinate as #point
 	definetype record #rectangle as #rectangleshape
