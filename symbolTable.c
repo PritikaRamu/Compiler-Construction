@@ -20,21 +20,56 @@ int max(int num1, int num2)
     return (num1 > num2 ) ? num1 : num2;
 }
 
+bool isValidVariant(recordField* fields){
+    bool isVariant = false;
+
+    while(fields != NULL){
+        if(fields->type == UNION_TYPE){
+            if(isVariant){
+                printf("Variant record cannot have more than one union at line no. %d\n",fields->token->lineNo);
+                return false;
+            }
+            else{
+                isVariant = true;
+            }
+        }
+        fields = fields->next;
+    }
+    return isVariant;
+}
+
+bool isVariant(recordField* fields){
+    bool variantCheck = false;
+
+    while(fields != NULL){
+        if(fields->type == INT_TYPE){
+            if(strcmp(fields->token->lexeme,"tagvalue")==0){
+                variantCheck = true;
+            }
+        }
+        else if(fields->type == REAL_TYPE){
+            if(strcmp(fields->token->lexeme,"tagvalue")==0){
+                variantCheck = true;
+            }
+        }
+        fields = fields->next;
+    }
+    return variantCheck;
+}
+
 recordField* createFieldList(ast *curr_ast)
 {
     
     ast *iterator = curr_ast;
     recordField *head = NULL;
-    printf(" print record name %s\n", curr_ast->parent->lex);
     recordField *tail = NULL;
     
     while (iterator != NULL)
     {
         recordField *fields = (recordField *)malloc(sizeof(recordField));
-
+        // fields->isVariant = false;
         if (iterator->nodeType == INTEGER)
         {
-
             fields->offset = 0;
             fields->width = INT_WIDTH;
             fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
@@ -67,12 +102,12 @@ recordField* createFieldList(ast *curr_ast)
                 printf("Using a record as field that has not been declared on line no. %d\n", iterator->line);
             }
             else
-            {
+            {   
                 fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
                 fields->token->tid = iterator->symbol;
                 fields->token->lexeme = iterator->firstChild->lex;
                 fields->token->lineNo = iterator->firstChild->line;
-                fields->type = (iterator->is_union) ? UNION_TYPE : RECORD_TYPE;
+                fields->type = x->isUnion ? UNION_TYPE : RECORD_TYPE;
                 fields->recordName = x->token->lexeme;
 
                // printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
@@ -121,7 +156,6 @@ recordField* createFieldList(ast *curr_ast)
         }
         iterator = iterator->nextSibling;
     }
-
     return head;
 }
 
@@ -415,6 +449,10 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
             //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
         }
         iden->recordList = (recordUnionNode *)retrieve(SymbolTable, temp, RECORD_OR_UNION);
+        if(iden->recordList == NULL){
+            printf("Record or Union is not defined at line no. %d\n",iden->token->lineNo);
+            return NULL;
+        }
         if(iden->type == RECORD_TYPE){
             iden->width = GodHelpMe(id->parent->lex,id->lex,false,func);
         }
@@ -458,6 +496,9 @@ void createRUtable(ast *root)
                 curr_ast = child->firstChild;
                 fields = createFieldList(curr_ast);    //iterates and returns a linked list of field nodes
                 recordUnionNode* new = createRUNode(child, fields);
+                bool b1 = isVariant(fields);
+                bool b2 = isValidVariant(fields);
+                new->isVariant = b1&&b2;
                 new->recordName = child->lex;
 
                 //check if the name exists in the first pass table
@@ -467,7 +508,9 @@ void createRUtable(ast *root)
                 new1->token->lexeme = curr_ast->lex;
                 identifierNode* check = retrieveFake(firstPass, new1, true, false);
                 if(!check){
-                    insert(SymbolTable, new, RECORD_OR_UNION);                
+                    if(b2 || !b1){
+                        insert(SymbolTable, new, RECORD_OR_UNION);
+                    }                
                 }
             }
             child = child->nextSibling;
@@ -681,6 +724,7 @@ void createFTable(ast *root)
         parameters *curr_op = NULL;
         ast *pars = NULL;
         int width = 0;
+        func->numOp = 0;
         while (child)
         {
             if (child->nodeType == INPUT_PARAMETERS)
@@ -777,7 +821,7 @@ void createFTable(ast *root)
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
                     if (check)
                     {
-                        printf("redeclaration");
+                        printf("Redeclaration of %s in output parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
                     }
                     else
                     {
@@ -786,11 +830,13 @@ void createFTable(ast *root)
                     if (!curr_op)
                     {
                         func->opParams = createIPParams(pars->firstChild, pars->nodeType); // TODO
+                        func->numOp ++;
                         curr_ip = func->opParams;
                     }
                     else
                     {
                         curr_op->next = createIPParams(pars->firstChild, pars->nodeType);
+                        func->numOp ++;
                         curr_op = curr_op->next;
                     }
                     width += id->width;
@@ -798,16 +844,16 @@ void createFTable(ast *root)
                 }
             }
             child = child->nextSibling;
+            printf("            OP params %d\n",func->numOp);
         }
         func->width = width;
         functionNode *check = (functionNode *)retrieve(SymbolTable, func, FUNCTION_SEQ);
         if (check)
         {
-            printf("redecl of function name");
+            printf("Redeclaration of function name %s at line no. %d\n",func->token->lexeme,func->token->lineNo);
         }
         else
         {
-            //func->tmpVars = 0;
             insert(SymbolTable, func, FUNCTION_SEQ);
         }
         root = root->nextSibling;
@@ -881,7 +927,6 @@ int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func){
         else{
             insert(SymbolTable,id,ID);
         }
-        printf("width is %d now and %s\n", width, concatString);
         head = head->next;
     }
     return width;
@@ -892,7 +937,6 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
     recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
     temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     temp->token->lexeme = recordName;
-    printf("Calling Godhelpme for %s\n",recordName);
     int width = 0;
     //checking for alias
     identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
@@ -955,7 +999,6 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
         else{
             insert(SymbolTable,id,ID);
         }
-        printf("width is %d now and %s\n", width, concatString);
         head = head->next;
     }
     return width;
@@ -1058,7 +1101,6 @@ void createITable(ast *root)
         int localOffset = func->width;
         while (child)
         {
-            
            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
             {
                 if(child->is_union){
@@ -1070,18 +1112,13 @@ void createITable(ast *root)
                 if (child->firstChild->nextSibling)
                 {
                     // It is a global identifier
-                    // printf("%s\n", child->firstChild->nextSibling->lex);
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, true, &globalOffset);
-                        //int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
-
                     }
                     else
                     {
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, true, &globalOffset);
-                        //int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
-
                     }
                 }
                 else
@@ -1090,15 +1127,11 @@ void createITable(ast *root)
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);  
-                        //int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
-                        // printf("FINAL WIDTH %s %d\n",child->lex,a);
-                        
+
                     }
                     else
                     {
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, false, &localOffset);
-                        //int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
-
                     }
                 }
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
@@ -1107,29 +1140,27 @@ void createITable(ast *root)
                     {
                         if (check->global)
                         {
-                            printf("redeclr of global var bad\n");
-                            // TODO file stuff
+                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
                         }
                         else
                         {
-                            printf("redcl 1\n");
-                            printf("%d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
+                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
                         }
                     }
                     else
-                    {
+                    {   
+                        if(id==NULL){
+                            child = child->nextSibling;
+                            continue;
+                        }
                         insert(SymbolTable, id, ID);
                     }
                 }
             }
            else if (child->nodeType == INTEGER && child->firstChild->nodeType == ID)
             {
-               printf("%d", child->parent->nodeType);
-                //printf("here 2 %d %d  %d\n",child->nodeType,child->parent->nodeType, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
-                
-               // identifierNode* id;
-                
+                                
                 if (child->firstChild->nextSibling)
                 {
                     id = createINode(child->firstChild, child->parent, INT_TYPE, true, &globalOffset);
@@ -1142,23 +1173,17 @@ void createITable(ast *root)
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
 
                     
-                    printf("%d %d %d %s %s %d",id->width, id->offset,id->type,id->token->lexeme,id->function->lexeme,id->global);
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
-                    //seg fault here
 
                     if (check!=NULL)
                     {
-                        // printf("huhu\n");
                         if (check->global)
                         {
-                            printf("redeclr of global var bad\n");
-                            // TODO file stuff
+                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
                         }
                         else
                         {
-                            
-                            printf("redcl 2\n");
-                            printf("%d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
+                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
                         }
                     }
                     else{
@@ -1168,7 +1193,6 @@ void createITable(ast *root)
             }
             else if(child->nodeType == REAL && child->firstChild->nodeType == ID)
             {
-                // printf("3 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
@@ -1184,13 +1208,12 @@ void createITable(ast *root)
                     {
                         if (check->global)
                         {
-                            printf("redeclr of global var bad\n");
-                            // TODO file stuff
+                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+
                         }
                         else
                         {
-                            printf("redcl 3\n");
-                            printf("%d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
+                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
                         }
                     }
                     else{
@@ -1397,4 +1420,5 @@ void printAliasTable(subTable *fun_table)
         }
     }
 }
+
 
