@@ -724,6 +724,7 @@ void createFTable(ast *root)
         parameters *curr_op = NULL;
         ast *pars = NULL;
         int width = 0;
+        func->numOp = 0;
         while (child)
         {
             if (child->nodeType == INPUT_PARAMETERS)
@@ -829,11 +830,13 @@ void createFTable(ast *root)
                     if (!curr_op)
                     {
                         func->opParams = createIPParams(pars->firstChild, pars->nodeType); // TODO
+                        func->numOp ++;
                         curr_ip = func->opParams;
                     }
                     else
                     {
                         curr_op->next = createIPParams(pars->firstChild, pars->nodeType);
+                        func->numOp ++;
                         curr_op = curr_op->next;
                     }
                     width += id->width;
@@ -841,6 +844,7 @@ void createFTable(ast *root)
                 }
             }
             child = child->nextSibling;
+            printf("            OP params %d\n",func->numOp);
         }
         func->width = width;
         functionNode *check = (functionNode *)retrieve(SymbolTable, func, FUNCTION_SEQ);
@@ -1416,4 +1420,5 @@ void printAliasTable(subTable *fun_table)
         }
     }
 }
+
 
