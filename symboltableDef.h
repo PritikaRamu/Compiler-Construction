@@ -92,3 +92,11 @@ symbol_Table* SymbolTable;
 
 subTable* firstPass;
 subTable* aliasTable;
+
+char redeclaration_error_array[100][200];
+
+int redeclaration_error_index;
+
+void print_Redeclarations();
+void addErrorToArray(char* errorMessage);
+
