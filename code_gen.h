@@ -7,8 +7,8 @@
 #define MAX_TEMP_WIDTH 8
 
 typedef struct _asmTracker{
-    int tempCount[MAX_TEMP_WIDTH+1];
-    int currentTempCount[MAX_TEMP_WIDTH+1];
+    // Keeps track of Temporary variables and Labels in the ASM program
+    int tempCount[MAX_TEMP_WIDTH+1], currentTempCount[MAX_TEMP_WIDTH+1];
     int labelCount;
 
 } asmTracker;
@@ -41,6 +41,6 @@ void resetTemps();
 
 void getTemp(char *buff, int width);
 
-void initAsm() ;
+void initAsm();
 
 #endif
