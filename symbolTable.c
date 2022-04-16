@@ -722,6 +722,8 @@ void createFTable(ast *root)
         ast *child = root->firstChild;
         parameters *curr_ip = (parameters*)malloc(sizeof(parameters));
         parameters *curr_op = (parameters*)malloc(sizeof(parameters));
+        curr_ip = NULL;
+        curr_op = NULL;
         ast *pars = NULL;
         int width = 0;
         func->numOp = 0;
@@ -827,7 +829,7 @@ void createFTable(ast *root)
                     {
                         insert(SymbolTable, id, ID);
                     }
-                    if (curr_op!= NULL)
+                    if (!curr_op)
                     {
                         func->opParams = createIPParams(pars->firstChild, pars->nodeType); // TODO
                         func->numOp ++;
