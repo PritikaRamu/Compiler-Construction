@@ -9,7 +9,6 @@ Nandan B Parikh       ID: 2019A7PS0097P
 
 #ifndef _DRIVERDEF_
 #define _DRIVERDEF_
-#include "symbolTable.h"
 #include "typeChecker.h"
 
 int main(int argc, char *argv[])
@@ -167,8 +166,10 @@ int main(int argc, char *argv[])
 			printIDTable(SymbolTable->IdentifierTable);
 			printf("Identifier table printed above\n");
 			printSymbolTable(SymbolTable);
-			//functionSequence(SymbolTable->IdentifierTable);
+			
 			break;
+
+			
 		}
 		case 7:
 		{
@@ -185,6 +186,9 @@ int main(int argc, char *argv[])
 			initializeSymbolTable(astree);
 			printf("Starting Semantic Analysis\n");
 			semanticAnalyser(astree);
+
+    		print_Redeclarations();
+
 			printf("\nEnd of Semantic Analysis.\n");
 			break;
 		}

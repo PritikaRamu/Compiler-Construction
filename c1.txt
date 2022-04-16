@@ -1,0 +1,25 @@
+%Test case 1- Simple expressions involving integer data type
+_main
+	type int :b3;
+	type int : b2;
+	type int : c2;
+	type int : d2;
+	read(b2);
+	c2<--- 35;
+	read(d2);
+
+	b3 <--- b2 + c2 + d2;
+	write(b3);
+	return;
+end
+
+% Expected output in three independent runs of code.asm 
+% run 1- for b2 = 17 and d2 = 26, the output is 78
+% run 2- for b2 = -265 and d2 = 458, the output is 228
+% run 3- for b2 = -100 and d2 = -126, the output is -191
+% Note that the machine on which the code is run supports the integer values to be negative 
+% and these values can participate in any computation as integer
+% NOTE: If you implemened the associativity from right  to left, mention that while printing the output
+
+
+
