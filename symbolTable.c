@@ -663,7 +663,70 @@ void createFirstPass(ast *root)
     }
 }
 
-// PASS 2 : Mapping aliases to actual record/Union names
+void printAliasList(identifierNode *existing)
+{
+    identifierNode* head = existing->aliasList;
+    while(head!=NULL)
+        {printf(" %s ", head->function->lexeme); head = head->aliasList;}
+
+    printf("\n");
+}
+
+void addAlias(identifierNode* existing, identifierNode* alias)
+{
+    //have to add alias to existing ka alias linked list
+   // printf("\nAdding %s to alias list of %s\n", alias->function->lexeme, existing->token->lexeme);
+    identifierNode* head = existing->aliasList;
+
+    //getting the linked list
+    if(head==NULL)
+    {
+        head = alias;
+        existing->aliasList = head;
+    }
+    else
+    {
+        alias->aliasList = head;
+        existing->aliasList = alias;
+    }
+
+    // head = existing;
+    // head = existing->aliasList;
+    // while(head!=NULL)
+    //     {printf(" %s ", head->function->lexeme); head = head->aliasList;}
+    // printAliasList(existing);
+    // printf("\n");
+
+}
+
+
+
+void printReverseMapping(subTable *fun_table)
+{
+    int i;
+    Entry * entry;
+    identifierNode *fun_node;
+    printf("#%-30s\n", "Lexeme");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(fun_table->table[i]);
+        while (entry != NULL)
+        {
+            fun_node = (identifierNode *)(entry->node);
+            if (fun_node != NULL)
+            {
+                printf("%-30s ", fun_node->token->lexeme);
+               // printf("-------------------------------\n");
+                
+                printAliasList(fun_node);
+
+            }
+            entry = entry->next;
+        }
+    }
+}
+
+// PASS 2 : Mapping aliases to actual record/Union names and reverse mapping
 void createAliasTable(ast* root){
     root = root->firstChild;
     ast *curr_ast = NULL;
@@ -699,6 +762,7 @@ void createAliasTable(ast* root){
                             printf("Redeclaration of record name as alias on line %d\n", child->firstChild->nextSibling->line);
                         }
                         else{
+                            addAlias(existing,ru);
                             insertFake(aliasTable, ru, false);
                         }
                     }
@@ -1259,6 +1323,9 @@ void initializeSymbolTable(ast *ast)
     printf("function table done\n");
     createITable(ast);
     printf("identifier table done\n");
+    printf("Printing alias table\n");
+    printReverseMapping(firstPass);
+    printf("\nAlias table printed\n");
 }
 
 void printRecordTable(subTable *rec_table)

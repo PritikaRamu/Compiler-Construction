@@ -63,6 +63,7 @@ typedef struct identifierNode{
     bool isRecordField;
     char* recordName;
     bool isUnion;
+    struct identifierNode* aliasList;
 }identifierNode;
 
 typedef struct parameters{
