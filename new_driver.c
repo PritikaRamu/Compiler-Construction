@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
 	if (argc < 3)
 	{
-		printf("Wrong command. Type: ./stage1exe testcase.txt \n");
+		printf("Wrong command. Type: ./stage2exe testcase.txt outputFile.txt\n");
 		return 0;
 	}
 
@@ -90,9 +90,6 @@ int main(int argc, char *argv[])
 		{
 			line = 1;
 			// invoke your lexer and parser here
-
-			printf("A\n");
-
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
@@ -126,7 +123,19 @@ int main(int argc, char *argv[])
 		}
 		case 4: // Memory Allocated to Parse Tree/AST Nodes
 		{	
-			
+			char *testFile = argv[1];
+			char *outfile = argv[2];
+			initGrammar(G);
+			populateFirstFollow("First.txt", true);
+			populateFirstFollow("Follow.txt", false);
+			computeParseTable();
+			parseTree ptree = parseInputSourceCode(testFile);
+			int numNodes1 = printParseTree(ptree, outfile);
+
+			ast *astree = initAST(ptree);
+			int numNodes = printAST(astree, outfile);
+
+
 			break;
 		}
 		case 5: // Print Symbol Table (done)

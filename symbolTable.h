@@ -1,3 +1,11 @@
+/* GROUP 15
+Group Members:
+Pritika Ramu          ID: 2019A7PS1140P
+Preetike Verma        ID: 2019A7PS0088P
+Aadit Deshpande       ID: 2019A7PS0077P
+Sneha                 ID: 2019A7PS0042P
+Nandan B Parikh       ID: 2019A7PS0097P
+*/
 #ifndef _ST_
 #define _ST_
 
@@ -23,5 +31,6 @@ void printIDList(functionNode* exist);
 void print_Redeclarations();
 void addErrorToArray(char* errorMessage);
 void printFinalTable(subTable *fun_table);
+void printGlobalTable(subTable *fun_table);
 
 #endif

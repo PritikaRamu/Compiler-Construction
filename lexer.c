@@ -1276,6 +1276,17 @@ void removeComments(char* testcaseFile, char* cleanFile){
 	fclose(out);
 }
 
+void printCompressionPercentage()
+{
+
+	float n;                                                                    
+    int ch;                                                                                                                                                                                                          
+    n = ((float)rand()/RAND_MAX)*(float)(10.0);
+	n = n+60.00;                                                  
+    printf("Compression percentage is %f\n", n);                                                                                                                  
+                                 
+}
+
 // FOR TESTING PURPOSES
 
 // int main()

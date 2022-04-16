@@ -1,3 +1,11 @@
+/* GROUP 15
+Group Members:
+Pritika Ramu          ID: 2019A7PS1140P
+Preetike Verma        ID: 2019A7PS0088P
+Aadit Deshpande       ID: 2019A7PS0077P
+Sneha                 ID: 2019A7PS0042P
+Nandan B Parikh       ID: 2019A7PS0097P
+*/
 #include "symbolTable.h"
 
 funList *functionList = NULL;
@@ -26,8 +34,12 @@ bool isValidVariant(recordField* fields){
     while(fields != NULL){
         if(fields->type == UNION_TYPE){
             if(isVariant){
-                printf("Variant record cannot have more than one union at line no. %d\n",fields->token->lineNo);
+                char string[100];
+                sprintf(string, "Variant record cannot have more than one union at line no. %d\n",fields->token->lineNo);
+                addErrorToArray(string);
+                //printf();
                 return false;
+                
             }
             else{
                 isVariant = true;
@@ -99,7 +111,10 @@ recordField* createFieldList(ast *curr_ast)
             identifierNode *x = (identifierNode *)retrieveFake(aliasTable,temp,false,true);
             if (x == NULL)
             {
-                printf("Using a record as field that has not been declared on line no. %d\n", iterator->line);
+                char string[100];
+                sprintf(string, "Using a record as field that has not been declared on line no. %d\n", iterator->line);
+                addErrorToArray(string);
+                //printf();
             }
             else
             {   
@@ -450,7 +465,11 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
         }
         iden->recordList = (recordUnionNode *)retrieve(SymbolTable, temp, RECORD_OR_UNION);
         if(iden->recordList == NULL){
-            printf("Record or Union is not defined at line no. %d\n",iden->token->lineNo);
+
+            char string[100];
+            sprintf(string, "Record or Union is not defined at line no. %d\n",iden->token->lineNo);
+            addErrorToArray(string);
+            //printf();
             return NULL;
         }
         if(iden->type == RECORD_TYPE){
@@ -648,7 +667,10 @@ void createFirstPass(ast *root)
                 identifierNode* check = retrieveFake(firstPass, new, true, false);
                 if(check)
                 {
-                    printf("Redeclaration of Record on line %d\n", curr_ast->line);
+                      char string[100];
+                     sprintf(string, "Redeclaration of Record on line %d\n", curr_ast->line);
+                     addErrorToArray(string);
+                    //printf();
                 }
 
                 else
@@ -746,18 +768,27 @@ void createAliasTable(ast* root){
                 identifierNode *existing = (identifierNode*)retrieveFake(firstPass, ru, true, false); //check if record exists
                 if (existing == NULL)
                 {
-                    printf("Record %s does not exist on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
+                      char string[100];
+            sprintf(string, "Record %s does not exist on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
+            addErrorToArray(string);
+                    //printf();
                 }
                 else
                 {   
                     identifierNode* check =(identifierNode*) retrieveFake(aliasTable, ru, false, true); //check if alias exists
                     if(check){
-                        printf("Redeclaration of alias on line %d\n", child->firstChild->nextSibling->line);
+                          char string[100];
+            sprintf(string, "Redeclaration of alias on line %d\n", child->firstChild->nextSibling->line);
+            addErrorToArray(string);
+                        //printf();
                     }
                     else{
                         identifierNode* check1 = (identifierNode*)retrieveFake(firstPass, ru, false, false);//check if alias is record name
                         if(check1){
-                            printf("Redeclaration of record name as alias on line %d\n", child->firstChild->nextSibling->line);
+                              char string[100];
+            sprintf(string, "Redeclaration of record name as alias on line %d\n", child->firstChild->nextSibling->line);
+            addErrorToArray(string);
+                            //printf();
                         }
                         else{
                             addAlias(existing,ru);
@@ -829,7 +860,11 @@ void createFTable(ast *root)
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
                     if (check)
                     {
-                        printf("Redeclaration of %s in input parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
+
+                          char string[100];
+            sprintf(string, "Redeclaration of %s in input parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
+            addErrorToArray(string);
+                        //printf();
                     }
                     else
                     {
@@ -872,12 +907,10 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
-                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
-                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         break;
                     }
@@ -885,7 +918,10 @@ void createFTable(ast *root)
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
                     if (check)
                     {
-                        printf("Redeclaration of %s in output parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
+                          char string[100];
+            sprintf(string, "Redeclaration of %s in output parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
+            addErrorToArray(string);
+                        //printf();
                     }
                     else
                     {
@@ -913,7 +949,10 @@ void createFTable(ast *root)
         functionNode *check = (functionNode *)retrieve(SymbolTable, func, FUNCTION_SEQ);
         if (check)
         {
-            printf("Redeclaration of function name %s at line no. %d\n",func->token->lexeme,func->token->lineNo);
+            char string[100];
+            sprintf(string, "Redeclaration of function name %s at line no. %d\n",func->token->lexeme,func->token->lineNo);
+            addErrorToArray(string);
+            //printf();
         }
         else
         {
@@ -924,7 +963,6 @@ void createFTable(ast *root)
 }
 
 int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func){
-    printf("                    INSIDE UNION WIDTH FUNC\n");
     recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
     temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     temp->token->lexeme = unionName;
@@ -987,7 +1025,10 @@ int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func){
 
         identifierNode* check = (identifierNode*)retrieve(SymbolTable,id,ID);
         if(check!=NULL){
-            printf("Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
+            char string[100];
+            sprintf(string, "Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
+            addErrorToArray(string);
+            //printf();
         }
         else{
             insert(SymbolTable,id,ID);
@@ -1067,7 +1108,10 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
 
         identifierNode* check = (identifierNode*)retrieve(SymbolTable,id,ID);
         if(check!=NULL){
-            printf("Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
+            char string[100];
+            sprintf(string, "Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
+            addErrorToArray(string);
+            //printf();
         }
         else{
             insert(SymbolTable,id,ID);
@@ -1178,7 +1222,10 @@ void createITable(ast *root)
            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
             {
                 if(child->is_union){
-                    printf("Variable cannot be of union type at line no. %d\n",child->line);
+                    char string[100];
+            sprintf(string, "Variable cannot be of union type at line no. %d\n",child->line);
+            addErrorToArray(string);
+                    //printf();
                     child = child->nextSibling;
                     continue;
                 }
@@ -1214,16 +1261,25 @@ void createITable(ast *root)
                     {
                         if (check->global)
                         {
-                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            char string[100];
+            sprintf(string, "Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+            addErrorToArray(string);
+                            //printf();
                         }
                         else
                         {   
                             if(id->global){
                                 check->global = true;
-                                printf("Redeclaration of global variable %s at line no. %d\n",check->token->lexeme,check->token->lineNo);
+                                char string[100];
+            sprintf(string, "Redeclaration of global variable %s at line no. %d\n",check->token->lexeme,check->token->lineNo);
+            addErrorToArray(string);
+                                //printf();
                             }
                             else{
-                                printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                                char string[100];
+            sprintf(string, "Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+            addErrorToArray(string);
+                                //printf();
                             }
                         }
                     }
@@ -1259,11 +1315,17 @@ void createITable(ast *root)
                     {
                         if (check->global)
                         {
-                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            char string[100];
+            sprintf(string, "Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+            addErrorToArray(string);
+                            //printf();
                         }
                         else
                         {
-                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            char string[100];
+            sprintf(string, "Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+            addErrorToArray(string);
+                            //printf();
                         }
                     }
                     else{
@@ -1288,11 +1350,17 @@ void createITable(ast *root)
                     {
                         if (check->global)
                         {
-                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            char string[100];
+            sprintf(string, "Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+            addErrorToArray(string);
+                            //printf();
                         }
                         else
                         {
-                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            char string[100];
+            sprintf(string, "Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+            addErrorToArray(string);
+                            //printf();
                         }
                     }
                     else{
@@ -1484,6 +1552,30 @@ void printIDList(functionNode* exist){
 
 }
 
+void printGlobalList(functionNode* exist){
+    identifierNode* head = exist->idList;
+    while(head){
+        // printf("%-10s %-10s %-10s %-10s\n",head->token->lexeme,head->function->lexeme);
+        
+        if(!(head->isRecordField)){
+            if(head->global){
+                if(head->type == RECORD_TYPE || head->type == UNION_TYPE){
+                        printf("%-30s %d %s %s   %d\n", head->token->lexeme, head->width, head->recordName, GodHelpMeOneMoreTime(head->recordName), head->offset);
+                }
+                else if(head->type == INT_TYPE){
+                    printf("%-30s %d INT   %d\n", head->token->lexeme, head->width, head->offset);
+                }
+                else{
+                    printf("%-30s %d REAL  %d\n", head->token->lexeme, head->width,head->offset);
+                }
+                printf("-------------------------------\n");
+                }
+            }
+        head = head->idList;
+    }
+
+}
+
 void addID(functionNode* exist, identifierNode* id){
     identifierNode* head = exist->idList;
 
@@ -1594,7 +1686,6 @@ void populateIDTable(subTable *fun_table)
     int i;
     Entry * entry;
     identifierNode *fun_node;
-    printf("#%-30s %-30s\n", "Lexeme", "Width");
     for (i = 0; i < TABLE_SLOTS; i++)
     {
         entry = &(fun_table->table[i]);
@@ -1624,7 +1715,7 @@ void printFinalTable(subTable *fun_table)
     int i;
     Entry *entry;
     functionNode *fun_node;
-    // printf("#%-30s %-30s\n", "Lexeme", "Width");
+    printf("LEXEME     WIDTH    SCOPE   TYPE   ISGLOBAL  OFFSET\n");
     for (i = 0; i < TABLE_SLOTS; i++)
     {
         entry = &(fun_table->table[i]);
@@ -1636,6 +1727,30 @@ void printFinalTable(subTable *fun_table)
                 // printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
                 // printf("-------------------------------\n");
                  printIDList(fun_node);
+            }
+            entry = entry->next;
+        }
+    }
+}
+
+void printGlobalTable(subTable *fun_table)
+{
+    populateIDTable(SymbolTable->IdentifierTable);
+    int i;
+    Entry *entry;
+    functionNode *fun_node;
+    printf("LEXEME     WIDTH   TYPE  OFFSET\n");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(fun_table->table[i]);
+        while (entry != NULL)
+        {
+            fun_node = (functionNode *)(entry->node);
+            if (fun_node != NULL)
+            {
+                // printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+                // printf("-------------------------------\n");
+                 printGlobalList(fun_node);
             }
             entry = entry->next;
         }
