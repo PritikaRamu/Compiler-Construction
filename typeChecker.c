@@ -9,6 +9,27 @@ void validateFunction(ast* curr);
 
 FILE* errorfp;
 
+
+void printSemanticErrors() {
+    printf("\nSEMANTIC ERRORS:\n");
+    printf("_____________________________\n");
+    for(int i=0;i<1000;i++){
+        if(sem_error_array[i][0] != '\0'){
+            printf("%s\n", sem_error_array[i]);
+        }
+
+
+    }
+   
+    printf("_____________________________\n");
+    printf("No. of Semantic Errors: %d\n", semanticErrors);
+}
+
+void addSemErrortoArray(char* message){
+    strcpy(sem_error_array[semanticErrors], message);
+    semanticErrors++;
+}
+
 recordField* searchInFieldList(ast* curr, recordField* fieldList) {
     recordField* temp = fieldList;
     while(temp) {
@@ -39,19 +60,19 @@ Type TypeUsingAST(NodeType currType, bool is_union) {
 }
 
 void semanticAnalyser(ast* root){
-    FILE* errorfp = fopen("error_log.txt", "w");
+    //FILE* errorfp = fopen("error_log.txt", "w");
     //populate symbol tables
     ast * curr = root->firstChild;
 
     if(curr==NULL)
         return;
-    printf("In semantic analyser, starting while loop\n");
+    printf("In semantic analyser, starting while loop\n"); // Debugging
     while(curr){
         validateFunction(curr);
         curr = curr->nextSibling;
     }
-    fclose(errorfp);
-    printf("Exited Semantic Analyser while loop\n");
+    //fclose(errorfp);
+    printf("Exited Semantic Analyser while loop\n"); // Debugging
 }
 
 bool isOperator(ast* curr) {
@@ -76,45 +97,56 @@ bool isNumRnum(ast* curr) {
 
 void validateAssign(ast* curr, ast* func) {
     int localOffset = 0; 
+    // Debug
     printf("In validateAssign, entering valArith, curr->firstChild->nextSibling lexeme: %s and func: %s and NodeType: %d\n", curr->firstChild->nextSibling->lex, func->lex, curr->firstChild->nextSibling->nodeType);
     identifierNode* ArithNode = validateArithmetic(curr->firstChild->nextSibling, func);
+    // Debug
     printf("In valAss Exited valArith successfully for lexeme: %s and NodeType: %d\n", curr->firstChild->nextSibling->lex, curr->firstChild->nextSibling->nodeType);
     if(ArithNode != NULL) {
         //printf("In valAss Exited valArith successfully with lexeme: %s and Type: %d\n", ArithNode->token->lexeme, ArithNode->type);
+        // Debug
         printf("Here hoon\n"); 
     }
     else {
+        // Debug
         printf("ArithNode returned NULL from valArith\n");
     }
     ast* lChild = curr->firstChild;
     //Type lChildType = TypeUsingAST(lChild->nodeType, lChild->is_union);
+    // Debug
     printf("This lexeme in valAss: %s is in scope of function: %s with nodeType: %d\n", curr->lex, func->lex, curr->nodeType);
     
     identifierNode* lChildNode = createINode(lChild, func, -1, false, &localOffset);
     //identifierNode* lChildNode_global = createINode(lChild, func, -1, true, &localOffset);
     lChildNode = (identifierNode*)retrieve(SymbolTable, lChildNode, ID);
+    // Debug
     printf("Chcekpoint 1 post retrieve in ValAssign.\n");
 
     if(lChildNode == NULL) {
         identifierNode* lChildNode_global = createINode(lChild, func, -1, true, &localOffset);
         lChildNode_global = (identifierNode* )retrieve(SymbolTable, lChildNode_global, ID);
+        // Debug
         printf("Chcekpoint 2 post retrieve in ValAssign.\n");
 
         if(lChildNode_global == NULL) {
-            // semanticErrors ++;
-            //fprintf(errorfp, "Line no. %d: Undeclared Variable HERE IN VALass %s in Assignment.\n", lChild->line, lChild->lex);
-            printf("Line no. %d: Undeclared Variable HERE IN VALass %s in Assignment.\n", lChild->line, lChild->lex);
+            char string[100];
+            sprintf(string,"Line no. %d: Undeclared Variable %s in Assignment.\n", lChild->line, lChild->lex);
+            addSemErrortoArray(string);
+            //printf("Line no. %d: Undeclared Variable %s in Assignment.\n", lChild->line, lChild->lex);
             return;
         }
         else {
             lChildNode = lChildNode_global;
+            // Debug
             printf("Retrived global identifier for lex: %s, type: %d\n", lChildNode->token->lexeme, lChildNode->type);
         }
     }
     else {
+        // Debug
         printf("Retrived non global identifier for lex: %s type: %d nodetype: %d\n", lChildNode->token->lexeme, lChildNode->type, lChild->nodeType);
     }
     
+    //Debug
     printf("Before Arithnode check\n");
 
     if(ArithNode == NULL) {
@@ -133,8 +165,11 @@ void validateAssign(ast* curr, ast* func) {
 
     if ((lChildNode->type != RECORD_TYPE && lChildNode->type != UNION_TYPE) && attribute != NULL)
     {
-        printf("Identifier not of type record/ union but has fields.\n");
+        //printf("Identifier not of type record/ union but has fields.\n");
         // semanticErrors++;
+        char string[100];
+        sprintf(string,"Identifier not of type record/ union but has fields.\n");
+        addSemErrortoArray(string);
         return;
     }
     //NESTED RECORDS
@@ -145,6 +180,7 @@ void validateAssign(ast* curr, ast* func) {
         char* fConcatLex = (char*)malloc(sizeof(char)*strlen(lChild->lex));
         strcpy(fConcatLex, lChild->lex);
 
+        // Debug
         printf("\nConcatenating Second Child in ValAss: \n\n\n\n\n");
         while(attribute) {
             int x = strlen(fConcatLex);
@@ -162,7 +198,10 @@ void validateAssign(ast* curr, ast* func) {
 
             if(fidNode == NULL) {
                 //fprintf(errorfp, "Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
-                printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                //printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                char string[100];
+                sprintf(string,"Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                addSemErrortoArray(string);
                 //semanticErrors++;
                 return;
             }
@@ -170,11 +209,15 @@ void validateAssign(ast* curr, ast* func) {
             attribute = attribute->nextSibling;
         }
         if(lChildNode->type == ArithNode->type) {
+            //Debug
             printf("In valAss, type of assigned node: %s match val of arith node: %s\n", lChild->lex, ArithNode->token->lexeme);
         }
         else {
             //fprintf(errorfp, "Line no %d: Type mismatch in assign.\n", lChild->line);
-            printf("Line no %d: Type mismatch in assign.\n", lChild->line);
+            //printf("Line no %d: Type mismatch in assign.\n", lChild->line);
+            char string[100];
+            sprintf(string,"Line no %d: Type mismatch in assign.\n", lChild->line);
+            addSemErrortoArray(string);
             // semanticErrors++;
             return;
         }
@@ -187,7 +230,10 @@ void validateAssign(ast* curr, ast* func) {
         if (lChildType != ArithNode->type)
         {
             //printf("Idhar to aana chahiye tha\n");
-            printf("Line no %d: Type mismatch in assign.\n", lChild->line);
+            //printf("Line no %d: Type mismatch in assign.\n", lChild->line);
+            char string[100];
+            sprintf(string,"Line no %d: Type mismatch in assign.\n", lChild->line);
+            addSemErrortoArray(string);
             // semanticErrors++;
             return;
         }
@@ -199,7 +245,10 @@ void validateAssign(ast* curr, ast* func) {
         Type lChildType = lChildNode->type;
         if (lChildType != ArithNode->type)
         {
-            printf("Line no %d: Type mismatch in assign.\n", lChild->line);
+            //printf("Line no %d: Type mismatch in assign.\n", lChild->line);
+            char string[100];
+            sprintf(string,"Line no %d: Type mismatch in assign.\n", lChild->line);
+            addSemErrortoArray(string);
             // semanticErrors++;
             return;
         }
@@ -245,6 +294,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
             identifierNode* currNode_global = createINode(curr, func, 0, true, &localOffset);
             currNode_global = (identifierNode*)retrieve(SymbolTable, currNode_global, ID);
             if(currNode_global == NULL) {
+                //semanticErrors++;
                 printf("Line no. %d: Using undeclared variable %s\n", curr->line, curr->lex);
                 return NULL;
             }
@@ -267,7 +317,10 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
         if(attribute == NULL) {
             if(currNode->assigned == false) {
                 //semanticErrors++;
-                printf("Line no. %d: Can not perform assignment on unassigned identifiers\n", curr->line);
+                char string[100];
+                sprintf(string,"Line no. %d: Can not perform assignment on unassigned identifiers\n", curr->line);
+                addSemErrortoArray(string);
+                printf("\n\n\n\nLine no. %d: Can not perform assignment on unassigned identifier %s\n", curr->line, curr->lex);
                 return NULL;
             }
         }
@@ -296,8 +349,11 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                 printf("%s\n", fConcatLex);
 
                 if(fidNode == NULL) {
-                    printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                    //printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
                     //semanticErrors++;
+                    char string[100];
+                    sprintf(string,"Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                    addSemErrortoArray(string);
                     return NULL;
                 }
                 currNode = fidNode;
@@ -316,8 +372,11 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
             return currNode;
         }
         else if ((currNode->type != RECORD_TYPE) && attribute != NULL) {
-            printf("Line no. %d: Variale %s not of type record.\n", curr->line, curr->lex);
+            //printf("Line no. %d: Variale %s not of type record.\n", curr->line, curr->lex);
             //semanticErrors++;
+            char string[100];
+            sprintf(string,"Line no. %d: Variable %s not of type record.\n", curr->line, curr->lex);
+            addSemErrortoArray(string);
             return NULL;
 
         }
@@ -347,8 +406,11 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
 
         //performing operations on unasigned identifiers
         if(fNode->assigned == false || sNode->assigned == false) {
-            //semanticErrors;;
-            printf("Line no. %d: Can not perform operations on unassigned identifiers\n", fChild->line);
+            //semanticErrors;
+            char string[100];
+            sprintf(string,"Line no. %d: Can not perform operations on unassigned identifiers\n", fChild->line);
+            addSemErrortoArray(string);
+            //printf("Line no. %d: Can not perform operations on unassigned identifiers\n", fChild->line);
             return NULL;
         }
 
@@ -369,7 +431,10 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                     }
                     else {
                         //semanticErrors++;
-                        printf("Line no. %d ERROR: Multiplication or Division not allowed with records\n", curr->line);
+                        //printf("Line no. %d ERROR: Multiplication or Division not allowed with records\n", curr->line);
+                        char string[100];
+                        sprintf(string,"Line no. %d ERROR: Multiplication or Division not allowed with records\n", curr->line);
+                        addSemErrortoArray(string);
                         return NULL;
                     }
                 }
@@ -527,6 +592,10 @@ void validateFunCall (ast* call, ast* func) {
     ast* opGivenPars = opCall->firstChild;
     parameters* opSTpars = calledFunctionNode->opParams;
 
+    printf("\n\n Number of op params: %d\n\n\n\n", calledFunctionNode->numOp);
+
+    printf("\n\n\n Before while loop for op pars, in ValFunCall");
+
     while (opSTpars != NULL && opGivenPars != NULL) {
         //ast* id, ast* func, Type type, bool is_global, int*offset
 
@@ -583,8 +652,10 @@ void validateFunCall (ast* call, ast* func) {
         opSTnode->next = NULL; 
 
         identifierNode* tempOPST = opSTnode;
-        opSTnode = (identifierNode*)retrieve(SymbolTable, opSTnode, ID);
-        free(tempOPST);
+        tempOPST = (identifierNode*)retrieve(SymbolTable, opSTnode, ID);
+        opSTnode = tempOPST;
+        
+        printf("Retrieved the op par from Symbol Table with lex: %s\n\n\n", opSTnode->token->lexeme);
 
         if(opSTnode->type == opGivenNode->type) {
             Type nType = opSTnode->type;
@@ -629,12 +700,12 @@ void validateFunCall (ast* call, ast* func) {
         
     }
     else if(opGivenPars != NULL) {
-        printf("Line no. %d: Function call has extra output parameters\n", opGivenPars->line);
+        printf("Line no. %d: Function call has extra given output parameters\n", opGivenPars->line);
         //semanticErrors++;
         //return;
     }
     else if(opSTpars != NULL) {
-        printf("Line no. %d: Function call has insufficient output parameters.\n", opGivenPars->line);
+        printf("Line no. %d: Function call has insufficient ST output parameters.\n", opGivenPars->line);
         //semanticErrors++;
         //return;
     }
@@ -750,6 +821,42 @@ void validateFunCall (ast* call, ast* func) {
         //return;
     }
 
+    opGivenPars = opCall->firstChild;
+    while(opGivenPars != NULL) {
+        printf("\nEntering loop for opSTpars in the function %s\n", funcIdentifier->lex);
+        Type opGivenType = TypeUsingAST(opGivenPars->nodeType, opGivenPars->is_union);
+        
+        identifierNode* opGivenNode = createINode(opGivenPars, func, opGivenType, false, &localOffset);
+        identifierNode* opGivenNode_global = createINode(opGivenPars, func, opGivenType, true, &localOffset);
+        opGivenNode = (identifierNode*)retrieve(SymbolTable, opGivenNode, ID);
+        printf("Retrieve madarchod in %s, retrieved with lex\n", funcIdentifier->lex);
+
+        if (opGivenNode == NULL)
+        {
+            printf("Retrieve se pehle, retrieve se zyada\n");
+            //identifierNode *opGivenNode_global = createINode(opGivenPars, func, -1, true, &localOffset);
+            opGivenNode_global = (identifierNode *)retrieve(SymbolTable, opGivenNode_global, ID);
+            printf("Chcekpoint 2 post retrieve in ValFunCall.\n");
+
+            if (opGivenNode_global == NULL)
+            {
+                // semanticErrors ++;
+                printf("Line no. %d: Undeclared given op Variable HERE IN ValFunCall %s.\n", opGivenPars->line, opGivenPars->lex);
+                return;
+            }
+            else
+            {
+                opGivenNode = opGivenNode_global;
+                printf("Retrived global identifier for given op lex: %s, type: %d in ValFunCall\n", opGivenNode_global->token->lexeme, opGivenNode_global->type);
+            }
+        }
+        else
+        {
+            printf("Retrived non global identifier for given op lex: %s type: %d nodetype: %d in ValFunCall\n", opGivenNode->token->lexeme, opGivenNode->type, opGivenPars->nodeType);
+        }
+        opGivenNode->assigned = true;
+        opGivenPars = opGivenPars->nextSibling;
+    }
 }
 
 void validateRead(ast* curr, ast* func) {
@@ -828,6 +935,7 @@ void validateRead(ast* curr, ast* func) {
             }
         }    
     }
+    currNode->assigned = true;
 }
 
 void validateWrite(ast* curr, ast* func) {
@@ -836,7 +944,7 @@ void validateWrite(ast* curr, ast* func) {
     Type currType = TypeUsingAST(curr->nodeType, curr->is_union);
     identifierNode* currNode = createINode(curr, func, currType, false, &localOffset);
 
-        if (currNode == NULL)
+    if (currNode == NULL)
     {
         identifierNode *currNode_global = createINode(curr, func, -1, true, &localOffset);
         currNode_global = (identifierNode *)retrieve(SymbolTable, curr, ID);
@@ -898,6 +1006,8 @@ void validateWrite(ast* curr, ast* func) {
             }
         }    
     }
+    
+    currNode->assigned = true;
 }
 
 void validateIterative(ast* curr, ast* func) {
@@ -1227,7 +1337,10 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         }
                         if(sNode->assigned == false) {
                             //semanticErrors++;
-                            printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
+                            char string[100];
+                            sprintf(string,"Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
+                            addSemErrortoArray(string);
+                            //printf();
                             return NULL;
                         }
                     }
@@ -1283,23 +1396,56 @@ void validateReturn(ast* curr, ast* func) {
         numReturn++;
         tempOP = tempOP->nextSibling;
     }
-    printf("After the tempOP loop\n");
+    printf("Reaching here\n");
+    // int numOp;
+    // if(outputParams) {
+    //     numOp = 1;
+    //     parameters* tempOPParams = outputParams;
+    //     while(tempOPParams) {
+    //         printf("Output parameter %d: %s\n", numOp, tempOPParams->token->lexeme);
+    //         numOp++;
+    //         tempOPParams = tempOPParams->next;
+    //     }
+    // }
+    // else {
+    //     numOp = 0;
+    // }
 
     if(numReturn != funcInfo->numOp) {
         printf("Line no. %d: Number of return values: %d not equal to number of output parameters: %d in function %s\n", curr->line, numReturn, funcInfo->numOp, funcInfo->token->lexeme);
         return;
     }
-    else {
-        printf("Reaching here\n");
-    }
+
+    printf("In valret before for loop\n");
+
+    int localOffset = 0;
 
     //return;
     identifierNode* currNode = (identifierNode*)malloc(sizeof(identifierNode));
     parameters* iterParams = outputParams;
     for(int i=0; i<numReturn; i++, child = child->nextSibling, iterParams = iterParams->next) {
+        identifierNode* childNode = createINode(child, func, -1, false, &localOffset);
+        childNode = (identifierNode*)retrieve(SymbolTable, childNode, ID);
+        if(childNode == NULL) {
+            identifierNode* childNode_global = createINode(child, func, -1, true, &localOffset);
+            childNode_global = (identifierNode*)retrieve(SymbolTable, childNode_global, ID);
+            if(childNode_global == NULL) {
+                printf("Line %d: ERROR- undeclared variable %s is being returned\n", child->line, child->lex);
+                continue;
+            }
+            else {
+                childNode = childNode_global;
+            }
+        }
+        printf("Retrieve block done\n");
+        if(childNode->assigned == false) {
+            printf("Line %d: ERROR- variable %s being returned without being assigned\n", child->line, child->lex);
+        }
         //use iterators for output parameters and return values
-        if(strcmp(child->lex, iterParams->token->lexeme) != 0) {
-            printf("Line no. %d: Unexpected return parameter found. Parameter returned: %s and Parameter expected: %s\n", child->line, child->lex, iterParams->token->lexeme);
+        else {
+            if(strcmp(child->lex, iterParams->token->lexeme) != 0) {
+                printf("Line no. %d: Unexpected return parameter found. Parameter returned: %s and Parameter expected: %s\n", child->line, child->lex, iterParams->token->lexeme);
+            }
         }
     }
 }
@@ -1352,7 +1498,6 @@ void handleStmt(ast* curr, ast* func) {
             break;
         case RETURN:
             validateReturn(curr, func);
-            printf("Exited validatereturn\n");
             break;
         case IOREAD:
             validateRead(curr, func);
@@ -1373,6 +1518,35 @@ void validateFunction(ast* curr) {
     if(curr == NULL) {
         return;
     }
+    
+    int localOffset = 0;
+    
+    if(curr->nodeType != MAIN_FUNCTION) {
+        ast* iparams = curr->firstChild->firstChild;
+        printf("iparams nodetype: %d\n", iparams->firstChild->nodeType);
+        while(iparams != NULL) {
+            printf("Entering iparams loop with lex: %s\n", iparams->firstChild->lex);
+            identifierNode* retNode = createINode(iparams->firstChild, curr, -1, false, &localOffset);
+            //printf()
+            retNode = (identifierNode*)retrieve(SymbolTable, retNode, ID);
+            printf("Retrieved iparams node\n");
+            if(retNode == NULL) {
+                identifierNode* retNode_global = createINode(iparams->firstChild, curr, -1, true, &localOffset);
+                retNode_global = (identifierNode*)retrieve(SymbolTable, retNode_global, ID);
+                if(retNode_global == NULL) {
+                    printf("Line %d: ERROR- invalid input parameter %s\n", iparams->firstChild->line, iparams->firstChild->lex);
+                    //semanticErrors++;
+                    return;
+                }
+                else {
+                    retNode = retNode_global;
+                }
+            }
+            retNode->assigned = true;
+            iparams = iparams->nextSibling;
+        }
+    }
+
     printf("\nIn validate function, current node name: %s\n", curr->lex);
     ast* child = curr->firstChild;
     for(; child!=NULL; child=child->nextSibling) {

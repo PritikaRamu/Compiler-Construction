@@ -1405,31 +1405,57 @@ void printFunctionTable(subTable *fun_table)
 
 void printSymbolTable(symbol_Table* st){
     subTable* t = st->IdentifierTable;
+    // int i;
+    // Entry * entry;
+    // identifierNode *node;
+    // printf("%-20s %-15s %-10s %-15s %-10s %-10s %-10s %-10s\n", "Variable Name", "Scope", "Type", "Type Expression", "Width", "isGlobal", "Offset", "VariableUsage");
+    // for (i = 0; i < TABLE_SLOTS; i++)
+    // {
+    //     entry = &(t->table[i]);
+    //     while (entry != NULL)
+    //     {
+    //         node = (identifierNode *)(entry->node);
+
+    //         if (node != NULL)
+    //         {   
+    //             if(!(node->isRecordField)){
+    //                 if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
+    //                     printf("%-30s %d %s %s %s %s   %d\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false",node->offset);
+    //             }
+    //             else if(node->type == INT_TYPE){
+    //                 printf("%-30s %d %s INT %s   %d\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false",node->offset);
+    //             }
+    //             else{
+    //                 printf("%-30s %d %s REAL %s  %d\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false",node->offset);
+    //             }
+    //             printf("-------------------------------\n");
+    //             }
+    //         }
+    //         entry = entry->next;
+    //     }
+    // }
     int i;
     Entry * entry;
-    identifierNode *node;
-    printf("%-20s %-15s %-10s %-15s %-10s %-10s %-10s %-10s\n", "Variable Name", "Scope", "Type", "Type Expression", "Width", "isGlobal", "Offset", "VariableUsage");
+    identifierNode *fun_node;
+    printf("#%-30s %-30s\n", "Lexeme", "Width");
     for (i = 0; i < TABLE_SLOTS; i++)
     {
         entry = &(t->table[i]);
         while (entry != NULL)
         {
-            node = (identifierNode *)(entry->node);
-
-            if (node != NULL)
+            fun_node = (identifierNode *)(entry->node);
+            if (fun_node != NULL)
             {   
-                if(!(node->isRecordField)){
-                    if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
-                        printf("%-30s %d %s %s %s %s   %d\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false",node->offset);
-                }
-                else if(node->type == INT_TYPE){
-                    printf("%-30s %d %s INT %s   %d\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false",node->offset);
-                }
-                else{
-                    printf("%-30s %d %s REAL %s  %d\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false",node->offset);
-                }
-                printf("-------------------------------\n");
-                }
+                //     printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+ 
+                // printf("-------------------------------\n");
+                
+                functionNode* temp = (functionNode*)malloc(sizeof(functionNode));
+                temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                temp->token->lexeme = fun_node->function->lexeme;
+                functionNode* temp1 = (functionNode*)retrieve(SymbolTable,temp,FUNCTION_SEQ);
+                addID(temp1,fun_node);
+                // printIDList(temp1);
             }
             entry = entry->next;
         }
@@ -1530,4 +1556,21 @@ void printAliasTable(subTable *fun_table)
     }
 }
 
+void print_Redeclarations(){
+    printf("\nREDECLARATION ERRORS:\n");
+    printf("_____________________________________\n");
 
+    for(int i=0;i<100;i++){
+        if(redeclaration_error_array[i][0]!='\0'){
+            printf("%s\n", redeclaration_error_array[i]);
+        }
+    }
+
+    printf("_____________________________________\n");
+    printf("No. of Redeclarations = %d\n", redeclaration_error_index);
+}
+
+void addErrorToArray(char* errorMessage){
+    strcpy(redeclaration_error_array[redeclaration_error_index], errorMessage);
+    redeclaration_error_index++;
+}

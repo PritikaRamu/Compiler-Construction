@@ -20,5 +20,7 @@ int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func);
 void addAlias(identifierNode* existing,identifierNode* alias);
 void addID(functionNode* exist, identifierNode* id);
 void printIDList(functionNode* exist);
+void print_Redeclarations();
+void addErrorToArray(char* errorMessage);
 
 #endif
