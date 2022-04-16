@@ -27,5 +27,6 @@ FILE* getStream(FILE* fp);
 tokenInfo getNextToken();
 void removeComments(char* testcaseFile, char* cleanFile);
 void reset();
+void printCompressionPercentage();
 
 #endif

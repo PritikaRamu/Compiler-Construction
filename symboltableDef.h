@@ -65,6 +65,8 @@ typedef struct identifierNode{
     bool isUnion;
     struct identifierNode* aliasList;
     struct identifierNode* idList;
+    bool isIP;
+    bool isOP;
 }identifierNode;
 
 typedef struct parameters{

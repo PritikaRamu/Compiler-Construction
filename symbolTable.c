@@ -442,6 +442,8 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
     iden->assigned = false;
     iden->offset = *offset;
     iden->isRecordField = false;
+    iden->isIP = false;
+    iden->isOP = false;
     iden->recordList = NULL;
     iden->recordName = id->parent->lex;
     if (iden->type == RECORD_TYPE || iden->type == UNION_TYPE)
@@ -833,11 +835,13 @@ void createFTable(ast *root)
                     case TK_INT:
                     {
                         id = createINode(pars->firstChild, child->parent, INT_TYPE, false, &offset); // TODO
+                        id->isIP = true;
                         break;
                     }
                     case TK_REAL:
                     {
                         id = createINode(pars->firstChild, child->parent, REAL_TYPE, false, &offset); // TODO
+                        id->isIP = true;
                         break;
                     }
                     case TK_RUID:
@@ -845,12 +849,14 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
+                            id->isIP = true;
                             //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                             //offset += a;
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
+                            id->isIP = true;
                             //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                             //offset += a;
                         }
@@ -895,11 +901,13 @@ void createFTable(ast *root)
                     case TK_INT:
                     {
                         id = createINode(pars->firstChild, child->parent, INT_TYPE, false, &offset); // TODO
+                        id->isOP = true;
                         break;
                     }
                     case TK_REAL:
                     {
                         id = createINode(pars->firstChild, child->parent, REAL_TYPE, false, &offset); // TODO
+                        id->isOP = true;                        
                         break;
                     }
                     case TK_RUID:
@@ -907,10 +915,12 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
+                            id->isOP = true;
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
+                            id->isOP = true;
                         }
                         break;
                     }
@@ -981,7 +991,7 @@ int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func){
     recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
     recordField* head = ru->fieldList;
     while(head){
-        printf("        UNION WIDTH %d\n",width);
+        //printf("        UNION WIDTH %d\n",width);
         //concatenation of string for field ids
         int x = strlen(dotName);
         int y = strlen(head->token->lexeme);
@@ -1089,7 +1099,7 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
             id->width = head->width;
         }
         else if(head->type == RECORD_TYPE){
-            printf("        LEXEME %s\n",head->token->lexeme);
+            //printf("        LEXEME %s\n",head->token->lexeme);
             id->type = RECORD_TYPE;
             id->recordName = head->recordName;
             int x = GodHelpMe(head->recordName, concatString, false, func);
@@ -1218,7 +1228,7 @@ void createITable(ast *root)
         int localOffset = func->width;
         while (child)
         {   
-            printf("    %s\n",child->lex);
+            //printf("    %s\n",child->lex);
            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
             {
                 if(child->is_union){
@@ -1270,6 +1280,11 @@ void createITable(ast *root)
                         {   
                             if(id->global){
                                 check->global = true;
+                                check->type = id->type;
+                                check->offset = globalOffset;
+                                check->width = id->width;
+                                globalOffset += check->width;
+                                check->token = id->token;
                                 char string[100];
             sprintf(string, "Redeclaration of global variable %s at line no. %d\n",check->token->lexeme,check->token->lineNo);
             addErrorToArray(string);
@@ -1401,14 +1416,14 @@ void initializeSymbolTable(ast *ast)
     createAliasTable(ast);
     printAliasTable(aliasTable);
     createRUtable(ast);
-    printf("record table done\n");
+    //printf("record table done\n");
     createFTable(ast);
-    printf("function table done\n");
+    //printf("function table done\n");
     createITable(ast);
-    printf("identifier table done\n");
-    printf("Printing alias table\n");
+    //printf("identifier table done\n");
+    //printf("Printing alias table\n");
     printReverseMapping(firstPass);
-    printf("\nAlias table printed\n");
+    //printf("\nAlias table printed\n");
 }
 
 void printRecordTable(subTable *rec_table)
@@ -1425,7 +1440,8 @@ void printRecordTable(subTable *rec_table)
             record = (recordUnionNode *)(entry->node);
             if (record != NULL)
             {
-                printf("%-30s", record->token->lexeme);
+                
+                //printf("%-30s", record->token->lexeme);
                 recordField *fields = record->fieldList;
                 char fieldsstring[100] = "";
                 while (fields != NULL)
@@ -1440,8 +1456,8 @@ void printRecordTable(subTable *rec_table)
                     }
                     fields = fields->next;
                 }
-                printf("%-30s", fieldsstring);
-                printf("%d\n", record->width);
+                // printf("%-30s", fieldsstring);
+                // printf("%d\n", record->width);
                 printf("-------------------------------\n");
             }
             entry = entry->next;
@@ -1536,14 +1552,28 @@ void printIDList(functionNode* exist){
         // printf("%-10s %-10s %-10s %-10s\n",head->token->lexeme,head->function->lexeme);
         
         if(!(head->isRecordField)){
-                    if(head->type == RECORD_TYPE || head->type == UNION_TYPE){
-                        printf("%-30s %d %s %s %s %s   %d\n", head->token->lexeme, head->width, head->function->lexeme, head->recordName, GodHelpMeOneMoreTime(head->recordName), head->global?"true":"false",head->offset);
+                char* varType;
+                if(head->isIP){
+                    varType = "Input Param";
                 }
-                else if(head->type == INT_TYPE){
-                    printf("%-30s %d %s INT %s   %d\n", head->token->lexeme, head->width, head->function->lexeme,head->global?"true":"false",head->offset);
+                else if(head->isOP){
+                    varType = "Output Param";
+                }
+                else if(head->global){
+                    varType = "Global";
                 }
                 else{
-                    printf("%-30s %d %s REAL %s  %d\n", head->token->lexeme, head->width, head->function->lexeme, head->global?"true":"false",head->offset);
+                    varType = "Local";
+                }
+
+                if(head->type == RECORD_TYPE || head->type == UNION_TYPE){
+                    printf("%-30s %d %s %s %s %s   %d %s\n", head->token->lexeme, head->width, head->function->lexeme, head->recordName, GodHelpMeOneMoreTime(head->recordName), head->global?"true":"false",head->offset, varType);
+                }
+                else if(head->type == INT_TYPE){
+                    printf("%-30s %d %s INT     --- %s   %d %s\n", head->token->lexeme, head->width, head->function->lexeme,head->global?"true":"false",head->offset, varType);
+                }
+                else{
+                    printf("%-30s %d %s REAL    --- %s  %d %s\n", head->token->lexeme, head->width, head->function->lexeme, head->global?"true":"false",head->offset, varType);
                 }
                 printf("-------------------------------\n");
                 }
@@ -1715,7 +1745,7 @@ void printFinalTable(subTable *fun_table)
     int i;
     Entry *entry;
     functionNode *fun_node;
-    printf("LEXEME     WIDTH    SCOPE   TYPE   ISGLOBAL  OFFSET\n");
+    printf("LEXEME    WIDTH    SCOPE   TYPE   ISGLOBAL  OFFSET  VARIABLE_TYPE\n");
     for (i = 0; i < TABLE_SLOTS; i++)
     {
         entry = &(fun_table->table[i]);
