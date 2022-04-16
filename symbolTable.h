@@ -22,5 +22,6 @@ void addID(functionNode* exist, identifierNode* id);
 void printIDList(functionNode* exist);
 void print_Redeclarations();
 void addErrorToArray(char* errorMessage);
+void printFinalTable(subTable *fun_table);
 
 #endif

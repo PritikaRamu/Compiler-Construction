@@ -1449,7 +1449,7 @@ void printSymbolTable(symbol_Table* st){
                 //     printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
  
                 // printf("-------------------------------\n");
-                
+
                 functionNode* temp = (functionNode*)malloc(sizeof(functionNode));
                 temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
                 temp->token->lexeme = fun_node->function->lexeme;
@@ -1465,9 +1465,23 @@ void printSymbolTable(symbol_Table* st){
 void printIDList(functionNode* exist){
     identifierNode* head = exist->idList;
     while(head){
-        printf("%s %s\n",head->token->lexeme,head->function->lexeme);
+        // printf("%-10s %-10s %-10s %-10s\n",head->token->lexeme,head->function->lexeme);
+        
+        if(!(head->isRecordField)){
+                    if(head->type == RECORD_TYPE || head->type == UNION_TYPE){
+                        printf("%-30s %d %s %s %s %s   %d\n", head->token->lexeme, head->width, head->function->lexeme, head->recordName, GodHelpMeOneMoreTime(head->recordName), head->global?"true":"false",head->offset);
+                }
+                else if(head->type == INT_TYPE){
+                    printf("%-30s %d %s INT %s   %d\n", head->token->lexeme, head->width, head->function->lexeme,head->global?"true":"false",head->offset);
+                }
+                else{
+                    printf("%-30s %d %s REAL %s  %d\n", head->token->lexeme, head->width, head->function->lexeme, head->global?"true":"false",head->offset);
+                }
+                printf("-------------------------------\n");
+                }
         head = head->idList;
     }
+
 }
 
 void addID(functionNode* exist, identifierNode* id){
@@ -1573,4 +1587,57 @@ void print_Redeclarations(){
 void addErrorToArray(char* errorMessage){
     strcpy(redeclaration_error_array[redeclaration_error_index], errorMessage);
     redeclaration_error_index++;
+}
+
+void populateIDTable(subTable *fun_table)
+{
+    int i;
+    Entry * entry;
+    identifierNode *fun_node;
+    printf("#%-30s %-30s\n", "Lexeme", "Width");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(fun_table->table[i]);
+        while (entry != NULL)
+        {
+            fun_node = (identifierNode *)(entry->node);
+            if (fun_node != NULL)
+            {   
+                //     printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+ 
+                // printf("-------------------------------\n");
+                functionNode* temp = (functionNode*)malloc(sizeof(functionNode));
+                temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                temp->token->lexeme = fun_node->function->lexeme;
+                functionNode* temp1 = (functionNode*)retrieve(SymbolTable,temp,FUNCTION_SEQ);
+                addID(temp1,fun_node);
+                // printIDList(temp1);
+            }
+            entry = entry->next;
+        }
+    }
+}
+
+void printFinalTable(subTable *fun_table)
+{
+    populateIDTable(SymbolTable->IdentifierTable);
+    int i;
+    Entry *entry;
+    functionNode *fun_node;
+    // printf("#%-30s %-30s\n", "Lexeme", "Width");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(fun_table->table[i]);
+        while (entry != NULL)
+        {
+            fun_node = (functionNode *)(entry->node);
+            if (fun_node != NULL)
+            {
+                // printf("%-30s %d\n", fun_node->token->lexeme, fun_node->width);
+                // printf("-------------------------------\n");
+                 printIDList(fun_node);
+            }
+            entry = entry->next;
+        }
+    }
 }

@@ -51,22 +51,17 @@ int main(int argc, char *argv[])
 		switch (choice)
 		{
 
-		case 0:
+		case 0: // Exit (done)
 		{
 			printf("THANK YOU!\n");
 			flag = false;
+			break;
 		}
-		break;
 
-		case 1:
+		case 1: // Print Token List (done)
 		{
 			removeComments(argv[1], argv[2]);
-		}
-		break;
 
-		case 2:
-		{
-			// print tokens from lexer
 			line = 1;
 			FILE *fp = startLexer(argv[1]);
 			initTable();
@@ -91,26 +86,9 @@ int main(int argc, char *argv[])
 			break;
 		}
 
-		case 3:
+		case 2: // Print Parse Tree (done)
 		{
-			// parser
 			line = 1;
-			char *testFile = argv[1];
-			char *outfile = argv[2];
-			initGrammar(G);
-			populateFirstFollow("First.txt", true);
-			populateFirstFollow("Follow.txt", false);
-			computeParseTable();
-			parseTree ptree = parseInputSourceCode(testFile);
-			int numNodes = printParseTree(ptree, outfile);
-			break;
-		}
-		case 4:
-		{	
-			line = 1;
-			clock_t start_time, end_time;
-			double total_CPU_time, total_CPU_time_in_seconds;
-			start_time = clock();
 			// invoke your lexer and parser here
 
 			printf("A\n");
@@ -122,15 +100,13 @@ int main(int argc, char *argv[])
 			populateFirstFollow("Follow.txt", false);
 			computeParseTable();
 			parseTree ptree = parseInputSourceCode(testFile);
+			int numNodes = printParseTree(ptree, outfile);
 
-			end_time = clock();
-			total_CPU_time = (double)(end_time - start_time);
-			total_CPU_time_in_seconds = total_CPU_time / CLOCKS_PER_SEC;
-			printf("\nTotal CPU time = %lf\nTotal CPU time in seconds = %lf\n", total_CPU_time, total_CPU_time_in_seconds);
-			// Print both total_CPU_time and total_CPU_time_in_seconds
 			break;
+			
 		}
-		case 5:
+
+		case 3: // Print AST (done)
 		{
 			// AST
 			line = 1;
@@ -142,12 +118,20 @@ int main(int argc, char *argv[])
 			computeParseTable();
 			parseTree ptree = parseInputSourceCode(testFile);
 			ast *astree = initAST(ptree);
+			
+			printf("\nTraversing AST in in-order traversal\n");
 			int numNodes = printAST(astree, outfile);
 			printf("\nNumber of Nodes %d\n",numNodes);
 			break;
 		}
-		case 6:
+		case 4: // Memory Allocated to Parse Tree/AST Nodes
+		{	
+			
+			break;
+		}
+		case 5: // Print Symbol Table (done)
 		{
+
 			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
@@ -159,20 +143,32 @@ int main(int argc, char *argv[])
 			ast *astree = initAST(ptree);
 			
 			initializeSymbolTable(astree);
-			printRecordTable(SymbolTable->RecordUnionTable);
-			printf("\nRecord table printed above\n");
-			printFunctionTable(SymbolTable->FunctionTable);
-			printf("Function table printed above\n");
-			//printIDTable(SymbolTable->IdentifierTable);
-			printf("Identifier table printed above\n");
 			printFinalTable(SymbolTable->FunctionTable);
 			
 			break;
+		}
+		case 6: // Print Global Variables
+		{
 
 			
+			break;
+			
 		}
-		case 7:
+		case 7: // Activation Record Sizes Odone)
 		{
+			printFunctionTable(SymbolTable->FunctionTable);
+			break;
+		}
+
+		case 8: // Record Types and Sizes
+		{
+			printRecordTable(SymbolTable->RecordUnionTable);
+			break;
+		}
+
+		case 9: // Type Checking and Semantic Analysis (done)
+		{
+
 			line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
@@ -193,6 +189,14 @@ int main(int argc, char *argv[])
 			printf("\nEnd of Semantic Analysis.\n");
 			break;
 		}
+
+		case 10: // Code Generation (done)
+		{
+			printf("Not Implemented\n");
+			break;
+		}
+
+		
 		}
 	}
 
