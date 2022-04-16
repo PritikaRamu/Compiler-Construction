@@ -1,0 +1,42 @@
+%Test case 8- Handles function calls 
+
+_randomfunction input parameter list [int b5, int b6]
+output parameter list[int b7];
+	b7<---b5*b6;
+	return [b7];
+end
+
+
+_computesum input parameter list [int d2, int d3, int d4]
+output parameter list[int d5];
+	type int : d6;
+	type int : d7 :global;
+	d6<---d2+d3+d4;
+	[d5]<---call _randomfunction with parameters [d6,d7];
+	return [d5];
+end
+
+_main 
+	type int :b3;
+	type int : b2;
+	type int : c2;
+	type int : d2;
+	read(b2);
+	c2<--- 35;
+	read(d2);
+	read(d7);
+	[b3]<--- call _computesum with parameters [b2, c2, d2];
+	write(b3);
+	return;
+end
+
+% Expected output in three independent runs of code.asm 
+% run 1- for b2 = 17 and d2 = 26, d7= 2, the output is 156
+% run 2- for b2 = -265 and d2 = 458, d7= 5, the output is 1140
+% run 3- for b2 = -100 and d2 = -126,d7= -8  the output is 1528
+% Note that the machine on which the code is run supports the integer values to be negative 
+% and these values can participate in any computation as integer
+% NOTE: If you implemened the associativity from right  to left, mention that while printing the output
+
+
+

@@ -1,0 +1,38 @@
+%Test Case 1: Type checking 
+%Details: 
+%        (a) Simple arithmetic expressions involvoing primitive data types are used in this test case
+%        (b) Only main module is used and no other function is used in this test case
+%	 (c) All variables are declared once only before their use
+%        (d) The variables participating in the expression need not be initialized any values. Only test cases for code generation will have all values initialized or read appropriately.
+% The errors are reported by me in the test cases right in front of the corresponding line in comment form. 
+% It is essential for you to report errors with LINE NUMBERS correctly.	 
+
+%The following source code is expected to be syntactically correct as per the modified grammar.
+%If any line has syntax error, please inform me as that error needs to be fixed in this test case.
+
+_main 
+	type int : b5;
+        type real: d2;
+        type int: c6: global;
+	type int  :d5cb34567;
+        type real : d6;
+	type real : d7:global; 
+	type int : d4 ;
+	type real: b5c6 ;
+	type int : c2;
+	type int : c3c56;
+	type int : d6b7;
+	type real : c2d5;
+	type real : d5c2;
+	type real : c2c2;
+	type int : c2cc2345;
+	type int : c5c5;
+	
+	b5 <--- c6 + d5cb34567 - b5;            % No error
+	d7 <--- b5c6 + d5cb34567;  		% ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.
+	c2d5 <--- d5c2 * c2c2;			% No error
+	c2 <--- c3c56 + d6b7*d5cb34567;		% No error
+	c2 <--- c3c56 + 23 - d6b7*d5cb34567;	% No error
+	c2d5 <--- d5c2 * c2c2 + 23;		% ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.	
+	return;
+end

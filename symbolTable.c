@@ -15,62 +15,24 @@ int hash(char *key)
     return hashed % TABLE_SLOTS;
 }
 
-int max(int num1, int num2)
-{
-    return (num1 > num2 ) ? num1 : num2;
-}
-
-bool isValidVariant(recordField* fields){
-    bool isVariant = false;
-
-    while(fields != NULL){
-        if(fields->type == UNION_TYPE){
-            if(isVariant){
-                printf("Variant record cannot have more than one union at line no. %d\n",fields->token->lineNo);
-                return false;
-            }
-            else{
-                isVariant = true;
-            }
-        }
-        fields = fields->next;
-    }
-    return isVariant;
-}
-
-bool isVariant(recordField* fields){
-    bool variantCheck = false;
-
-    while(fields != NULL){
-        if(fields->type == INT_TYPE){
-            if(strcmp(fields->token->lexeme,"tagvalue")==0){
-                variantCheck = true;
-            }
-        }
-        else if(fields->type == REAL_TYPE){
-            if(strcmp(fields->token->lexeme,"tagvalue")==0){
-                variantCheck = true;
-            }
-        }
-        fields = fields->next;
-    }
-    return variantCheck;
-}
-
-recordField* createFieldList(ast *curr_ast)
+//Redecl Errors
+recordField* createFieldList(ast *curr_ast, int *offset)
 {
     
     ast *iterator = curr_ast;
     recordField *head = NULL;
+    printf(" print record name %s\n", curr_ast->parent->lex);
     recordField *tail = NULL;
     
     while (iterator != NULL)
     {
         recordField *fields = (recordField *)malloc(sizeof(recordField));
-        // fields->isVariant = false;
+
         if (iterator->nodeType == INTEGER)
         {
-            fields->offset = 0;
+
+            fields->offset = *offset;
+            (*offset) += INT_WIDTH;
             fields->width = INT_WIDTH;
             fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
             fields->token->tid = iterator->symbol;
@@ -81,7 +43,8 @@ recordField* createFieldList(ast *curr_ast)
         }
         else if (iterator->nodeType == REAL)
         {
-            fields->offset = 0;
+            fields->offset = *offset;
+            (*offset) += REAL_WIDTH;
             fields->width = REAL_WIDTH;
             fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
             fields->token->tid = iterator->symbol;
@@ -92,6 +55,15 @@ recordField* createFieldList(ast *curr_ast)
         }
         else if (iterator->nodeType == RECORD_OR_UNION)
         {
+            fields->offset = *offset;
+            //just creating a dummy node to cheEnterck entry in record table
+            // recordUnionNode *ru = (recordUnionNode *)malloc(sizeof(recordUnionNode));
+            // ru->width = 0;
+            // ru->fieldList = NULL;
+            // ru->token = (tokenInfo *)malloc(sizeof(tokenInfo));
+            // ru->token->tid = -1;
+            // ru->token->lexeme = iterator->lex;
+            //ru->token->lineNo = curr_ast->line;
             identifierNode* temp = (identifierNode*)malloc(sizeof(identifierNode));
             temp->function = (tokenInfo *)malloc(sizeof(tokenInfo));
             temp->function->lexeme = iterator->lex;
@@ -99,50 +71,23 @@ recordField* createFieldList(ast *curr_ast)
             identifierNode *x = (identifierNode *)retrieveFake(aliasTable,temp,false,true);
             if (x == NULL)
             {
-                printf("Using a record as field that has not been declared on line no. %d\n", iterator->line);
+                
+                char string[100];
+                sprintf(string, "Using a record as field that has not been declared on line no. %d", iterator->line);
+                addErrorToArray(string);
+                //printf("Using a record as field that has not been declared on line no. %d\n", iterator->line);
             }
             else
-            {   
+            {
                 fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
                 fields->token->tid = iterator->symbol;
                 fields->token->lexeme = iterator->firstChild->lex;
                 fields->token->lineNo = iterator->firstChild->line;
-                fields->type = x->isUnion ? UNION_TYPE : RECORD_TYPE;
+                fields->type = (iterator->is_union) ? UNION_TYPE : RECORD_TYPE;
                 fields->recordName = x->token->lexeme;
 
                // printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
             }
-
-
-            // identifierNode *x = (identifierNode *)retrieveFake(aliasTable,temp,false,true);
-            // identifierNode *y = (identifierNode *)retrieveFake(firstPass,temp,false,false);
-
-            //     if (y!=NULL && y->isUnion)
-            //     {   
-            //         fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-            //         fields->token->tid = iterator->symbol;
-            //         fields->token->lexeme = iterator->firstChild->lex;
-            //         fields->token->lineNo = iterator->firstChild->line;
-            //         fields->type = UNION_TYPE;
-            //         fields->recordName = y->token->lexeme;
-            //     }
-            //     else if(y==NULL && x!=NULL &&){
-            //         fields->token = (tokenInfo *)malloc(sizeof(tokenInfo));
-            //         fields->token->tid = iterator->symbol;
-            //         fields->token->lexeme = iterator->firstChild->lex;
-            //         fields->token->lineNo = iterator->firstChild->line;
-            //         fields->type = RECORD_TYPE;
-            //         fields->recordName = x->token->lexeme;
-            //     }
-            //     else if(y!=NULL && !y->isUnion)
-            //     {
-            //         printf("Use an alias for nested records at line no. %d\n",iterator->line);
-
-            //     // printf("dont know what to do herererererere %s %s\n",fields->recordName,fields->token->lexeme);
-            //     }
-            //     else{
-            //         printf("Record or union not defined at line no. %d\n",iterator->line);
-            //     }       
         }
         if (head)
         {
@@ -156,6 +101,7 @@ recordField* createFieldList(ast *curr_ast)
         }
         iterator = iterator->nextSibling;
     }
+
     return head;
 }
 
@@ -191,7 +137,7 @@ functionNode *createFNode(ast* root)
     return func;
 }
 
-parameters *createIPParams(ast *ast, NodeType type)
+ parameters *createIPParams(ast *ast, NodeType type)
 {
     parameters *p = (parameters *)malloc(sizeof(parameters));
     p->nodeType = type;
@@ -449,15 +395,11 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
             //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
         }
         iden->recordList = (recordUnionNode *)retrieve(SymbolTable, temp, RECORD_OR_UNION);
-        if(iden->recordList == NULL){
-            printf("Record or Union is not defined at line no. %d\n",iden->token->lineNo);
-            return NULL;
-        }
-        if(iden->type == RECORD_TYPE){
-            iden->width = GodHelpMe(id->parent->lex,id->lex,false,func);
-        }
-        else{
-            iden->width = GodHelpMeForUnion(id->parent->lex,id->lex,false,func);
+
+        if (iden->recordList)
+        {   
+            iden->width = iden->recordList->width;
+            (*offset) += iden->recordList->width;
         }
     }
     else
@@ -465,18 +407,18 @@ identifierNode* createINode(ast* id, ast* func, Type type, bool is_global, int*o
         if (iden->type == INT_TYPE)
         {
             iden->width = INT_WIDTH;
+            (*offset) += INT_WIDTH;
         }
         else
         {
             iden->width = REAL_WIDTH;
+            (*offset) += REAL_WIDTH;
         }
     }
     iden->global = is_global;
-    (*offset) += iden->width;
     return iden;
 }
 
-// PASS 3 : record field lexemes are stored
 void createRUtable(ast *root)
 {
     //taking our third pass through the record table 
@@ -491,27 +433,26 @@ void createRUtable(ast *root)
         //child is the first child of the function pointed to by root
         while (child)
         {
+            int offset = 0;
             if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType != ID)
             {
+                // printf("Child node is %s and type is %d\n", child->lex, child->nodeType);
                 curr_ast = child->firstChild;
-                fields = createFieldList(curr_ast);    //iterates and returns a linked list of field nodes
+                // printf("current node's lexeme: %s\n", curr_ast->lex);
+                fields = createFieldList(curr_ast, &offset);    //iterates and returns a linked list of field nodes
                 recordUnionNode* new = createRUNode(child, fields);
-                bool b1 = isVariant(fields);
-                bool b2 = isValidVariant(fields);
-                new->isVariant = b1&&b2;
                 new->recordName = child->lex;
-
                 //check if the name exists in the first pass table
                 //recordUnionNode* check = retrieve(SymbolTable, new, RECORD_OR_UNION);
-                identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
-                new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-                new1->token->lexeme = curr_ast->lex;
-                identifierNode* check = retrieveFake(firstPass, new1, true, false);
-                if(!check){
-                    if(b2 || !b1){
-                        insert(SymbolTable, new, RECORD_OR_UNION);
-                    }                
-                }
+                // identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
+                // new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
+                // new1->token->lexeme = curr_ast->lex;
+                // identifierNode* check = retrieveFake(firstPass, new1, true, false);
+                // if(check)
+                // {
+                    insert(SymbolTable, new, RECORD_OR_UNION);
+                  
+                // }
             }
             child = child->nextSibling;
         }
@@ -625,8 +566,7 @@ void insertFake(subTable* st, identifierNode* id, bool token){
     }
 }
 
-
-// PASS 1 : collectiong record names by looking for record definitions
+// Redecl Errors
 void createFirstPass(ast *root)
 {
     root = root->firstChild;
@@ -644,11 +584,14 @@ void createFirstPass(ast *root)
                 identifierNode* new = (identifierNode*)malloc(sizeof(identifierNode));
                 new->token = (tokenInfo*)malloc(sizeof(tokenInfo));
                 new->token->lexeme = child->lex;
-                new->isUnion = child->is_union;
                 identifierNode* check = retrieveFake(firstPass, new, true, false);
                 if(check)
                 {
-                    printf("Redeclaration of Record on line %d\n", curr_ast->line);
+                    
+                    char string[100];
+                    sprintf(string, "Redeclaration of Record on line %d\n", curr_ast->line);
+                    addErrorToArray(string);
+                    //printf("Redeclaration of Record on line %d\n", curr_ast->line);
                 }
 
                 else
@@ -663,7 +606,70 @@ void createFirstPass(ast *root)
     }
 }
 
-// PASS 2 : Mapping aliases to actual record/Union names
+void printAliasList(identifierNode *existing)
+{
+    identifierNode* head = existing->aliasList;
+    while(head!=NULL)
+        {printf(" %s ", head->function->lexeme); head = head->aliasList;}
+
+    printf("\n");
+}
+
+void addAlias(identifierNode* existing, identifierNode* alias)
+{
+    //have to add alias to existing ka alias linked list
+   // printf("\nAdding %s to alias list of %s\n", alias->function->lexeme, existing->token->lexeme);
+    identifierNode* head = existing->aliasList;
+
+    //getting the linked list
+    if(head==NULL)
+    {
+        head = alias;
+        existing->aliasList = head;
+    }
+    else
+    {
+        alias->aliasList = head;
+        existing->aliasList = alias;
+    }
+
+    // head = existing;
+    // head = existing->aliasList;
+    // while(head!=NULL)
+    //     {printf(" %s ", head->function->lexeme); head = head->aliasList;}
+    // printAliasList(existing);
+    // printf("\n");
+
+}
+
+
+
+void printReverseMapping(subTable *fun_table)
+{
+    int i;
+    Entry * entry;
+    identifierNode *fun_node;
+    printf("#%-30s\n", "Lexeme");
+    for (i = 0; i < TABLE_SLOTS; i++)
+    {
+        entry = &(fun_table->table[i]);
+        while (entry != NULL)
+        {
+            fun_node = (identifierNode *)(entry->node);
+            if (fun_node != NULL)
+            {
+                printf("%-30s ", fun_node->token->lexeme);
+               // printf("-------------------------------\n");
+                
+                printAliasList(fun_node);
+
+            }
+            entry = entry->next;
+        }
+    }
+}
+
+// PASS 2 : Mapping aliases to actual record/Union names and reverse mapping
 void createAliasTable(ast* root){
     root = root->firstChild;
     ast *curr_ast = NULL;
@@ -680,25 +686,35 @@ void createAliasTable(ast* root){
                 ru->token->lexeme = child->firstChild->nextSibling->lex; //actual name
                 ru->function = (tokenInfo *)malloc(sizeof(tokenInfo));
                 ru->function->lexeme = child->firstChild->nextSibling->nextSibling->lex; //alias name
-                ru->isUnion = child->firstChild->is_union;
 
                 identifierNode *existing = (identifierNode*)retrieveFake(firstPass, ru, true, false); //check if record exists
                 if (existing == NULL)
                 {
-                    printf("Record %s does not exist on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
+                    char string[100];
+                    sprintf(string, "Record %s does not exist on line no. %d\n", child->firstChild->nextSibling->lex, child->firstChild->nextSibling->line);
+                    addErrorToArray(string);
+                    //printf();
                 }
                 else
                 {   
                     identifierNode* check =(identifierNode*) retrieveFake(aliasTable, ru, false, true); //check if alias exists
                     if(check){
-                        printf("Redeclaration of alias on line %d\n", child->firstChild->nextSibling->line);
+                        
+                        char string[100];
+                        sprintf(string, "Redeclaration of alias on line %d\n", child->firstChild->nextSibling->line);
+                        addErrorToArray(string);
+                        //printf();
                     }
                     else{
                         identifierNode* check1 = (identifierNode*)retrieveFake(firstPass, ru, false, false);//check if alias is record name
                         if(check1){
-                            printf("Redeclaration of record name as alias on line %d\n", child->firstChild->nextSibling->line);
+                             char string[100];
+                            sprintf(string, "Redeclaration of record name as alias on line %d\n", child->firstChild->nextSibling->line);
+                            addErrorToArray(string);
+                            //printf();
                         }
                         else{
+                            addAlias(existing,ru);
                             insertFake(aliasTable, ru, false);
                         }
                     }
@@ -710,6 +726,7 @@ void createAliasTable(ast* root){
     }
 }
 
+// Redecl Errors
 void createFTable(ast *root)
 {
     if(root==NULL)
@@ -726,7 +743,6 @@ void createFTable(ast *root)
         curr_op = NULL;
         ast *pars = NULL;
         int width = 0;
-        func->numOp = 0;
         while (child)
         {
             if (child->nodeType == INPUT_PARAMETERS)
@@ -752,14 +768,13 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
-                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
-                            //offset += a;
+                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
-                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
-                            //offset += a;
+                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         break;
                     }
@@ -767,7 +782,11 @@ void createFTable(ast *root)
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
                     if (check)
                     {
-                        printf("Redeclaration of %s in input parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
+                        
+                        char string[100];
+                        sprintf(string, "Redeclaration of %s in input parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
+                        addErrorToArray(string);
+                        //printf();
                     }
                     else
                     {
@@ -810,12 +829,12 @@ void createFTable(ast *root)
                         if (pars->is_union)
                         {
                             id = createINode(pars->firstChild, child->parent, UNION_TYPE, false, &offset); // TODO
-                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         else
                         {
                             id = createINode(pars->firstChild, child->parent, RECORD_TYPE, false, &offset); // TODO
-                            //int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
+                            int a = GodHelpMe(pars->lex,pars->firstChild->lex,false,child->parent);
                         }
                         break;
                     }
@@ -823,7 +842,11 @@ void createFTable(ast *root)
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
                     if (check)
                     {
-                        printf("Redeclaration of %s in output parameter list on line no. %d\n",child->firstChild->lex,child->firstChild->line);
+                        
+                        char string[100];
+                        sprintf(string, "redeclaration");
+                        addErrorToArray(string);
+                        //printf();
                     }
                     else
                     {
@@ -832,13 +855,11 @@ void createFTable(ast *root)
                     if (!curr_op)
                     {
                         func->opParams = createIPParams(pars->firstChild, pars->nodeType); // TODO
-                        func->numOp ++;
-                        curr_op = func->opParams;
+                        curr_ip = func->opParams;
                     }
                     else
                     {
                         curr_op->next = createIPParams(pars->firstChild, pars->nodeType);
-                        func->numOp ++;
                         curr_op = curr_op->next;
                     }
                     width += id->width;
@@ -851,108 +872,46 @@ void createFTable(ast *root)
         functionNode *check = (functionNode *)retrieve(SymbolTable, func, FUNCTION_SEQ);
         if (check)
         {
-            printf("Redeclaration of function name %s at line no. %d\n",func->token->lexeme,func->token->lineNo);
+            
+            char string[100];
+            sprintf(string, "redecl of function name");
+            addErrorToArray(string);
+            //printf();
         }
         else
         {
+            //func->tmpVars = 0;
             insert(SymbolTable, func, FUNCTION_SEQ);
         }
         root = root->nextSibling;
     }
 }
 
-int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func){
-    recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
-    temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-    temp->token->lexeme = unionName;
-
-    int width = 0;
-    //checking for alias
-    identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
-    new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
-    new1->token->lexeme = unionName;
-    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);       
-    if(checkAlias!=NULL){
-        temp->token->lexeme = checkAlias->token->lexeme;
-    }
-
-    //iteration through fields
-    recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
-    recordField* head = ru->fieldList;
-    while(head){
-        //concatenation of string for field ids
-        int x = strlen(dotName);
-        int y = strlen(head->token->lexeme);
-        int z = x+y+1;
-        char* concatString = (char *)malloc(sizeof(char) * z);
-        for(int i = 0; i < x; i++)
-            concatString[i] = dotName[i];
-        concatString[x] = '.';
-        for(int j = 0; j < y; j++)
-            concatString[j+x+1] = (head->token->lexeme)[j];
-
-        identifierNode* id = (identifierNode*)malloc(sizeof(identifierNode));
-        id->token  = (tokenInfo*)malloc(sizeof(tokenInfo));
-        id->global = global;
-        id->function = (tokenInfo*)malloc(sizeof(tokenInfo));
-        id->function->lexeme = func->lex;
-        id->isRecordField = true;
-        id->recordList = ru;
-
-        if(head->type == INT_TYPE || head->type == REAL_TYPE){
-            
-            if(head->type == INT_TYPE){
-                id->type = INT_TYPE;
-                width = max(width, INT_WIDTH);
-            }
-            else{
-                id->type = REAL_TYPE;
-                width = max(width, REAL_WIDTH);
-            }
-            id->width = head->width;
-        }
-        else{
-            id->type = RECORD_TYPE;
-            id->recordName = head->recordName;
-            int x = GodHelpMe(head->recordName, concatString, false, func);
-            id->width = x;
-            width = max(width, x);
-        }
-
-        id->token->lexeme = concatString;
-
-        identifierNode* check = (identifierNode*)retrieve(SymbolTable,id,ID);
-        if(check!=NULL){
-            printf("Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
-        }
-        else{
-            insert(SymbolTable,id,ID);
-        }
-        head = head->next;
-    }
-    return width;
-}
-
+// Redecl Errors
 int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
-
     recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
     temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     temp->token->lexeme = recordName;
     int width = 0;
-    //checking for alias
+
     identifierNode* new1 = (identifierNode*)malloc(sizeof(identifierNode));
     new1->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     new1->token->lexeme = recordName;
-    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);       
+    identifierNode* checkAlias = (identifierNode*)retrieveFake(aliasTable,new1,true,true);
+        
     if(checkAlias!=NULL){
+        //printf("Preetika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
         temp->token->lexeme = checkAlias->token->lexeme;
+        //printf("Pritika %s %s\n",temp->token->lexeme, checkAlias->token->lexeme);
     }
 
-    //iteration through fields
     recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
     recordField* head = ru->fieldList;
     while(head){
-        //concatenation of string for field ids
+        // char concatString[100];
+        // strcpy(concatString,dotName);
+        // strcat(concatString,".");
+        // strcat(concatString,head->token->lexeme);
         int x = strlen(dotName);
         int y = strlen(head->token->lexeme);
         int z = x+y+1;
@@ -972,34 +931,31 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
         id->recordList = ru;
 
         if(head->type == INT_TYPE || head->type == REAL_TYPE){
-            
+            width += head->width;
             if(head->type == INT_TYPE){
                 id->type = INT_TYPE;
-                width += INT_WIDTH;
             }
             else{
                 id->type = REAL_TYPE;
-                width += REAL_WIDTH;
             }
             id->width = head->width;
         }
         else{
-            id->type = RECORD_TYPE;
-            id->recordName = head->recordName;
-            int x = GodHelpMe(head->recordName, concatString, false, func);
-            id->width = x;
-            width += x;
+            width += GodHelpMe(head->recordName, concatString, false, func);
+            id->width = width;
         }
 
         id->token->lexeme = concatString;
 
         identifierNode* check = (identifierNode*)retrieve(SymbolTable,id,ID);
         if(check!=NULL){
-            printf("Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
+            
+            char string[100];
+            sprintf(string, "Redeclaration of field ID %s at line no. %d\n",head->token->lexeme, head->token->lineNo);
+            addErrorToArray(string);
+            //printf();
         }
-        else{
-            insert(SymbolTable,id,ID);
-        }
+        insert(SymbolTable,id,ID);
         head = head->next;
     }
     return width;
@@ -1057,6 +1013,7 @@ char* GodHelpMeOneMoreTime(char* recordName){
         head = head->next;
         a = concatString(a, y);
 
+        head = head->next;
     }
     while(head!=NULL){
         if(head->type == INT_TYPE){
@@ -1085,7 +1042,7 @@ char* GodHelpMeOneMoreTime(char* recordName){
     return a;
 }
 
-// PASS 4 : check for identifier declarations
+// Redecl Errors
 void createITable(ast *root)
 {
     int globalOffset = 0;
@@ -1101,26 +1058,26 @@ void createITable(ast *root)
         func = (functionNode *)retrieve(SymbolTable, func, FUNCTION_SEQ);
         int localOffset = func->width;
         while (child)
-        {   
-            printf("    %s\n",child->lex);
+        {
+            
            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
             {
-                if(child->is_union){
-                    printf("Variable cannot be of union type at line no. %d\n",child->line);
-                    child = child->nextSibling;
-                    continue;
-                }
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
                     // It is a global identifier
+                    // printf("%s\n", child->firstChild->nextSibling->lex);
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, true, &globalOffset);
+                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+
                     }
                     else
                     {
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, true, &globalOffset);
+                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+
                     }
                 }
                 else
@@ -1129,11 +1086,15 @@ void createITable(ast *root)
                     if (!child->is_union)
                     {
                         id = createINode(child->firstChild, child->parent, RECORD_TYPE, false, &localOffset);  
-
+                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+                        // printf("FINAL WIDTH %s %d\n",child->lex,a);
+                        
                     }
                     else
                     {
                         id = createINode(child->firstChild, child->parent, UNION_TYPE, false, &localOffset);
+                        int a = GodHelpMe(child->lex,child->firstChild->lex,false,child->parent);
+
                     }
                 }
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
@@ -1142,27 +1103,36 @@ void createITable(ast *root)
                     {
                         if (check->global)
                         {
-                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+
+                            char string[100];
+                            sprintf(string, "redeclr of global var bad");
+                            addErrorToArray(string);
+                            //printf();
+                            // TODO file stuff
                         }
                         else
                         {
-                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            
+                            char string[100];
+                            sprintf(string, "redcl 1 %d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
+                            addErrorToArray(string);
+                            //printf();
                         }
                     }
                     else
-                    {   
-                        if(id==NULL){
-                            child = child->nextSibling;
-                            continue;
-                        }
+                    {
                         insert(SymbolTable, id, ID);
                     }
                 }
             }
            else if (child->nodeType == INTEGER && child->firstChild->nodeType == ID)
             {
+               printf("%d", child->parent->nodeType);
+                //printf("here 2 %d %d  %d\n",child->nodeType,child->parent->nodeType, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
-                                
+                
+               // identifierNode* id;
+                
                 if (child->firstChild->nextSibling)
                 {
                     id = createINode(child->firstChild, child->parent, INT_TYPE, true, &globalOffset);
@@ -1175,17 +1145,30 @@ void createITable(ast *root)
                 if(child->parent->nodeType != OUTPUT_PARAMETERS && child->parent->nodeType != INPUT_PARAMETERS){
 
                     
+                    printf("%d %d %d %s %s %d",id->width, id->offset,id->type,id->token->lexeme,id->function->lexeme,id->global);
                     identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
+                    //seg fault here
 
                     if (check!=NULL)
                     {
+                        // printf("huhu\n");
                         if (check->global)
                         {
-                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+
+                            
+                            char string[100];
+                            sprintf(string, "redeclr of global var bad\n");
+                            addErrorToArray(string);
+                            //printf();
+                            // TODO file stuff
                         }
                         else
                         {
-                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            
+                            char string[100];
+                            sprintf(string, "redcl 2 %d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
+                            addErrorToArray(string);
+                            //printf();
                         }
                     }
                     else{
@@ -1195,6 +1178,7 @@ void createITable(ast *root)
             }
             else if(child->nodeType == REAL && child->firstChild->nodeType == ID)
             {
+                // printf("3 %d %d %s %s %d\n",child->nodeType,child->parent->nodeType,child->lex, child->parent->lex, child->line);
                 identifierNode *id = (identifierNode *)malloc(sizeof(identifierNode));
                 if (child->firstChild->nextSibling)
                 {
@@ -1210,12 +1194,20 @@ void createITable(ast *root)
                     {
                         if (check->global)
                         {
-                            printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
-
+                            
+                            char string[100];
+                            sprintf(string, "redeclr of global var bad\n");
+                            addErrorToArray(string);
+                            //printf();
+                            // TODO file stuff
                         }
                         else
                         {
-                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            
+                            char string[100];
+                            sprintf(string, "redcl 3 %d %d %s\n",child->nodeType, child->parent->nodeType, child->lex);
+                            addErrorToArray(string);
+                            //printf();
                         }
                     }
                     else{
@@ -1261,6 +1253,9 @@ void initializeSymbolTable(ast *ast)
     printf("function table done\n");
     createITable(ast);
     printf("identifier table done\n");
+    printf("Printing alias table\n");
+    printReverseMapping(firstPass);
+    printf("\nAlias table printed\n");
 }
 
 void printRecordTable(subTable *rec_table)
@@ -1338,18 +1333,16 @@ void printSymbolTable(symbol_Table* st){
 
             if (node != NULL)
             {   
-                if(!(node->isRecordField)){
-                    if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
-                        printf("%-30s %d %s %s %s %s   %d\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false",node->offset);
+                if(node->type == RECORD_TYPE || node->type == UNION_TYPE){
+                        printf("%-30s %d %s %s %s %s\n", node->token->lexeme, node->width, node->function->lexeme, node->recordName, GodHelpMeOneMoreTime(node->recordName), node->global?"true":"false");
                 }
                 else if(node->type == INT_TYPE){
-                    printf("%-30s %d %s INT %s   %d\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false",node->offset);
+                    printf("%-30s %d %s INT %s\n", node->token->lexeme, node->width, node->function->lexeme,node->global?"true":"false");
                 }
                 else{
-                    printf("%-30s %d %s REAL %s  %d\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false",node->offset);
+                    printf("%-30s %d %s REAL %s\n", node->token->lexeme, node->width, node->function->lexeme, node->global?"true":"false");
                 }
                 printf("-------------------------------\n");
-                }
             }
             entry = entry->next;
         }
@@ -1424,3 +1417,59 @@ void printAliasTable(subTable *fun_table)
 }
 
 
+
+void print_Redeclarations(){
+    printf("\nREDECLARATION ERRORS:\n");
+    printf("_____________________________________\n");
+
+    for(int i=0;i<100;i++){
+        if(redeclaration_error_array[i][0]!='\0'){
+            printf("%s\n", redeclaration_error_array[i]);
+        }
+    }
+
+    printf("_____________________________________\n");
+    printf("No. of Redeclarations = %d\n", redeclaration_error_index);
+}
+
+void addErrorToArray(char* errorMessage){
+    strcpy(redeclaration_error_array[redeclaration_error_index], errorMessage);
+    redeclaration_error_index++;
+}
+// funList* functionSequence(subTable* idTable){
+//     funList* sort = (funList*)malloc(sizeof(funList));
+//     sort->funToken = NULL;
+//     sort->idList = NULL;
+//     sort->next = NULL;
+    
+//     Entry * entry;
+//     identifierNode *node;
+//     for (int i = 0; i < TABLE_SLOTS; i++)
+//     {
+//         entry = &(idTable->table[i]);
+//         while (entry != NULL)
+//         {
+//             node = (identifierNode *)(entry->node);
+//             if (node != NULL)
+//             {   
+//                 if(sort == NULL){
+//                     printf("it enters here\n");
+//                     sort->funToken = node->function;
+//                     sort->idList = node;
+//                     sort->next = NULL;
+//                 }
+//                 else{
+//                     while(sort){
+//                         if(sort->funToken->lexeme == node->function->lexeme){
+//                             while(sort->idList){
+//                                 sort->
+//                             }
+//                         }
+//                     }
+//                 } 
+//                 printf("-------------------------------\n");
+//             }
+//             entry = entry->next;
+//         }
+//     }
+// }

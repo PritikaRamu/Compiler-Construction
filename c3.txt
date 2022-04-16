@@ -1,0 +1,31 @@
+%Test case 3- Simple expressions involving if-then-else statement
+_main
+	type int :b3c45;
+	type int : b2d6;
+	type int : b2bb3;
+	type int : d6:global;
+	read(b3c45);
+	read(b2d6);
+	b2bb3<--- 2097;
+	d6<--- 66987;
+	if((b3c45 <= b2d6) &&& (b2d6 <= b2bb3))
+	then
+		d6<---d6 - 89 + b2bb3;
+	else
+		d6<---d6 - b2bb3*3;
+	endif
+	write(d6);
+	return;
+end
+
+% Expected output in three independent runs of code.asm 
+% run 1- for b3c45 = -100 and b2d6 = 147, the output is 68995
+% run 2- for b3c45 = 473 and b2d6 = 298, the output is 60690
+% run 3- for b3c45 =  -100 and b2d6 = 3050, the output is 60690
+% NOTE: If you implemened the associativity from right  to left, mention that while printing the output
+
+
+
+
+
+

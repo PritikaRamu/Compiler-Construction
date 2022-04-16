@@ -1,0 +1,68 @@
+%Test case 6- Handles nested record and variant record data 
+_main 
+	definetype record #marks as #subjectmarks	
+	record #marks
+		type int : maths; 
+		type int: physics; 
+		type int: chemistry;
+	endrecord
+	union #maxmarks
+		type int : maths; 
+		type int: physics; 
+		type int: chemistry;
+	endunion
+	record #student
+		type int : tagvalue;
+		type int : studentid;
+		type #subjectmarks: marks;         %this field has all subject marks
+		type #max: maximummarks; 	   %this field has the maximum marks of the three subjects
+	endrecord
+	definetype union #maxmarks as #max
+
+	type record #marks : d4;
+	type int : b5;
+	type int : d5cb34567;
+	type record #marks : b3c2;  %use this variable to read marks of a student
+	type record #student: b3c34;
+
+	b5 <--- 1;
+	read(d5cb34567);
+	d4.maths <--- 0;
+	d4.physics <--- 0;
+	d4.chemistry <---0;
+	while(b5<=d5cb34567)
+		read(b3c2.maths);
+		read(b3c2.physics);
+		read(b3c2.chemistry);
+		b3c34.studentid<---b5+100;
+		b3c34.marks <---b3c2;
+		if ((b3c34.marks.maths >= b3c34.marks.physics) &&& (b3c34.marks.chemistry <= b3c34.marks.maths))
+		then 
+			b3c34.tagvalue <--- 1;
+			b3c34.maximummarks.maths <--- b3c34.marks.maths;
+		endif
+ 		if ((b3c34.marks.maths <= b3c34.marks.physics) &&& (b3c34.marks.chemistry <= b3c34.marks.maths))
+		then 
+			b3c34.tagvalue <--- 2;
+			b3c34.maximummarks.physics <--- b3c34.marks.physics;
+		endif
+		if ((b3c34.marks.maths >= b3c34.marks.physics) &&& (b3c34.marks.chemistry >= b3c34.marks.maths))
+		then 
+			b3c34.tagvalue <--- 3;
+			b3c34.maximummarks.chemistry <--- b3c34.marks.chemistry;
+		endif
+		write(b3c34);    % Ensure that the values of the variable's fiels are printed in tab separated form 
+				 % Use different line for different variable occurrences as shown below
+		b5 <--- b5 +1;
+	endwhile
+	 
+	return;
+end
+
+% Expected output in an independent run of code.asm 
+% run 1- for d5cb34567 = 4 and b3c2.maths, b3c2.physics and b3c2.chemistry are read iteratively as blank separated data as 70 30 45 62 70 82 33 40 20 46 78 21, 
+%then the output is given below
+%	1	101	70	30	45	70
+%	3	102	62	70	82	82	
+%	2	103	33	40	20	40
+%	2	104	46	78	21	78

@@ -1,0 +1,22 @@
+%Test case 4- Simple expressions involving while statement
+_main
+	type int : b5b567;
+	type int : c3bd;
+	type int : d3;
+	b5b567 <--- 1;
+	d3 <--- 0;
+	read(c2);
+	while ( b5b567 <= c2)
+		read( c3bd);
+		d3 <--- d3 + c3bd;
+		b5b567 <--- b5b567 + 1;
+	endwhile
+	write(d3);
+	return;
+end
+% Expected output in three independent runs of code.asm 
+% run 1- for c2 = 4 and c3bd is read iteratively as blank separated data as 23 7 9 10, then the output is 49
+% run 2- for c2 = 7 and c3bd is read iteratively as blank separated data as 23 -19 100 -21 7 9 10, then the output is 109
+% run 3- for c2 = 8 and c3bd is read iteratively as blank separated data as -187 20 -11 -78 23 7 9 10, then the output is -207
+ 
+

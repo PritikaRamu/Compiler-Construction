@@ -1,0 +1,23 @@
+%Test case 2- Simple expressions involving real data type
+_main
+	type real :b3;
+	type real : b2;
+	type real : c2;
+	type real : d2;
+	read(b2);
+	c2<--- 35.45;
+	read(d2);
+
+	b3 <--- b2 + c2 + d2;
+	write(b3);
+	return;
+end
+
+% Expected output in three independent runs of code.asm 
+% run 1- for b2 = 17.43 and d2 = 26.33, the output is 79.21
+% run 2- for b2 = -265.50 and d2 = 458.22, the output is 228.17
+% run 3- for b2 = -100.89 and d2 = -126.98, the output is -192.42
+% Note that the machine on which the code is run supports the real values to be negative 
+% and these values can participate in any computation as real number
+% NOTE: If you implemened the associativity from right  to left, mention that while printing the output
+
