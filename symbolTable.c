@@ -720,8 +720,8 @@ void createFTable(ast *root)
         int offset = 0;
         functionNode *func = createFNode(root);
         ast *child = root->firstChild;
-        parameters *curr_ip = NULL;
-        parameters *curr_op = NULL;
+        parameters *curr_ip = (parameters*)malloc(sizeof(parameters));
+        parameters *curr_op = (parameters*)malloc(sizeof(parameters));
         ast *pars = NULL;
         int width = 0;
         func->numOp = 0;
@@ -1099,7 +1099,8 @@ void createITable(ast *root)
         func = (functionNode *)retrieve(SymbolTable, func, FUNCTION_SEQ);
         int localOffset = func->width;
         while (child)
-        {
+        {   
+            printf("    %s\n",child->lex);
            if (child->nodeType == RECORD_OR_UNION && child->firstChild->nodeType == ID)  //DECLARATION
             {
                 if(child->is_union){
