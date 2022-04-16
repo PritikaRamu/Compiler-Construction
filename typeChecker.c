@@ -1283,24 +1283,14 @@ void validateReturn(ast* curr, ast* func) {
         numReturn++;
         tempOP = tempOP->nextSibling;
     }
-
-    int numOp;
-    if(outputParams) {
-        numOp = 1;
-        parameters* tempOPParams = outputParams;
-        while(tempOPParams) {
-            printf("Output parameter %d: %s\n", numOp, tempOPParams->token->lexeme);
-            numOp++;
-            tempOPParams = tempOPParams->next;
-        }
-    }
-    else {
-        numOp = 0;
-    }
+    printf("After the tempOP loop\n");
 
     if(numReturn != funcInfo->numOp) {
-        printf("Line no. %d: Number of return values: %d not equal to number of output parameters: %d in function %s\n", curr->line, numReturn, numOp, funcInfo->token->lexeme);
+        printf("Line no. %d: Number of return values: %d not equal to number of output parameters: %d in function %s\n", curr->line, numReturn, funcInfo->numOp, funcInfo->token->lexeme);
         return;
+    }
+    else {
+        printf("Reaching here\n");
     }
 
     //return;
@@ -1362,6 +1352,7 @@ void handleStmt(ast* curr, ast* func) {
             break;
         case RETURN:
             validateReturn(curr, func);
+            printf("Exited validatereturn\n");
             break;
         case IOREAD:
             validateRead(curr, func);

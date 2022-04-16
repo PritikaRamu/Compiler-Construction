@@ -924,6 +924,7 @@ void createFTable(ast *root)
 }
 
 int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func){
+    printf("                    INSIDE UNION WIDTH FUNC\n");
     recordUnionNode* temp = (recordUnionNode*)malloc(sizeof(recordUnionNode));
     temp->token = (tokenInfo*)malloc(sizeof(tokenInfo));
     temp->token->lexeme = unionName;
@@ -942,6 +943,7 @@ int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func){
     recordUnionNode* ru = (recordUnionNode*)retrieve(SymbolTable,temp,RECORD_OR_UNION);
     recordField* head = ru->fieldList;
     while(head){
+        printf("        UNION WIDTH %d\n",width);
         //concatenation of string for field ids
         int x = strlen(dotName);
         int y = strlen(head->token->lexeme);
@@ -1045,10 +1047,18 @@ int GodHelpMe(char* recordName, char* dotName, bool global, ast* func){
             }
             id->width = head->width;
         }
-        else{
+        else if(head->type == RECORD_TYPE){
+            printf("        LEXEME %s\n",head->token->lexeme);
             id->type = RECORD_TYPE;
             id->recordName = head->recordName;
             int x = GodHelpMe(head->recordName, concatString, false, func);
+            id->width = x;
+            width += x;
+        }
+        else{
+            id->type = UNION_TYPE;
+            id->recordName = head->recordName;
+            int x = GodHelpMeForUnion(head->recordName, concatString, false, func);
             id->width = x;
             width += x;
         }
@@ -1207,8 +1217,14 @@ void createITable(ast *root)
                             printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
                         }
                         else
-                        {
-                            printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                        {   
+                            if(id->global){
+                                check->global = true;
+                                printf("Redeclaration of global variable %s at line no. %d\n",check->token->lexeme,check->token->lineNo);
+                            }
+                            else{
+                                printf("Redeclaration of variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
+                            }
                         }
                     }
                     else
@@ -1273,7 +1289,6 @@ void createITable(ast *root)
                         if (check->global)
                         {
                             printf("Redeclaration of global variable %s at line no. %d\n",id->token->lexeme,id->token->lineNo);
-
                         }
                         else
                         {
