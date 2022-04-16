@@ -17,5 +17,6 @@ identifierNode* retrieveFake(subTable* st, identifierNode* id, bool token, bool 
 void printSymbolTable(symbol_Table* st);
 int GodHelpMe(char* a, char* b, bool global, ast* node);
 int GodHelpMeForUnion(char* unionName, char* dotName, bool global, ast*func);
+funList* functionSequence(subTable* idTable);
 
 #endif

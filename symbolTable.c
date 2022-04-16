@@ -1421,4 +1421,40 @@ void printAliasTable(subTable *fun_table)
     }
 }
 
-
+// funList* functionSequence(subTable* idTable){
+//     funList* sort = (funList*)malloc(sizeof(funList));
+//     sort->funToken = NULL;
+//     sort->idList = NULL;
+//     sort->next = NULL;
+    
+//     Entry * entry;
+//     identifierNode *node;
+//     for (int i = 0; i < TABLE_SLOTS; i++)
+//     {
+//         entry = &(idTable->table[i]);
+//         while (entry != NULL)
+//         {
+//             node = (identifierNode *)(entry->node);
+//             if (node != NULL)
+//             {   
+//                 if(sort == NULL){
+//                     printf("it enters here\n");
+//                     sort->funToken = node->function;
+//                     sort->idList = node;
+//                     sort->next = NULL;
+//                 }
+//                 else{
+//                     while(sort){
+//                         if(sort->funToken->lexeme == node->function->lexeme){
+//                             while(sort->idList){
+//                                 sort->
+//                             }
+//                         }
+//                     }
+//                 } 
+//                 printf("-------------------------------\n");
+//             }
+//             entry = entry->next;
+//         }
+//     }
+// }

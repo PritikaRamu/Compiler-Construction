@@ -167,6 +167,7 @@ int main(int argc, char *argv[])
 			printIDTable(SymbolTable->IdentifierTable);
 			printf("Identifier table printed above\n");
 			printSymbolTable(SymbolTable);
+			//functionSequence(SymbolTable->IdentifierTable);
 			break;
 		}
 		case 7:
