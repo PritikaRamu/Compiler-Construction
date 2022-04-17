@@ -894,7 +894,7 @@ void createFTable(ast *root)
                     {
 
                         char string[100];
-                        sprintf(string, "Line %d: ERROR - Redeclaration of %s in input parameter list\n", child->firstChild->line, child->firstChild->lex);
+                        sprintf(string, "Line %d: ERROR - Redeclaration of %s in input parameter list\n", child->firstChild->line, pars->firstChild->lex);
                         addErrorToArray(string);
                         // printf();
                     }
@@ -955,7 +955,7 @@ void createFTable(ast *root)
                     if (check)
                     {
                         char string[100];
-                        sprintf(string, "Line %d: ERROR - Redeclaration of %s in output parameter list\n", child->firstChild->line, child->firstChild->lex);
+                        sprintf(string, "Line %d: ERROR - Redeclaration of %s in output parameter list\n", child->firstChild->line, pars->firstChild->lex);
                         addErrorToArray(string);
                         // printf();
                     }
@@ -1066,18 +1066,18 @@ int GodHelpMeForUnion(char *unionName, char *dotName, bool global, ast *func)
 
         id->token->lexeme = concatString;
 
-        identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
-        if (check != NULL)
-        {
-            char string[100];
-            sprintf(string, "Line %d: ERROR - Redeclaration of field ID %s\n", head->token->lineNo, head->token->lexeme);
-            addErrorToArray(string);
-            // printf();
-        }
-        else
-        {
+        // identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
+        // if (check != NULL)
+        // {
+        //     char string[100];
+        //     sprintf(string, "Line %d: ERROR - Redeclaration of field ID %s\n", head->token->lineNo, head->token->lexeme);
+        //     addErrorToArray(string);
+        //     // printf();
+        // }
+        // else
+        // {
             insert(SymbolTable, id, ID);
-        }
+        //}
         head = head->next;
     }
     return width;
@@ -1159,18 +1159,18 @@ int GodHelpMe(char *recordName, char *dotName, bool global, ast *func)
 
         id->token->lexeme = concatString;
 
-        identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
-        if (check != NULL)
-        {
-            char string[100];
-            sprintf(string, "Line %d: ERROR - Redeclaration of field ID %sn", head->token->lineNo, head->token->lexeme);
-            addErrorToArray(string);
-            // printf();
-        }
-        else
-        {
+        //identifierNode *check = (identifierNode *)retrieve(SymbolTable, id, ID);
+        // if (check != NULL)
+        // {
+        //     char string[100];
+        //     sprintf(string, "Line %d: ERROR - Redeclaration of field ID %s\n", head->token->lineNo, head->token->lexeme);
+        //     addErrorToArray(string);
+        //     // printf();
+        // }
+        // else
+        // {
             insert(SymbolTable, id, ID);
-        }
+        //}
         head = head->next;
     }
     return width;
@@ -1860,8 +1860,8 @@ void print_Redeclarations()
         }
     }
 
-    printf("_____________________________________\n");
-    printf("No. of Redeclarations = %d\n", redeclaration_error_index);
+    // printf("_____________________________________\n");
+    // printf("No. of Redeclarations = %d\n", redeclaration_error_index);
 }
 
 void addErrorToArray(char *errorMessage)

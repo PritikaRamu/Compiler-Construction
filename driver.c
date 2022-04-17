@@ -272,7 +272,7 @@ int main(int argc, char *argv[])
 			//printSemanticErrors();
 			
     		print_Redeclarations();
-			printf("NO. OF SEMANTIC ERRORS IS %d\n", NO_OF_SEMANTIC_ERRORS);
+			// printf("NO. OF SEMANTIC ERRORS IS %d\n", NO_OF_SEMANTIC_ERRORS);
             end_time = clock();
             total_CPU_time = (double) (end_time - start_time);
             total_CPU_time_in_seconds = total_CPU_time / CLOCKS_PER_SEC;
