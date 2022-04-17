@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
 			initializeSymbolTable(astree);
 			// printf("Starting Semantic Analysis\n");
 			printGlobalTable(SymbolTable->FunctionTable);
-			// semanticAnalyser(astree);
+			semanticAnalyser(astree);
 
     		//print_Redeclarations();
 
