@@ -126,6 +126,7 @@ void validateAssign(ast* curr, ast* func) {
         if(lChildNode_global == NULL) {
             //char string[200];
             printf("Line %d:ERROR- Undeclared Variable %s in Assignment.\n", lChild->line, lChild->lex);
+            NO_OF_SEMANTIC_ERRORS++;
             //addSemErrortoArray(string);
             //printf("Line no. %d: Undeclared Variable %s in Assignment.\n", lChild->line, lChild->lex);
             return;
@@ -164,6 +165,7 @@ void validateAssign(ast* curr, ast* func) {
         // semanticErrors++;
         //char string[200];
         printf("Line %d: ERROR - Identifier %s not of type record/ union but has fields.\n", lChild->line, lChild->lex);
+        NO_OF_SEMANTIC_ERRORS++;
         //addSemErrortoArray(string);
         return;
     }
@@ -196,6 +198,7 @@ void validateAssign(ast* curr, ast* func) {
                 //printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
                 //char string[200];
                 printf("Line %d: EROOR- No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                NO_OF_SEMANTIC_ERRORS++;
                 //addSemErrortoArray(string);
                 //semanticErrors++;
                 return;
@@ -213,6 +216,7 @@ void validateAssign(ast* curr, ast* func) {
             //char string[200];
             if(ArithNode != NULL) {
                 printf("Line %d: ERROR- Type mismatch in assign.\n", lChild->line);
+                NO_OF_SEMANTIC_ERRORS++;
                 return;
             }
             //addSemErrortoArray(string);
@@ -230,6 +234,7 @@ void validateAssign(ast* curr, ast* func) {
             //printf("Line no %d: Type mismatch in assign.\n", lChild->line);
             //char string[200];
             printf("Line %d: ERROR- Type mismatch in assigning %s to %s.\n", lChild->line, ArithNode->token->lexeme, lChild->lex);
+            NO_OF_SEMANTIC_ERRORS++;
             //addSemErrortoArray(string);
             // semanticErrors++;
             return;
@@ -245,6 +250,7 @@ void validateAssign(ast* curr, ast* func) {
             //printf("Line no %d: Type mismatch in assign.\n", lChild->line);
             //char string[200];
             printf("Line %d: ERROR- Type mismatch in assigning %s to %s.\n", lChild->line, ArithNode->token->lexeme, lChild->lex);
+            NO_OF_SEMANTIC_ERRORS++;
             //addSemErrortoArray(string);
             // semanticErrors++;
             return;
@@ -294,6 +300,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                 //semanticErrors++;
                 //char string[200];
                 printf("Line %d: ERROR- Using undeclared variable %s\n", curr->line, curr->lex);
+                NO_OF_SEMANTIC_ERRORS++;
                 //addSemErrortoArray(string);
                 //printf("Line no. %d: Using undeclared variable %s\n", curr->line, curr->lex);
                 return NULL;
@@ -353,6 +360,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                     //semanticErrors++;
                     //char string[200];
                     printf("Line %d:ERROR No field name %s in the Record\n", attribute->line, attribute->lex);
+                    NO_OF_SEMANTIC_ERRORS++;
                     //addSemErrortoArray(string);
                     return NULL;
                 }
@@ -380,6 +388,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
             //semanticErrors++;
             //char string[200];
             printf("Line %d:ERROR- Variable %s not of type record.\n", curr->line, curr->lex);
+            NO_OF_SEMANTIC_ERRORS++;
             //addSemErrortoArray(string);
             return NULL;
 
@@ -426,6 +435,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                 if(fNode->recordList != sNode->recordList) {
                     //char string[200];
                     printf("Line %d:ERROR Can not perform arithmetic operations on records of different types\n", fChild->line);
+                    NO_OF_SEMANTIC_ERRORS++;
                     //addSemErrortoArray(string);
                     //printf("Line no. %d: Can not perform operations on records of different types\n", fChild->line);
                     //semanticErrors++;
@@ -441,15 +451,15 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                         //printf("Line no. %d ERROR: Multiplication or Division not allowed with records\n", curr->line);
                         //char string[200];
                         printf("Line %d: ERROR- Multiplication or Division not allowed with records\n", curr->line);
-                        //addSemErrortoArray(string);
+                        NO_OF_SEMANTIC_ERRORS++;
                         return NULL;
-                    }
                 }
             }
             if (fType == UNION_TYPE) {
                 //semanticErrors++;
                 //char string[200];
                 printf("Line %d: ERROR- Arithmetic operations not allowed with union types\n", curr->line);
+                NO_OF_SEMANTIC_ERRORS++;
                 //addSemErrortoArray(string);
                 return NULL;
                 //printf("Line no. %d ERROR: Arithmetic operations not allowed with union types\n", curr->line);
@@ -477,6 +487,8 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                         //semanticErrors++;
                         //char string[200];
                         printf("Line %d: ERROR- Type mismatch operand: left side is of type int and right side is of type real\n", fChild->line);
+                        //printf("Line %d: ERROR- Type mismatch operand %s is of type int and operand %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d: Type mismatch operand %s is of type int and %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
                         return NULL;
@@ -491,6 +503,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                         //semanticErrors++;
                         //char string[200];
                         printf("Line %d: ERROR- Arithmetic operations not allowed with union types\n", curr->line);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d ERROR: Arithmetic operations not allowed with union types\n", curr->line);
                         return NULL;
@@ -504,9 +517,8 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                             //semanticErrors++;
                             //char string[200];
                             printf("Line %d: ERROR- Disallowed Arithmetic operation %s with record and integer\n", curr->line, curr->lex);
-                            //addSemErrortoArray(string);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //printf("Line no. %d ERROR: Disallowed Arithmetic operation %s with record and integer\n", curr->line, curr->lex);
-                            return NULL;
                         }
                     }
                 }
@@ -517,6 +529,8 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                         //semanticErrors++;
                         //char string[200];
                         printf("Line %d: ERROR- Type mismatch: left side is of type real and right side is of type int\n", fChild->line);
+                        //printf("Line %d: ERROR- Type mismatch operand %s is of type int and %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d: Type mismatch operand %s is of type int and %s is of type real\n", fChild->line, fChild->lex, sChild->lex);
                         return NULL;
@@ -530,9 +544,8 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                     //semanticErrors++;
                     //char string[200];
                     printf("Line %d: ERROR- Disallowed Arithmetic operation %s with record/union and real\n", curr->line, curr->lex);
-                    //addSemErrortoArray(string);
+                    NO_OF_SEMANTIC_ERRORS++;
                     //printf("Line no. %d ERROR: Disallowed Arithmetic operation %s with record/union and real\n", curr->line, curr->lex);
-                    return NULL;
                 }
             }
             else if(fType == RECORD_TYPE || fType == UNION_TYPE) {
@@ -540,20 +553,19 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                     //semanticErrors++;
                     //char string[200];
                     printf("Line %d: ERROR- Arithmetic operations not allowed with union types\n", curr->line);
+                    NO_OF_SEMANTIC_ERRORS++;
                     //addSemErrortoArray(string);
                     //printf("Line no. %d ERROR: Arithmetic operations not allowed with union types\n", curr->line);
                     return NULL;
                 }
-                else {
-                    if(sType == INT_TYPE) {
                         if(curr->nodeType == MULTIPLY) {
-                            //printf("Type matches for Int and Record in valArith for lexemes: %s and %s\n", fNode->token->lexeme, sNode->token->lexeme);
                             return sNode;
                         }
                         else {
                             //semanticErrors++;
                             //char string[200];
                             printf("Line %d: ERROR- Disallowed Arithmetic operation %s with record and integer\n", curr->line, curr->lex);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no. %d ERROR: Disallowed Arithmetic operation %s with record and integer\n", curr->line, curr->lex);
                             return NULL;
@@ -563,6 +575,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                         //semanticErrors++;
                         //char string[200];
                         printf("Line %d: ERROR- Type mismatch operand %s is of type Record and %s is of type Union\n", fChild->line, fChild->lex, sChild->lex);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d: Type mismatch operand %s is of type Record and %s is of type Union\n", fChild->line, fChild->lex, sChild->lex);
                         return NULL;
@@ -571,6 +584,7 @@ identifierNode* validateArithmetic(ast* curr, ast* func) {
                         //semanticErrors++;
                         //char string[200];
                         printf("Line %d: ERROR- Disallowed Arithmetic operation %s with record and real\n", curr->line, curr->lex);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d ERROR: Disallowed Arithmetic operation %s with record and real\n", curr->line, curr->lex);
                         return NULL;
@@ -855,6 +869,7 @@ void validateFunCall (ast* call, ast* func) {
                     if(ipSTnode->recordList != ipGivenNode->recordList) {
                         //char string[200];
                         printf("Line %d: ERROR- Type mismatch in input of function call.\n", ipGivenPars->line);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Type mismatch in input of function call.\n");
                         //semanticErrors++;
@@ -870,6 +885,7 @@ void validateFunCall (ast* call, ast* func) {
                     if(ipSTnode->unionList != ipGivenNode->unionList) {
                         //char string[200];
                         printf("Line %d: ERROR- Type mismatch in input of function call.\n", ipGivenPars->line);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //semanticErrors++;
                         //return;
@@ -884,9 +900,8 @@ void validateFunCall (ast* call, ast* func) {
         else {
             //char string[200];
             printf("Line %d: ERROR- Type mismatch in input of function call.\n", ipGivenPars->line);
-            //addSemErrortoArray(string);
+            NO_OF_SEMANTIC_ERRORS++;
             //semanticErrors++;
-            //return;
         }
 
         ipGivenPars = ipGivenPars->nextSibling;
@@ -899,6 +914,7 @@ void validateFunCall (ast* call, ast* func) {
     if(ipGivenPars != NULL) {
         //char string[200];
         printf("Line %d: ERROR- Function call has extra input parameters\n", call->line);
+        NO_OF_SEMANTIC_ERRORS++;
         //addSemErrortoArray(string);
         //printf("Function call has extra input parameters\n");
         //semanticErrors++;
@@ -910,6 +926,7 @@ void validateFunCall (ast* call, ast* func) {
         //char string[200];
         //printf("Insuff\n");
         printf("Line %d: ERROR- Function call has insufficient input parameters.\n", call->line);
+        NO_OF_SEMANTIC_ERRORS++;
         //addSemErrortoArray(string);
         //printf("Function call has insufficient input parameters.\n");
         //semanticErrors++;
@@ -978,6 +995,7 @@ void validateRead(ast* curr, ast* func) {
             // semanticErrors ++;
             //char string[200];
             printf("Line %d: ERROR- Reading into undeclared variable %s\n", curr->line, curr->lex);
+            NO_OF_SEMANTIC_ERRORS++;
             //addSemErrortoArray(string);
             //printf("Line no. %d: Undeclared Variable HERE %s in ValRead.\n", curr->line, curr->lex);
             return;
@@ -997,6 +1015,7 @@ void validateRead(ast* curr, ast* func) {
     if(flagNumRnum == true) {
         //char string[200];
         printf("Line %d: ERROR- Trying to read into a Num or Rnum for lex: %s", curr->line, curr->lex);
+        NO_OF_SEMANTIC_ERRORS++;
         //addSemErrortoArray(string);
         //printf("Line no: %d: Trying to read into a Num or Rnum for lex: %s", curr->line, curr->lex);
         //semanticErrors++;
@@ -1007,9 +1026,8 @@ void validateRead(ast* curr, ast* func) {
         if((currNode->type != RECORD_TYPE)) {
             //char string[200];
             printf("Line %d: ERROR- Variable %s is not of type record/union.", curr->line, curr->lex);
-            //addSemErrortoArray(string);
+            NO_OF_SEMANTIC_ERRORS++;
             //printf("Variable is not of type record/union.");
-            //semanticErrors++:
             return;
         }
         else if (currNode->type == RECORD_TYPE) {
@@ -1038,6 +1056,7 @@ void validateRead(ast* curr, ast* func) {
                     {   
                         //char string[200];
                         printf("Line %d: ERROR- No field name %s in the Record or union\n", attribute->line, attribute->lex);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
                         // semanticErrors++;
@@ -1069,6 +1088,7 @@ void validateWrite(ast* curr, ast* func) {
             // semanticErrors ++;
             //char string[200];
             printf("Line %d: ERROR- Trying to write out of an undeclared Variable %s.\n", curr->line, curr->lex);
+            NO_OF_SEMANTIC_ERRORS++;
             //addSemErrortoArray(string);
             //printf("Line no. %d: Undeclared Variable HERE %s in ValWrite.\n", curr->line, curr->lex);
             return;
@@ -1088,9 +1108,8 @@ void validateWrite(ast* curr, ast* func) {
         if((currNode->type != RECORD_TYPE && currNode->type != UNION_TYPE)) {
             //char string[200];
             printf("Line %d: ERROR- Variable %s is not of type record.\n", curr->line, curr->lex);
-            //addSemErrortoArray(string);
+            NO_OF_SEMANTIC_ERRORS++;
             //semanticErrors++:
-            return;
         }
         else if (currNode->type == RECORD_TYPE || currNode->type == UNION_TYPE) {
             ast* attribute = curr->firstChild;
@@ -1118,6 +1137,7 @@ void validateWrite(ast* curr, ast* func) {
                     {
                         //char string[200];
                         printf("Line %d: ERROR- No field name %s in the Record\n", attribute->line, attribute->lex);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no %d: No field name %s in the Record or union\n", attribute->line, attribute->lex);
                         // semanticErrors++;
@@ -1181,6 +1201,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
             else {
                 //char string[200];
                 printf("Line %d: ERROR- Operand Type error mismatch\n", curr->line);
+                NO_OF_SEMANTIC_ERRORS++;
                 //addSemErrortoArray(string);
                 //printf("Line no. %d: Operand Type error mismatch\n", curr->line);
                 return NULL;
@@ -1202,9 +1223,8 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     if(fNode == NULL) {
                         //char string[200];
                         printf("Line %d: ERROR- Using undeclared identifier %s\n", fChild->line, fChild->lex);
-                        //addSemErrortoArray(string);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //printf("Line no. %d: Using undeclared identifier %s\n", fChild->line, fChild->lex);
-                    }
                 }
                 
                 t1 = createINode(sChild, func, -1, false, &localOffset);
@@ -1216,6 +1236,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     if(sNode == NULL) {
                         //char string[200];
                         printf("Line %d: ERROR- Using undeclared identifier %s\n", sChild->line, sChild->lex);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d: Using undeclared identifier %s\n", sChild->line, sChild->lex);
                         return NULL;
@@ -1230,6 +1251,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         //semanticErrors++;
                         //char string[200];
                         printf("Line %d: ERROR- Can not perform relational operation on unassigned identifiers\n", curr->line);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
                         return NULL;
@@ -1244,9 +1266,8 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     else {
                         //char string[200];
                         printf("Line %d: ERROR- Operand Type error mismatch\n", curr->line);
-                        //addSemErrortoArray(string);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //printf("Line no. %d: Operand Type error mismatch\n", curr->line);
-                    }
                 }
 
                 else {
@@ -1256,6 +1277,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     if(fChild->firstChild == NULL && (fNode->type == RECORD_TYPE || fNode->type == UNION_TYPE)) {
                         //char string[200];
                         printf("Line %d: ERROR- Record or Union type f can not be used with relational operator\n", fChild->line);
+                        NO_OF_SEMANTIC_ERRORS++;
                         ferror = 1;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d: Record or Union type can not be used with relational operator\n", fChild->line);
@@ -1263,6 +1285,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     if(sChild->firstChild == NULL && (sNode->type == RECORD_TYPE || sNode->type == UNION_TYPE)) {
                         //char string[200];
                         printf("Line %d: ERROR- Record or Union type l can not be used with relational operator\n", sChild->line);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d: Record or Union type can not be used with relational operator\n", sChild->line);
                         return NULL;
@@ -1297,6 +1320,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         if(fidNode == NULL) {
                             //char string[200];
                             printf("Line %d: ERROR- No field name %s in the Record or union\n", fFieldId->line, fFieldId->lex);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no %d: No field name %s in the Record or union\n", fFieldId->line, fFieldId->lex);
                             fNode = fidNode;
@@ -1327,6 +1351,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         if(fidNode == NULL) {
                             //char string[200];
                             printf("Line %d: ERROR- No field name %s in the Record or union\n", sFieldId->line, sFieldId->lex);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no %d: No field name %s in the Record or union\n", sFieldId->line, sFieldId->lex);
                             sNode = fidNode;
@@ -1346,7 +1371,8 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         //char string[200];
                         printf("Line %d: ERROR- Can not perform relational operator on unassigned identifiers\n", curr->line);
                         //addSemErrortoArray(string);
-                        printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
+                        NO_OF_SEMANTIC_ERRORS++;
+                        //printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
                         return NULL;
                     }
 
@@ -1357,6 +1383,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         else {
                             //char string[200];
                             printf("Line %d: ERROR- Type error mismatch\n", fChild->line);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no %d: Type error mismatch\n", fNode->token->lineNo);
                             return NULL;
@@ -1365,6 +1392,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     else {
                         //char string[200];
                         printf("Line %d: ERROR- Type error mismatch\n", fChild->line);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         return NULL;
                     }
@@ -1382,6 +1410,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         if(fNode == NULL) {
                             //char string[200];
                             printf("Line %d: ERROR- Using undeclared identifier %s\n", fChild->line, fChild->lex);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no. %d: Using undeclared identifier %s\n", fChild->line, fChild->lex);
                             return NULL;
@@ -1393,6 +1422,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         if(fChild->firstChild == NULL) {
                             //char string[200];
                             printf("Line %d: ERROR- Relational operator can not be used with records\n", fChild->line);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no. %d: Relational operator can not be used with Unions or records\n", fChild->line);
                             return NULL;
@@ -1422,6 +1452,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                                 if(fidNode == NULL) {
                                     //char string[200];
                                     printf("Line %d: ERROR- No field name %s in the Record or union\n", fFieldId->line, fFieldId->lex);
+                                    NO_OF_SEMANTIC_ERRORS++;
                                     //addSemErrortoArray(string);
                                     //printf("Line no %d: No field name %s in the Record or union\n", fFieldId->line, fFieldId->lex);
                                     fNode = fidNode;
@@ -1438,6 +1469,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                             //semanticErrors++;
                             //char string[200];
                             printf("Line %d: ERROR- Can not perform relational operation on unassigned identifier\n", curr->line);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no. %d: Can not perform relOp on unassigned identifier\n", curr->line);
                             return NULL;
@@ -1449,6 +1481,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                             //semanticErrors++;
                             //char string[200];
                             printf("Line %d: ERROR- Can not perform relational operation on unassigned identifier\n", curr->line);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
                             return NULL;
@@ -1458,9 +1491,8 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                     else {
                         //char string[200];
                         printf("Line %d: ERROR- Operand type mismatch\n", fChild->line);
-                        //addSemErrortoArray(string);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //printf("Line no. %d: Operand type mismatch\n", fChild->line);
-                        return NULL;
                     }
                 }
                 else if(sChild->nodeType == ID) {
@@ -1473,6 +1505,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         if(sNode == NULL) {
                              //char string[200];
                             printf("Line %d: ERROR- Using undeclared identifier %s\n", sChild->line, sChild->lex);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no. %d: Using undeclared identifier %s\n", fChild->line, fChild->lex);
                             return NULL;
@@ -1484,6 +1517,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                         if(sChild->firstChild == NULL) {
                             //char string[200];
                             printf("Line %d: ERROR- Relational operator can not be used with Unions or records\n", sChild->line);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf("Line no. %d: Relational operator can not be used with Unions or records\n", fChild->line);
                             return NULL;
@@ -1514,6 +1548,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                                 {
                                     //char string[200];
                                     printf("Line %d: ERROR-  No field name %s in the Record\n", sFieldId->line, sFieldId->lex);
+                                    NO_OF_SEMANTIC_ERRORS++;
                                     //addSemErrortoArray(string);
                                     //printf("Line no %d: No field name %s in the Record or union\n", sFieldId->line, sFieldId->lex);
                                     sNode = fidNode;
@@ -1528,6 +1563,7 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                             //semanticErrors++;
                             //char string[200];
                             printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", sChild->line);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //addSemErrortoArray(string);
                             //printf();
                             return NULL;
@@ -1539,15 +1575,15 @@ identifierNode* validateBoolean(ast* curr, ast* func) {
                             //semanticErrors++;
                             //char string[200];
                             printf("Line %d: ERROR- Can not perform relOp on unassigned identifiers\n", curr->line);
-                            //addSemErrortoArray(string);
+                            NO_OF_SEMANTIC_ERRORS++;
                             //printf("Line no. %d: Can not perform relOp on unassigned identifiers\n", curr->line);
-                            return NULL;
                         }
                         return sNode;
                     }
                     else {
                         //char string[200];
                         printf("Line %d: ERROR- Operand type mismatch", fChild->line);
+                        NO_OF_SEMANTIC_ERRORS++;
                         //addSemErrortoArray(string);
                         //printf("Line no. %d: Operand type mismatch", fChild->line);
                         return NULL;
@@ -1582,6 +1618,7 @@ void validateReturn(ast* curr, ast* func) {
     if(numReturn != funcInfo->numOp) {
         //char string[200];
         printf("Line %d: ERROR- Number of return values: %d not equal to number of output parameters: %d in function %s\n", curr->line, numReturn, funcInfo->numOp, funcInfo->token->lexeme);
+        NO_OF_SEMANTIC_ERRORS++;
         //addSemErrortoArray(string);
         //printf("Line no. %d: Number of return values: %d not equal to number of output parameters: %d in function %s\n", curr->line, numReturn, funcInfo->numOp, funcInfo->token->lexeme);
         return;
@@ -1603,6 +1640,7 @@ void validateReturn(ast* curr, ast* func) {
             if(childNode_global == NULL) {
                 //char string[200];
                 printf("Line %d: ERROR- undeclared variable %s is being returned\n", child->line, child->lex);
+                NO_OF_SEMANTIC_ERRORS++;
                 //addSemErrortoArray(string);
                 //printf("Line %d: ERROR- undeclared variable %s is being returned\n", child->line, child->lex);
                 continue;
@@ -1615,6 +1653,7 @@ void validateReturn(ast* curr, ast* func) {
         if(childNode->assigned == false) {
             //char string[200];
                 printf("Line %d: ERROR- variable %s being returned without being assigned\n", child->line, child->lex);
+                NO_OF_SEMANTIC_ERRORS++;
                 //addSemErrortoArray(string);
             //printf("Line %d: ERROR- variable %s being returned without being assigned\n", child->line, child->lex);
         }
@@ -1645,7 +1684,7 @@ void validateReturn(ast* curr, ast* func) {
             if(iterNode == NULL) {
                 iterNode_global = (identifierNode*)retrieve(SymbolTable, iterNode_global, ID);
                 if(iterNode_global == NULL) {
-                    printf("How is it even reaching here?\n");
+                    // printf("How is it even reaching here?\n");
                 }
                 else {
                     iterNode = iterNode_global;
@@ -1655,6 +1694,7 @@ void validateReturn(ast* curr, ast* func) {
             if(childNode->type != iterNode->type) {
                 //char string[200];
                 printf("Line %d: ERROR- Unexpected return parameter found. Parameter returned: %s and Parameter expected: %s\n", child->line, child->lex, iterParams->token->lexeme);
+                NO_OF_SEMANTIC_ERRORS++;
                 //addSemErrortoArray(string);
                 //printf("Line no. %d: Unexpected return parameter found. Parameter returned: %s and Parameter expected: %s\n", child->line, child->lex, iterParams->token->lexeme);
             }

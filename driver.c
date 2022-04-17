@@ -35,13 +35,16 @@ int main(int argc, char *argv[])
 
 		printf("\n\nEnter number to perform the function:\n");
 		printf("0: For exit\n");
-		printf("1: For removal of comments (on the console)\n");
-		printf("2: For printing the token list (on the console)\n");
-		printf("3: For parsing to verify the syntactic correctness of the input source code and printing the parse tree\n");
-		printf("4: For printing the total time taken (on the console)\n");
-		printf("5: For printing the AST on the console\n");
-		printf("6: For printing the symbol table on the console\n");
-		printf("7: For Semantic Error detection\n");
+		printf("1: For printing the token list (on the console)\n");
+		printf("2: For parsing to verify the syntactic correctness of the input source code and printing the parse tree\n");
+		printf("3: For printing the AST on the console");
+		printf("4: For printing allocated memory and number of nodes in parse tree and AST\n");
+		printf("5: For printing the symbol table on the console\n");
+		printf("6: For printing the global symbol table on the console\n");
+		printf("7: For printing activation record sizes\n");
+		printf("8: For printing record types and sizes\n");
+		printf("9: Type checking and semantic analysis with error reporting\n");
+
 
 		printf("\n\nEnter your choice: ");
 
@@ -171,7 +174,29 @@ int main(int argc, char *argv[])
 
 			
 		}
+		case 6:
+		{
+			line = 1;
+			char *testFile = argv[1];
+			char *outfile = argv[2];
+			initGrammar(G);
+			populateFirstFollow("First.txt", true);
+			populateFirstFollow("Follow.txt", false);
+			computeParseTable();
+			parseTree ptree = parseInputSourceCode(testFile);
+			ast *astree = initAST(ptree);
+			free(ptree);
+			
+			initializeSymbolTable(astree);
+			// printf("Starting Semantic Analysis\n");
+			printGlobalTable(SymbolTable->FunctionTable);
+			semanticAnalyser(astree);
+			printSemanticErrors();
+    		print_Redeclarations();
 
+			// printf("\nEnd of Semantic Analysis.\n");
+			break;
+		}
 		case 7:
 		{
 			line = 1;
@@ -197,7 +222,6 @@ int main(int argc, char *argv[])
 
 			
 		}
-
 		case 8:
 		{
 			line = 1;
@@ -223,14 +247,16 @@ int main(int argc, char *argv[])
 
 			
 		}
-
-
-		case 6:
+		case 9:
 		{
-			line = 1;
+			clock_t start_time, end_time;
+            double total_CPU_time, total_CPU_time_in_seconds;
+            start_time = clock();
+        	line = 1;
 			char *testFile = argv[1];
 			char *outfile = argv[2];
 			initGrammar(G);
+			NO_OF_SEMANTIC_ERRORS = 0;
 			populateFirstFollow("First.txt", true);
 			populateFirstFollow("Follow.txt", false);
 			computeParseTable();
@@ -240,15 +266,19 @@ int main(int argc, char *argv[])
 			
 			initializeSymbolTable(astree);
 			// printf("Starting Semantic Analysis\n");
-			printGlobalTable(SymbolTable->FunctionTable);
+			//printGlobalTable(SymbolTable->FunctionTable);
+			printf("Print errors\n");
 			semanticAnalyser(astree);
-
-    		//print_Redeclarations();
-
-			// printf("\nEnd of Semantic Analysis.\n");
+			//printSemanticErrors();
+			
+    		print_Redeclarations();
+			printf("NO. OF SEMANTIC ERRORS IS %d\n", NO_OF_SEMANTIC_ERRORS);
+            end_time = clock();
+            total_CPU_time = (double) (end_time - start_time);
+            total_CPU_time_in_seconds = total_CPU_time / CLOCKS_PER_SEC;
+            printf("\nTotal CPU time = %lf\nTotal CPU time in seconds = %lf\n",total_CPU_time,total_CPU_time_in_seconds);
 			break;
 		}
-
 		case 10:
 		{
 			printf("not implemented\n");
