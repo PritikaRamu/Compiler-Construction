@@ -1,0 +1,131 @@
+%Test Case 3: Type checking 
+%Details: 
+%     (a) Simple arithmetic expressions involvoing record, union and variant record data types, their aliases and primitive data types are used in this test case. 
+%        There is no requirement for dynamic type checking in this test case which will be used in the code generation test cases with variables of variant record type.
+%     (b) One more module including main module is used in this test case. Global variables are visible in both functions
+%     (c) All variables are declared once only (not redeclared causing errors) before their use
+%     (d) The variables participating in the expression need not be initialized any values. Only test cases for code generation will have all values initialized or read appropriately.
+% The errors are reported by me in the test cases right in front of the corresponding line in comment form. 
+% It is essential for you to report errors with LINE NUMBERS correctly.	 
+
+%The following source code is expected to be syntactically correct as per the modified grammar.
+%If any line has syntax error, please inform me as that error needs to be fixed in this test case.
+
+_one  input parameter list [int c4, #newline c2c7, real c5, #point c2c6, int c7]  
+output parameter list[real d3, record #line d3b2];
+	record #line
+		type #point: beginpoint;
+		type #point: endpoint;
+	endrecord
+	record #rectangle
+		type #point: upperleft;
+		type #point: upperright;
+		type #point: loweleft;
+		type #point: lowerright;
+	endrecord
+	union #shape
+		type #newline: ln;
+		type #point: pt;
+		type #rectangleshape: rc;
+	endunion
+	record #variantrec
+		type int: tagvalue; 			%No error as tagvalue is of integer type and exists as one field of the variant record type
+		type real: areaofshape;
+		type real: perimeter;
+		type #newshape: s;
+	endrecord
+	definetype union #shape as #newshape
+	definetype record #line as #newline
+	definetype record #coordinate as #point
+	definetype record #rectangle as #rectangleshape
+	definetype record #variantrec as #variantrecord
+
+	type record #line :  d7d3;
+	type record #coordinate : b3bbb2;
+	type record #coordinate : b3bbb3;
+	type union #shape: b6b222;       	% ERROR: a variable cannot be of union type
+	type #variantrecord: b6b333;
+	type #point: d5ddd2;
+	type record #line: b5cc2;    % same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type record #line: b5cc3;
+	type record #line: b5cc4;
+	type #newline : c5bccc2;
+	type #newline: c5bccc3;
+	type #point: d5ddd3;
+	type int : b5b567;
+	type real: b3;
+	type int : c3bd : global;
+
+	b5b567 <--- c6*2;   		  % No error as c6 being a global variable is visible here  
+	b3 <--- c6-c4;	    		  % ERROR- type mismatch as the left hand side variable is of type real and the type of expression at the RHS is integer
+	d3b2 <--- c2c7+d7d3;		  % No error- as name equivalent record type variables are used in the expression 
+	d5ddd3 <--- c2c6 + b3bbb3 -  c2c7; % ERROR - record types are different
+	d5ddd3 <--- c2c6 + b3bbb3 - b3bbb2;% No error
+	
+	while ( b5b567 <= 20)
+		read(c3bd);
+		d7<--- d3 + 36.87 - 29.67E-35; %No error as d7 is global and the types are same.
+		d3b2 <--- d3b2 + c3bd;	  % ERROR- type mismatch as the expression has arguments of types integer and of record type
+		b5b567 <--- b5b567 + c3bd;%No error
+	endwhile
+	d3<--- d3-b3;  			   %No error
+	return [d3, d3b2];
+end
+
+_main 
+	record #coordinate
+		type int: x;
+		type int: y;
+	endrecord
+	
+	type int : b5;
+        type real: d2;
+        type int: c6: global;
+	type int  :d5cb34567;
+	type record #line: b5cb2;
+	type record #line: b5cb3;
+        type real : d6;
+	type real : d7:global; 
+	type int : d4 ;
+	type real: b5c6 ;
+	type int : c2;
+	type #point: b4cd2;
+	type #point: b4cd3;
+	type record #coordinate: b5cc2;
+	type record #coordinate: b5cc3;
+	type record #coordinate: b5cc4;
+	type int : c3c56;
+	type int : d6b7;
+	type real : c2d5;
+	type #newline: b5cbb3;
+	type #newline: b5cbb4;
+	type real : d5c2;
+	type real : c2c2;
+	type int : c2cc2345;
+	type int : c5c5;
+	
+	b5 <--- c6 + d5cb34567 - b5;            % No error
+	d7 <--- b5c6 + d5cb34567;  		% ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.
+	c2d5 <--- d5c2 * c2c2;			% No error
+	c2 <--- c3c56 + d6b7*d5cb34567;		% No error
+	d5c2<---b5cbb3.beginpoint.x + b5cbb4.beginpoint.x; 
+						% ERROR- as the right hand side expression is of type integer and the left hand side variable is of type real 
+	c2 <--- c3c56 + 23 - d6b7*d5cb34567;	% No error
+	b5cc2<--- b5cc3 + b4cd2; 		% No error - as name equivalent record type variables are used in the expression
+	c2d5 <--- d5c2 * c2c2 + 23;		% ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.
+	c3bd <--- c3c56 + 40 + c3bd;		% No error
+	c2d5 <--- d5c2 * c2c2 + 23.34E+32;	% No error
+	c2<---b5cbb3.beginpoint.x + b5cbb4.beginpoint.x; %No error as all operands and the resultant variable are of type integer
+	d6b7<---b5cb2.endpoint.y + b5cbb4.beginpoint.y; %No error as the variables are constructed from the name equivalent types and are integers
+	if((~(c2cc2345 == 0)) &&& (c5c5 > d6b7)) 
+	then
+		c3bd <--- c3c56 + 40 + c3bd; 
+	else
+		write(c3bd);
+	endif	
+	
+	b5cbb3<--- b5cbb4 + b5cb2;     		% No error - as name equivalent record type variables are used in the expression
+	b5cc2<--- b5cc3 + b5cbb3; 		% ERROR- type mismatch as two different record types are used
+
+	return;
+end

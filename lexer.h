@@ -12,6 +12,9 @@ Nandan B Parikh       ID: 2019A7PS0097P
 
 #include "lexerDef.h"
 
+int line;int NO_OF_SEMANTIC_ERRORS;
+//helps to keep track of the line number
+
 // LOOKUP TABLE Functions
 int hashcode(char* key);
 g_Term getToken(char* key);
@@ -24,5 +27,6 @@ FILE* getStream(FILE* fp);
 tokenInfo getNextToken();
 void removeComments(char* testcaseFile, char* cleanFile);
 void reset();
+void printCompressionPercentage();
 
 #endif

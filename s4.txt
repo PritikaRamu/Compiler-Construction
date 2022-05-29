@@ -1,0 +1,204 @@
+%Test Case 4: Semantic analysis - while loop variables, function overloading and recursion
+%Details: 
+%        (a) Simple arithmetic expressions involvoing record data types, their aliases and primitive data types are used in this test case
+%        (b) Multiple modules
+%	 (c) Handles semantic checks relating to number and type of parameters in function modules and 
+%            while loop variable (any one should be assigned a value through assignment, function call or read statements), function overloading and recorsion are 
+%            not allowed
+%        (d) The variables participating in the expression need not be initialized any values. Only test cases for code generation will have all values initialized or read appropriately.
+% The errors are reported by me in the test cases right in front of the corresponding line in comment form. 
+% It is essential for you to report errors with LINE NUMBERS correctly.	 
+
+%The following source code is expected to be syntactically correct as per the modified grammar.
+%If any line has syntax error, please inform me as that error needs to be fixed in this test case.
+
+_one  input parameter list [int c4, #newline c2c7, real c5, #point c2c6, int c7, real c3bd44]   
+output parameter list[real d3, record #line d3b2];
+	record #line
+		type #point: beginpoint;
+		type #point: endpoint;
+	endrecord
+	definetype record #line as #newline
+	definetype record #coordinate as #point
+	type record #line :  d7d3;
+	type record #coordinate : b3bbb2;
+	type record #coordinate : b3bbb3;
+	type #point: d5ddd2;
+	type record #line: b5cc2;    % same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type record #line: b5cc3;
+	type record #line: b5cc4;
+	type #point : c3bd; 		%ERROR - as c3bd is a global variable and cannot be redeclared
+	type #newline : c5bccc2;
+	type int : b5b567;
+	type #newline: c5bccc3;
+	type real:  d7d3;		%ERROR - A variable cannot be declared again
+	type #point: d5ddd3;
+	type int : b5b567;		%ERROR - A variable cannot be declared again
+	type real: b3;
+	type int : c3bd : global;
+
+	b5b567 <--- c6*2;   		  % No error as c6 being a global variable is visible here  
+	b3 <--- c6-c4;	    		  % ERROR- type mismatch as the left hand side variable is of type real and the type of expression at the RHS is integer
+	d3b2 <--- c2c7+d7d3;		  % No error- as name equivalent record type variables are used in the expression 
+	d5ddd3 <--- c2c6 + b3bbb3 -  c2c7; % ERROR - record types are different
+	d5ddd3 <--- c2c6 + b3bbb3 - b3bbb2;% No error
+	
+	while (( (b5b567 <= 20) &&& (b3<=d3) )@@@ (d7d3<34.43))
+		read(c3bd);
+		d7<--- d3 + 36.87 - 29.67E-35; %No error as d7 is global and the types are same.
+		d7<--- d3 + 36.87 - d2dddd3 + 29.67E-35; %ERROR - as variable d2dddd3 is not declared
+		d3b2 <--- d3b2 + c3bd;	  % ERROR- type mismatch as the expression has arguments of types integer and of record type
+		b5b567 <--- b5b567 + c3bd; %No error in block of lines 46 to 52 of while construct
+					   %as no type mismatch and one of the variables b5b567, b3, d3 and  d7d3 is assigned a value
+					   %Even if all are not assigned, just check for any one variable if it is assigned a value
+	endwhile
+	d3<--- d3-b3;  			   %No error
+
+	%ERROR- in block of lines 59-64 below as none of the variables b5b567, b3, d3 and  d7d3 is assigned a value
+	%You can mention the line number as 59 indicating the while statement beginning as well for reporting this error
+	while ( ((b5b567 <= 20) &&& (b3<=d3)) @@@ (d7d3<34.43))
+		read(c3bd);
+		d7<--- d3 + 36.87 - 29.67E-35; %No error as d7 is global and the types are same.
+		d7<--- d3 + 36.87 - d2dddd3 + 29.67E-35; %ERROR - as variable d2dddd3 is not declared
+		d3b2 <--- d3b2 + c3bd;	  % ERROR- type mismatch as the expression has arguments of types integer and of record type
+	endwhile
+
+	return [d3, d3b2];
+end
+
+_two  input parameter list [int c4, #newline c2c7, real c5, #point c2c6, int c7]  
+output parameter list[real d3, record #line d3b2];
+
+
+	record #abc
+		type int: x;
+		type real: y;
+		type real : z;
+		type int: u;
+		type #newline: lineone;
+		type #point: pt;
+		type #newline: linetwo;
+		type real: v;
+		type int : w;
+	endrecord
+	union #example
+		type #point: pointone;
+		type #newline: lineone;
+		type real: rval;
+		type int: number;
+	endunion
+	definetype union #example as #variantpart
+	definetype record #abc as #pqr
+	
+
+	type record #abc :  d7d3;	% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type record #coordinate : b3bbb2;% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type record #coordinate : b3bbb3;% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type #point: d5ddd2;		% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type record #abc: b5cc2;    	% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type record #abc: b5cc3;	% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type record #line: b5cc4;	% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type #point : c3bd; 		%ERROR - as c3bd is a global variable and cannot be redeclared
+	type #pqr : c5bccc2;		% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type #pqr : b5b567;		% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type #newline: c5bccc3;		% No error - same names of variables can be used in different scopes of functions as long as their is no conflict.
+	type real:  d7d3;		%ERROR - A variable cannot be declared again
+	type #point: d5ddd3;
+	type int : b5b567;		%ERROR - A variable cannot be declared again
+	type real: b3;
+	type int: b3b333;
+	 
+
+	b5b567 <--- c5bccc2 + d7d3;   	  % No error- as the types are name equivalent  
+	b3 <--- c6-c4;	    		  % ERROR- type mismatch as the left hand side variable is of type real and the type of expression at the RHS is integer
+	d3b2 <--- c2c7+d7d3;		  % ERROR- as types are different
+	d5ddd3 <--- c2c6 + b3bbb3 -  c2c7; % ERROR - record types are different
+	d5ddd3 <--- c2c6 + b3bbb3 - b3bbb2;% No error
+	[d3, d3b2] <---call _two  with parameters [ c4, c2c7, c5, c2c6, c7]; %ERROR- recusion is not valid
+	while ( b3b333 <= 20)		  %No error- as the types of relational operator are same
+		read(c3bd);
+		d7<--- d3 + 36.87 - 29.67E-35; %No error as d7 is global and the types are same.
+		d7<--- d3 + 36.87 - d2dddd3 + 29.67E-35; %ERROR - as variable d2dddd3 is not declared
+
+		[d3, b5cc4]<---call _one  with parameters [c4, c5bccc3, b3, d5ddd3, b3b333, b3]; 
+							%No error - as all actual parameters numbers and types are compatible to the formal parameters
+ 
+		d3b2 <--- d3b2 + c3bd;	  % ERROR- type mismatch as the expression has arguments of different types
+		b5b567 <--- b5b567 + c3bd;% ERROR- type mismatch as the expression has arguments of different types
+	endwhile
+	d3<--- d3-b3;  			   %No error
+	[d3, b5cc4]<---call _one  with parameters [c4, c5bccc3, b3, d5ddd3]; %ERROR- as number of input parameters is not compatible to formal parameters
+
+	[d3, b5cc4]<---call _one  with parameters [ b3, d5ddd3, b3b333, c4, c5bccc3, b3];%ERROR- as types of input parameters are not compatible to formal parameters
+	return [d3, d3b2];
+end
+
+
+_three  input parameter list [int c4, #newline c2c7, #variantpart c2d2, real c5, #point c2c6, int c7]  %ERROR- a parameter cannot be of union type
+output parameter list[real d3];
+	d3<---c5+23.34;
+	return [d3];
+end
+
+_three  input parameter list [int c4, #newline c2c7,  real c5, #point c2c6, int c7]  %ERROR- function overloading is not valid
+output parameter list[real d3];
+	d3<---c5+23.34;
+	return [d3];
+end
+
+_main 
+	record #coordinate
+		type int: x;
+		type int: y;
+	endrecord
+	
+	type int : b5;
+        type real: d2;
+        type int: c6: global;
+	type int  :d5cb34567;
+	type record #line: b5cb2;
+	type record #line: b5cb3;
+        type real : d6;
+	type real : d7:global; 
+	type int : d4 ;
+	type real: b5c6 ;
+	type record #line :  d7d3;	%No error relating to redeclaration as the variable scope is different and the variable is not global
+	type int : c2;
+	type #point: b4cd2;
+	type #point: b4cd3;
+	type record #coordinate: b5cc2;
+	type record #coordinate: b5cc3;
+	type record #coordinate: b5cc4;
+	type int : c3c56;
+	type int : d6b7;
+	type real : c2d5;
+	type #newline: b5cbb3;
+	type #newline: b5cbb4;
+	type real : d5c2;
+	type real : c2c2;
+	type int : c2cc2345;
+	type int : c5c5;
+	[c2d5, b5cbb3] <---call _two  with parameters [c3c56, b5cbb4, d5c2, b5cc2, c5c5]; %No error as number and types of input parameters are compatible to formal parameters
+ 
+
+	b5 <--- c6 + d5cb34567 - b5;            % No error
+	d7 <--- b5c6 + d5cb34567;  		% ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.
+	c2d5 <--- d5c2 * c2c2;			% No error
+	c2 <--- c3c56 + d6b7*d5cb34567;		% No error
+	d5c2<---b5cbb3.beginpoint.x + b5cbb4.beginpoint.x; % ERROR- as the right hand side expression is of type integer and the left hand side variable is of type real 
+	c2 <--- c3c56 + 23 - d6b7*d5cb34567;	% No error
+	b5cc2<--- b5cc3 + b4cd2; 		% No error - as name equivalent record type variables are used in the expression
+	c2d5<--- d5c2+c2c2 +20;		        % ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.
+	c3bd <--- c3c56 + 40 + c3bd;		% No error
+	[c2d5, b5cbb3, c5c5 ] <---call _two  with parameters [c3c56, b5cbb4, d5c2, b5cc2, c5c5]; %ERROR- as number output parameters is not compatible to formal parameters
+	c2d5 <--- d5c2 * c2c2 + 23.34E+32;	% No error
+	c2 <--- c3c56 + 23 - d6b7*d3bbbbb222+d5cb34567;	% ERROR - As variable d3bbbbb222 is not declared
+	c2<---b5cbb3.beginpoint.x + b5cbb4.beginpoint.x; %No error as all operands and the resultant variable are of type integer
+	d6b7<---b5cb2.endpoint.y + b5cbb4.beginpoint.y; %No error as the variables are constructed from the name equivalent types and are integers
+	c2<---b5cbb3.beginpoint.x + b5cbb4.beginpoint.x + d3bbbbb222; %ERROR - as variable d3bbbbb222 is not declared
+	[c2d5, b5cbb3] <---call _two  with parameters [c3c56, b5cbb4, d5c2]; %ERROR- as number of input parameters is not compatible to formal parameters
+	b5cbb3<--- b5cbb4 + b5cb2;     		% No error - as name equivalent record type variables are used in the expression
+	b5cc2<--- b5cc3 + b5cbb3; 		% ERROR- type mismatch as two different record types are used
+
+	return;
+end

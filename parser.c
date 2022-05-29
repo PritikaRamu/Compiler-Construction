@@ -711,8 +711,8 @@ char *enumToStr(g_Term id)
 
 // int main()
 // {
-//     char *testFile = "t4.txt";
-//     char *outfile = "ptt3.txt";
+//     char *testFile = "p3.txt";
+//     char *outfile = "outp2.txt";
 //     initGrammar(G);
 //     populateFirstFollow("First.txt", true);
 //     populateFirstFollow("Follow.txt", false);
@@ -720,6 +720,6 @@ char *enumToStr(g_Term id)
 //     parseTree ptree = parseInputSourceCode(testFile);
 //     printf("\n\n\nCheck");
 //     printf("Root node %d\n", ptree->symbol);
-//     int numNodes = printParseTree(ptree);
+//     int numNodes = printParseTree(ptree, "outp2.txt");
 //     //inorderNary(ptree, &numNodes,fp);
 // }

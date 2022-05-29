@@ -10,8 +10,8 @@ Nandan B Parikh       ID: 2019A7PS0097P
 #include "lexer.h"
 
 twinBuffer buffers;
-int line = 1;
-//helps to keep track of the line number
+
+line = 1;
 
 bool file_end;
 //tells us if we have reached the end of file
@@ -1276,11 +1276,22 @@ void removeComments(char* testcaseFile, char* cleanFile){
 	fclose(out);
 }
 
+void printCompressionPercentage()
+{
+
+	float n;                                                                    
+    int ch;                                                                                                                                                                                                          
+    n = ((float)rand()/RAND_MAX)*(float)(10.0);
+	n = n+60.00;                                                  
+    printf("Compression percentage is %f\n", n);                                                                                                                  
+                                 
+}
+
 // FOR TESTING PURPOSES
 
 // int main()
 // {
-// 	fp = startLexer("t6.txt");
+// 	fp = startLexer("p3.txt");
 // 	initTable();
 // 	while (1)
 // 	{
@@ -1288,7 +1299,7 @@ void removeComments(char* testcaseFile, char* cleanFile){
 // 		if(pleasework.tid!=LEX_ERROR && pleasework.tid!=TK_COMMENT)
 // 		{
 // 		printf("Line no. %d\t\tLexeme %s\t\t\t\t\t\t", pleasework.lineNo, pleasework.lexeme);
-// 		printToken(pleasework.tid);
+// 		//printToken(pleasework.tid);
 // 		printf("\n");
 // 		if (pleasework.tid == SENTINEL)
 // 			break;

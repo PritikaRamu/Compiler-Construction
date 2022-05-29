@@ -1,0 +1,57 @@
+%Test Case 2: Type checking 
+%Details: 
+%        (a) Simple arithmetic expressions involvoing primitive data types are used in this test case
+%        (b) One more module including main module is used in this test case. Global variables are visible in both functions
+%	 (c) All variables are declared once only before their use
+%        (d) The variables participating in the expression need not be initialized any values. Only test cases for code generation will have all values initialized or read appropriately.
+% The errors are reported by me in the test cases right in front of the corresponding line in comment form. 
+% It is essential for you to report errors with LINE NUMBERS correctly.	 
+
+%The following source code is expected to be syntactically correct as per the modified grammar.
+%If any line has syntax error, please inform me as that error needs to be fixed in this test case.
+
+_one  input parameter list [int c4, real c5, int c7]  
+output parameter list[real d3];
+	type int : b5b567;
+	type real: b3;
+	type int : c3bd : global;
+	b5b567 <--- c6*2;   		  %No error as c6 being a global variable is visible hererhd is 
+	b3 <--- c6-c4;	    		  % ERROR- type mismatch as the left hand side variable is of type real and the type of expression at the RHS is integer
+	while ( b5b567 <= 20)
+		read(c3bd);
+		d7<--- d3 + 36.87 - 29.67E-35; %No error as d7 is global and the types are same.
+		d3 <--- d3 + c3bd;	  %ERROR- type mismatch as the expression has arguments of types integer and real
+		b5b567 <--- b5b567 + c3bd;%No error
+	endwhile
+	return [d3];
+end
+
+_main 
+	type int : b5;
+        type real: d2;
+        type int: c6: global;
+	type int  :d5cb34567;
+        type real : d6;
+	type real : d7:global; 
+	type int : d4 ;
+	type real: b5c6 ;
+	type int : c2;
+	type int : c3c56;
+	type int : d6b7;
+	type real : c2d5;
+	type real : d5c2;
+	type real : c2c2;
+	type int : c2cc2345;
+	type int : c5c5;
+	
+	b5 <--- c6 + d5cb34567 - b5;            % No error
+	d7 <--- b5c6 + d5cb34567;  		% ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.
+	c2d5 <--- d5c2 * c2c2;			% No error
+	c2 <--- c3c56 + d6b7*d5cb34567;		% No error
+	c2 <--- c3c56 + 23 - d6b7*d5cb34567;	% No error
+	c2d5 <--- d5c2 * c2c2 + 23;		% ERROR- The expression has a type mismatch as one argument is of integer type and the other is of real type.
+	c3bd <--- c3c56 + 40 + c3bd;		% No error
+	c2d5 <--- d5c2 * c2c2 + 23.34E+32;	% No error
+
+	return;
+end
