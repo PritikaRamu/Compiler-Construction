@@ -1,5 +1,5 @@
 # Compiler-Construction
-This project was done as part of the course CS 363 (Compiler Construction) in the Second Semester of AY 21-22 under the guidance of  Prof. Vandana Agarwal, BITS Pilani.
+This project was done as part of the course CS F363 (Compiler Construction) in the Second Semester of AY 21-22 under the guidance of  Prof. Vandana Agarwal, BITS Pilani.
 
 ## Brief Description
 The Compiler translates a Strongly typed language (Primitive and Complex data types) into equivalent machine code. The compiler was written entirely in the C language. The code was written in 2 stages and includes the following modules:
